@@ -1,8 +1,9 @@
 /**
- * Logic dieu khien giao dien Novata Overlay - Phien ban nvt_0.1
- * - Song am 100% trong suot khong hop nen, mac dinh xuyen chuot
- * - The dieu khien Glass UI co the keo tha vi tri (Draggable) va luu toa do
- * - Trinh phat nhac In-App ket noi truc tiep vao Web Audio API
+ * Logic điều khiển giao diện Novata Overlay - Phiên bản nvt_0.2
+ * - Sóng âm 100% trong suốt không hộp nền, mặc định xuyên chuột
+ * - Thẻ điều khiển Glass UI có thể kéo thả vị trí (Draggable) và lưu tọa độ
+ * - Trình phát nhạc In-App hỗ trợ Multi-Playlists, Auto-next bài kế tiếp, Xáo bài (Shuffle), Lặp lại
+ * - Bình luận bằng tiếng Việt theo quy định toàn cục.
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -29,12 +30,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnEditPosition = document.getElementById('btn-edit-position');
   const btnConfirmPosition = document.getElementById('btn-confirm-position');
   const dragHint = document.getElementById('drag-hint');
+  const btnOpenPlaylists = document.getElementById('btn-open-playlists');
   const btnOpenSearch = document.getElementById('btn-open-search');
   const btnOpenSettings = document.getElementById('btn-open-settings');
 
   const audioEl = document.getElementById('inapp-audio-player');
 
-  // Trang thai phat nhac In-App
+  // Trạng thái phát nhạc In-App & Hàng đợi Playlist
   let currentInAppTrack = null;
   let inAppIsPlaying = false;
   let inAppCurrentTime = 0;
@@ -42,8 +44,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   let inAppQueue = [];
   let inAppQueueIndex = 0;
   let inAppAudioConnected = false;
+  let currentPlaylistId = null;
+  let currentPlaylistName = '';
 
-  // Trang thai keo tha the Glass UI (Edit Mode)
+  // Trạng thái xáo bài (Shuffle) và lặp lại (Repeat: 'all' | 'one' | 'none')
+  let isShuffle = false;
+  let shuffleIndices = [];
+  let shufflePointer = 0;
+  let repeatMode = 'all';
+
+  // Trạng thái kéo thả thẻ Glass UI (Edit Mode)
   let isEditMode = false;
   let isDragging = false;
   let dragStartX = 0;
@@ -56,14 +66,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     currentSettings = await window.novata.getSettings();
     applySettings(currentSettings);
+    if (typeof currentSettings.shuffle === 'boolean') {
+      isShuffle = currentSettings.shuffle;
+      if (btnShuffle) btnShuffle.classList.toggle('active', isShuffle);
+    }
+    if (currentSettings.repeatMode) {
+      repeatMode = currentSettings.repeatMode;
+      updateRepeatUI();
+    }
   } catch (err) {
-    console.error('Loi khi tai cai dat:', err);
+    console.error('Lỗi khi tải cài đặt ban đầu:', err);
   }
 
   await visualizer.initAudio('system');
   visualizer.start();
 
-  // Ket noi the Audio Element vao Web Audio Analyser de song am nhay truc tiep theo nhac
+  // Kết nối thẻ Audio Element vào Web Audio Analyser để sóng âm nhảy trực tiếp theo nhạc
   function connectAudioToVisualizer() {
     if (inAppAudioConnected || !visualizer.audioContext) return;
     try {
@@ -75,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       source.connect(visualizer.audioContext.destination);
       inAppAudioConnected = true;
     } catch (e) {
-      console.warn('Loi ket noi Web Audio Node:', e.message);
+      console.warn('Lỗi kết nối Web Audio Node:', e.message);
     }
   }
 
@@ -87,7 +105,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   function applySettings(settings) {
     visualizer.updateSettings(settings);
 
-    // An/Hien the dieu khien
+    // Ẩn / Hiện thẻ điều khiển
     if (playerCard) {
       if (settings.showMediaCard === false) {
         playerCard.classList.add('hidden');
@@ -95,14 +113,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         playerCard.classList.remove('hidden');
       }
 
-      // Vi tri the dieu khien: Neu nguoi dung da keo tha va luu toa do, su dung toa do do
+      // Vị trí thẻ điều khiển: Nếu người dùng đã kéo thả và lưu tọa độ, sử dụng tọa độ đó
       if (settings.playerCardPos && typeof settings.playerCardPos.left === 'number') {
         playerCard.style.left = settings.playerCardPos.left + 'px';
         playerCard.style.top = settings.playerCardPos.top + 'px';
         playerCard.style.bottom = 'auto';
         playerCard.style.right = 'auto';
       } else {
-        // Mac dinh o goc duoi ben trai
+        // Mặc định ở góc dưới bên trái màn hình
         playerCard.style.left = '28px';
         playerCard.style.bottom = '24px';
         playerCard.style.top = 'auto';
@@ -111,7 +129,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // 1. Xu ly chuot tren the Glass UI: Chuyen trang thai xuyen chuot linh hoat
+  // 1. Xử lý chuột trên thẻ Glass UI: Chuyển trạng thái xuyên chuột linh hoạt
   if (playerCard) {
     playerCard.addEventListener('mouseenter', () => {
       window.novata.setIgnoreMouseEvents(false);
@@ -123,7 +141,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
 
-    // Bat che do keo tha vi tri khi nhan nut Edit
+    // Bật chế độ kéo thả vị trí khi nhấn nút Move
     if (btnEditPosition && btnConfirmPosition) {
       btnEditPosition.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -135,7 +153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.novata.setIgnoreMouseEvents(false);
       });
 
-      // Xac nhan vi tri khi nhan nut Done
+      // Xác nhận vị trí khi nhấn nút Done
       btnConfirmPosition.addEventListener('click', async (e) => {
         e.stopPropagation();
         isEditMode = false;
@@ -154,7 +172,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
 
-    // Keo tha the Glass UI khi o che do Edit Mode
+    // Kéo thả thẻ Glass UI khi ở chế độ Edit Mode
     playerCard.addEventListener('mousedown', (e) => {
       if (!isEditMode) return;
       if (e.target.closest('#btn-confirm-position')) return;
@@ -176,7 +194,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       let targetLeft = cardInitialLeft + deltaX;
       let targetTop = cardInitialTop + deltaY;
 
-      // Gioi han khong cho the bi keo ra ngoai mep man hinh
+      // Giới hạn không cho thẻ bị kéo ra ngoài mép màn hình
       targetLeft = Math.max(8, Math.min(window.innerWidth - playerCard.offsetWidth - 8, targetLeft));
       targetTop = Math.max(8, Math.min(window.innerHeight - playerCard.offsetHeight - 8, targetTop));
 
@@ -194,7 +212,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 2. Lang nghe su kien click Tray icon de hien/an the Glass UI
+  // 2. Lắng nghe sự kiện click Tray icon để ẩn / hiện thẻ Glass UI
   if (window.novata.onTogglePlayerCard) {
     window.novata.onTogglePlayerCard(() => {
       if (playerCard) {
@@ -209,7 +227,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 3. Quan ly thong tin bai hat tu he thong Windows (Spotify, YouTube Web...)
+  // 3. Quản lý thông tin bài hát từ hệ thống Windows (Spotify, YouTube Web, SoundCloud...)
   try {
     const initialMedia = await window.novata.getMediaState();
     if (!currentInAppTrack) {
@@ -237,12 +255,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     const src = (media.Source || '').toLowerCase();
     if (src.includes('spotify')) {
       sourceIcon.className = 'bi bi-spotify';
+      sourceIcon.title = 'Playing on Spotify';
     } else if (src.includes('youtube') || src.includes('chrome') || src.includes('edge')) {
       sourceIcon.className = 'bi bi-youtube';
+      sourceIcon.title = 'Playing on YouTube / Browser';
     } else if (src.includes('soundcloud')) {
       sourceIcon.className = 'bi bi-soundwave';
+      sourceIcon.title = 'Playing on SoundCloud';
     } else {
       sourceIcon.className = 'bi bi-music-note-beamed';
+      sourceIcon.title = 'System Media';
     }
 
     const isPlaying = media.Status && media.Status.toLowerCase().includes('play');
@@ -273,12 +295,75 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // 4. Xu ly Phat nhac In-App truc tiep qua HTML5 Audio
+  // 4. Khởi tạo thứ tự phát xáo bài (Fisher-Yates Shuffle)
+  function initShuffleOrder(firstIndex = 0) {
+    if (inAppQueue.length <= 1) {
+      shuffleIndices = [0];
+      shufflePointer = 0;
+      return;
+    }
+
+    const restIndices = [];
+    for (let i = 0; i < inAppQueue.length; i++) {
+      if (i !== firstIndex) restIndices.push(i);
+    }
+
+    // Xáo trộn mảng các bài còn lại
+    for (let i = restIndices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [restIndices[i], restIndices[j]] = [restIndices[j], restIndices[i]];
+    }
+
+    shuffleIndices = [firstIndex, ...restIndices];
+    shufflePointer = 0;
+  }
+
+  // 5. Lắng nghe lệnh phát toàn bộ Playlist từ IPC
+  window.novata.onPlayPlaylist((payload) => {
+    if (!payload || !payload.tracks || payload.tracks.length === 0) return;
+
+    currentPlaylistId = payload.playlistId;
+    currentPlaylistName = payload.playlistName || 'Playlist';
+    inAppQueue = [...payload.tracks];
+
+    const startIdx = typeof payload.startIndex === 'number' ? payload.startIndex : 0;
+
+    if (payload.shuffle || isShuffle) {
+      isShuffle = true;
+      if (btnShuffle) btnShuffle.classList.add('active');
+      initShuffleOrder(startIdx);
+      inAppQueueIndex = shuffleIndices[0];
+    } else {
+      inAppQueueIndex = startIdx;
+    }
+
+    playInAppSong(inAppQueue[inAppQueueIndex]);
+  });
+
+  // Lắng nghe phát 1 bài đơn lẻ
   window.novata.onPlayInAppTrack((track) => {
+    // Nếu bài này chưa có trong queue thì thêm vào queue
+    const foundIdx = inAppQueue.findIndex(t => t.id === track.id);
+    if (foundIdx !== -1) {
+      inAppQueueIndex = foundIdx;
+    } else {
+      inAppQueue = [track];
+      inAppQueueIndex = 0;
+    }
+
+    if (isShuffle) {
+      initShuffleOrder(inAppQueueIndex);
+    }
+
     playInAppSong(track);
   });
 
+  /**
+   * Phát bài hát In-App qua HTML5 Audio và trích xuất direct audio stream
+   * @param {Object} track 
+   */
   async function playInAppSong(track) {
+    if (!track) return;
     currentInAppTrack = track;
     inAppIsPlaying = true;
     inAppCurrentTime = 0;
@@ -287,8 +372,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     trackTitle.textContent = track.title;
     trackArtist.textContent = track.artist;
     trackTime.textContent = `0:00 / ${track.duration || '--:--'}`;
-    sourceIcon.className = 'bi bi-play-circle-fill';
-    sourceIcon.title = 'In-App Player';
+
+    if (currentPlaylistName) {
+      sourceIcon.className = 'bi bi-collection-play-fill';
+      sourceIcon.title = `Playlist: ${currentPlaylistName}`;
+    } else {
+      sourceIcon.className = 'bi bi-play-circle-fill';
+      sourceIcon.title = 'Novata In-App Player';
+    }
 
     if (track.thumbnail) {
       albumThumb.src = track.thumbnail;
@@ -316,14 +407,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       try {
         await audioEl.play();
       } catch (playErr) {
-        console.error('Loi khi bat dau phat am thanh:', playErr);
+        console.error('Lỗi khi bắt đầu phát âm thanh:', playErr);
       }
     } else {
-      console.warn('Khong the lay duoc link audio stream.');
+      console.warn('Không thể lấy được đường dẫn stream của bài hát.');
     }
   }
 
-  // Lang nghe cac su kien tu the Audio HTML5
+  // 6. Lắng nghe các sự kiện từ thẻ Audio HTML5
   if (audioEl) {
     audioEl.addEventListener('timeupdate', () => {
       inAppCurrentTime = audioEl.currentTime;
@@ -337,7 +428,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.novata.syncInAppState({
           isPlaying: inAppIsPlaying,
           currentTime: inAppCurrentTime,
-          duration: inAppDuration
+          duration: inAppDuration,
+          track: currentInAppTrack,
+          queueIndex: inAppQueueIndex,
+          queueTotal: inAppQueue.length,
+          playlistName: currentPlaylistName
         });
       }
     });
@@ -354,12 +449,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       albumIcon.classList.remove('active');
     });
 
+    // Tự động phát bài tiếp theo khi bài này phát xong (Auto-next)
     audioEl.addEventListener('ended', () => {
-      handleInAppNext();
+      handleAutoNext();
     });
 
     audioEl.addEventListener('error', () => {
-      console.warn('Audio stream error event fired.');
+      console.warn('Sự kiện lỗi tải luồng âm thanh.');
+      // Nếu gặp bài lỗi luồng, tự động chuyển bài kế tiếp sau 2 giây
+      setTimeout(() => {
+        if (inAppQueue.length > 1) {
+          handleInAppNext();
+        }
+      }, 2000);
     });
   }
 
@@ -379,21 +481,123 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  function handleInAppNext() {
+  /**
+   * Tự động phát bài kế tiếp khi bài hiện tại kết thúc
+   */
+  function handleAutoNext() {
+    if (repeatMode === 'one') {
+      audioEl.currentTime = 0;
+      audioEl.play().catch(() => {});
+      return;
+    }
+
+    if (isShuffle) {
+      if (shufflePointer < shuffleIndices.length - 1) {
+        shufflePointer++;
+        inAppQueueIndex = shuffleIndices[shufflePointer];
+        playInAppSong(inAppQueue[inAppQueueIndex]);
+      } else if (repeatMode === 'all') {
+        // Đã phát hết danh sách xáo bài, xáo lại từ đầu
+        initShuffleOrder(shuffleIndices[shuffleIndices.length - 1]);
+        inAppQueueIndex = shuffleIndices[0];
+        playInAppSong(inAppQueue[inAppQueueIndex]);
+      } else {
+        inAppIsPlaying = false;
+        playPauseIcon.className = 'bi bi-play-fill';
+        albumIcon.classList.remove('active');
+      }
+      return;
+    }
+
+    // Chế độ phát tuần tự thông thường
     if (inAppQueue.length > 0 && inAppQueueIndex < inAppQueue.length - 1) {
       inAppQueueIndex++;
       playInAppSong(inAppQueue[inAppQueueIndex]);
+    } else if (repeatMode === 'all' && inAppQueue.length > 0) {
+      inAppQueueIndex = 0;
+      playInAppSong(inAppQueue[0]);
+    } else {
+      inAppIsPlaying = false;
+      playPauseIcon.className = 'bi bi-play-fill';
+      albumIcon.classList.remove('active');
     }
   }
 
-  function handleInAppPrev() {
-    if (inAppQueue.length > 0 && inAppQueueIndex > 0) {
-      inAppQueueIndex--;
+  /**
+   * Chuyển bài kế tiếp theo thao tác người dùng
+   */
+  function handleInAppNext() {
+    if (isShuffle) {
+      if (shufflePointer < shuffleIndices.length - 1) {
+        shufflePointer++;
+      } else {
+        shufflePointer = 0;
+      }
+      inAppQueueIndex = shuffleIndices[shufflePointer];
+      playInAppSong(inAppQueue[inAppQueueIndex]);
+      return;
+    }
+
+    if (inAppQueue.length > 0) {
+      if (inAppQueueIndex < inAppQueue.length - 1) {
+        inAppQueueIndex++;
+      } else {
+        inAppQueueIndex = 0;
+      }
       playInAppSong(inAppQueue[inAppQueueIndex]);
     }
   }
 
-  // Lang nghe lenh dieu khien In-App tu cua so Cai dat hoac Tray
+  /**
+   * Quay lại bài trước
+   */
+  function handleInAppPrev() {
+    // Nếu bài đã phát hơn 3 giây, tua lại từ đầu bài
+    if (audioEl && audioEl.currentTime > 3) {
+      audioEl.currentTime = 0;
+      return;
+    }
+
+    if (isShuffle) {
+      if (shufflePointer > 0) {
+        shufflePointer--;
+      } else {
+        shufflePointer = shuffleIndices.length - 1;
+      }
+      inAppQueueIndex = shuffleIndices[shufflePointer];
+      playInAppSong(inAppQueue[inAppQueueIndex]);
+      return;
+    }
+
+    if (inAppQueue.length > 0) {
+      if (inAppQueueIndex > 0) {
+        inAppQueueIndex--;
+      } else {
+        inAppQueueIndex = inAppQueue.length - 1;
+      }
+      playInAppSong(inAppQueue[inAppQueueIndex]);
+    }
+  }
+
+  // Cập nhật giao diện nút lặp lại Repeat
+  function updateRepeatUI() {
+    if (!repeatIcon || !btnRepeat) return;
+    if (repeatMode === 'one') {
+      repeatIcon.className = 'bi bi-repeat-1';
+      btnRepeat.classList.add('active');
+      btnRepeat.title = 'Repeat: Single Track';
+    } else if (repeatMode === 'all') {
+      repeatIcon.className = 'bi bi-repeat';
+      btnRepeat.classList.add('active');
+      btnRepeat.title = 'Repeat: Entire Playlist';
+    } else {
+      repeatIcon.className = 'bi bi-repeat';
+      btnRepeat.classList.remove('active');
+      btnRepeat.title = 'Repeat: Off';
+    }
+  }
+
+  // 7. Lắng nghe lệnh điều khiển In-App từ cửa sổ Cài đặt hoặc Tray
   window.novata.onInAppControl((action, payload) => {
     switch (action) {
       case 'toggle':
@@ -411,6 +615,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       case 'prev':
         handleInAppPrev();
         break;
+      case 'shuffle':
+        isShuffle = !isShuffle;
+        if (btnShuffle) btnShuffle.classList.toggle('active', isShuffle);
+        if (isShuffle) initShuffleOrder(inAppQueueIndex);
+        window.novata.saveSettings({ shuffle: isShuffle });
+        break;
       case 'seek':
         if (audioEl && payload && typeof payload.percent === 'number' && audioEl.duration) {
           audioEl.currentTime = (payload.percent / 100) * audioEl.duration;
@@ -419,7 +629,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // 5. Cac nut bam tren the dieu khien Glass UI
+  // 8. Các nút bấm trên thẻ điều khiển Glass UI
   btnPlayPause.addEventListener('click', async () => {
     if (currentInAppTrack) {
       handleInAppPlayPause();
@@ -444,22 +654,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // Nút xáo bài (Shuffle)
   btnShuffle.addEventListener('click', async () => {
-    if (!currentInAppTrack) {
+    if (currentInAppTrack) {
+      isShuffle = !isShuffle;
+      btnShuffle.classList.toggle('active', isShuffle);
+      if (isShuffle) {
+        initShuffleOrder(inAppQueueIndex);
+      }
+      await window.novata.saveSettings({ shuffle: isShuffle });
+    } else {
       await window.novata.controlMedia('shuffle');
     }
   });
 
+  // Nút lặp lại (Repeat)
   btnRepeat.addEventListener('click', async () => {
     if (currentInAppTrack) {
-      audioEl.loop = !audioEl.loop;
-      btnRepeat.classList.toggle('active', audioEl.loop);
+      if (repeatMode === 'all') {
+        repeatMode = 'one';
+      } else if (repeatMode === 'one') {
+        repeatMode = 'none';
+      } else {
+        repeatMode = 'all';
+      }
+      updateRepeatUI();
+      await window.novata.saveSettings({ repeatMode });
     } else {
       await window.novata.controlMedia('repeat');
     }
   });
 
-  // Tua nhac khi nhap chuot vao thanh tien trinh
+  // Tua nhạc khi nhấp chuột vào thanh tiến trình
   progressContainer.addEventListener('click', (e) => {
     const rect = progressContainer.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
@@ -470,15 +696,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Mo tim kiem va phat nhac
+  // Mở tab Danh sách phát Playlists
+  if (btnOpenPlaylists) {
+    btnOpenPlaylists.addEventListener('click', async () => {
+      await window.novata.openPlaylistTab();
+    });
+  }
+
+  // Mở tìm kiếm và phát nhạc
   btnOpenSearch.addEventListener('click', async () => {
-    await window.novata.openSettings();
-    setTimeout(() => {
-      window.novata.openSearchTab();
-    }, 200);
+    await window.novata.openSearchTab();
   });
 
-  // Mo cua so Cai dat
+  // Mở cửa sổ Cài đặt
   btnOpenSettings.addEventListener('click', async () => {
     await window.novata.openSettings();
   });

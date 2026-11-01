@@ -1,6 +1,8 @@
 /**
  * Preload Script - Cung cấp cầu nối IPC an toàn cho giao diện Renderer
+ * Phiên bản nvt_0.2 - Bổ sung API Multi-Playlists, Discord RPC, Default Music Startup
  * Tuân thủ bảo mật contextIsolation và cấm trực tiếp Node integration.
+ * Bình luận bằng tiếng Việt theo quy định toàn cục.
  */
 
 const { contextBridge, ipcRenderer } = require('electron');
@@ -52,15 +54,51 @@ contextBridge.exposeInMainWorld('novata', {
     return () => ipcRenderer.removeListener('inapp-state-sync', handler);
   },
 
-  // Chuyển nhanh đến Tab Tìm & Phát nhạc
+  // Quản lý Multi-Playlists
+  getPlaylists: () => ipcRenderer.invoke('get-playlists'),
+  createPlaylist: (data) => ipcRenderer.invoke('create-playlist', data),
+  updatePlaylist: (id, data) => ipcRenderer.invoke('update-playlist', id, data),
+  deletePlaylist: (id) => ipcRenderer.invoke('delete-playlist', id),
+  addToPlaylist: (playlistId, track) => ipcRenderer.invoke('add-to-playlist', playlistId, track),
+  removeFromPlaylist: (playlistId, trackId) => ipcRenderer.invoke('remove-from-playlist', playlistId, trackId),
+  playPlaylist: (playlistId, startIndex, shuffle) => ipcRenderer.invoke('play-playlist', playlistId, startIndex, shuffle),
+  setStartupPlaylist: (playlistId) => ipcRenderer.invoke('set-startup-playlist', playlistId),
+
+  onPlayPlaylist: (callback) => {
+    const handler = (event, payload) => callback(payload);
+    ipcRenderer.on('play-playlist-queue', handler);
+    return () => ipcRenderer.removeListener('play-playlist-queue', handler);
+  },
+  onPlaylistsChanged: (callback) => {
+    const handler = (event, playlists) => callback(playlists);
+    ipcRenderer.on('playlists-updated', handler);
+    return () => ipcRenderer.removeListener('playlists-updated', handler);
+  },
+
+  // Quản lý Discord Rich Presence (RPC)
+  getDiscordStatus: () => ipcRenderer.invoke('get-discord-status'),
+  setDiscordRpcEnabled: (enabled) => ipcRenderer.invoke('set-discord-rpc-enabled', enabled),
+  onDiscordStatusChange: (callback) => {
+    const handler = (event, status) => callback(status);
+    ipcRenderer.on('discord-status-updated', handler);
+    return () => ipcRenderer.removeListener('discord-status-updated', handler);
+  },
+
+  // Chuyển nhanh giữa các Tab
   openSearchTab: () => ipcRenderer.invoke('open-search-tab'),
+  openPlaylistTab: () => ipcRenderer.invoke('open-playlist-tab'),
   onSwitchToSearchTab: (callback) => {
     const handler = () => callback();
     ipcRenderer.on('switch-to-search-tab', handler);
     return () => ipcRenderer.removeListener('switch-to-search-tab', handler);
   },
+  onSwitchToPlaylistTab: (callback) => {
+    const handler = () => callback();
+    ipcRenderer.on('switch-to-playlist-tab', handler);
+    return () => ipcRenderer.removeListener('switch-to-playlist-tab', handler);
+  },
 
-  // Tuong tac chuot va hien thi the dieu khien Glass UI
+  // Tương tác chuột và hiển thị thẻ điều khiển Glass UI
   toggleClickThrough: (enabled) => ipcRenderer.invoke('set-click-through', enabled),
   setIgnoreMouse: (ignore, forward) => ipcRenderer.send('set-ignore-mouse-events', ignore, forward),
   setIgnoreMouseEvents: (ignore, forward) => ipcRenderer.send('set-ignore-mouse-events', ignore, forward),
@@ -74,6 +112,6 @@ contextBridge.exposeInMainWorld('novata', {
   minimizeToTray: () => ipcRenderer.invoke('minimize-to-tray'),
   closeApp: () => ipcRenderer.invoke('close-app'),
 
-  // Lấy nguồn chụp màn hình / loopback audio cho Web Audio API
+  // Lấy nguồn loopback audio cho Web Audio API
   getAudioSourceId: () => ipcRenderer.invoke('get-audio-source-id')
 });

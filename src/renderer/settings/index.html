@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Novata nvt_0.1 - Settings & Music Player</title>
+  <title>Novata nvt_0.2 - Settings & Music Center</title>
   <link rel="stylesheet" href="../assets/bootstrap-icons/bootstrap-icons.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -14,7 +14,7 @@
       <div class="title-branding">
         <img src="../assets/icon.png" class="brand-logo-img" alt="Novata Logo">
         <span class="brand-title">Novata</span>
-        <span class="brand-badge">nvt_0.1</span>
+        <span class="brand-badge">nvt_0.2</span>
       </div>
 
       <div class="window-actions">
@@ -31,6 +31,11 @@
         <button class="tab-btn active" data-tab="tab-music-search" id="tab-btn-search">
           <i class="bi bi-music-note-beamed tab-icon"></i>
           <span>Music Player</span>
+        </button>
+
+        <button class="tab-btn" data-tab="tab-playlists" id="tab-btn-playlists">
+          <i class="bi bi-collection-play tab-icon"></i>
+          <span>Playlists</span>
         </button>
 
         <button class="tab-btn" data-tab="tab-appearance" id="tab-btn-appearance">
@@ -117,7 +122,77 @@
           </div>
         </div>
 
-        <!-- 2. TAB APPEARANCE -->
+        <!-- 2. TAB PLAYLISTS -->
+        <div class="tab-pane" id="tab-playlists">
+          <div class="section-header playlist-header-flex">
+            <div>
+              <h3>Music Playlists</h3>
+              <p>Create multiple playlists for different moods and activities with auto-playback</p>
+            </div>
+            <button class="mono-apply-btn" id="btn-create-playlist-trigger">
+              <i class="bi bi-plus-lg"></i>
+              <span>New Playlist</span>
+            </button>
+          </div>
+
+          <div class="playlists-workspace">
+            <!-- Left Column: Playlist List -->
+            <div class="playlists-sidebar-col">
+              <div class="playlists-sidebar-title">Your Playlists</div>
+              <div class="playlists-pill-list" id="playlists-pills-container">
+                <!-- Dynamically populated playlist tabs -->
+              </div>
+            </div>
+
+            <!-- Right Column: Active Playlist Details & Songs -->
+            <div class="playlist-detail-col">
+              <div class="playlist-detail-header" id="playlist-detail-header">
+                <div class="pl-detail-info">
+                  <div class="pl-title-row">
+                    <h4 class="pl-active-title" id="pl-active-title">Select a Playlist</h4>
+                    <span class="pl-startup-badge hidden" id="pl-active-startup-badge" title="Will play automatically when Novata launches">
+                      <i class="bi bi-star-fill"></i> Default Startup
+                    </span>
+                  </div>
+                  <p class="pl-active-desc" id="pl-active-desc">Choose a playlist from the left or create one.</p>
+                  <div class="pl-stats-row">
+                    <span id="pl-active-track-count">0 tracks</span>
+                    <span class="pl-stat-dot">&bull;</span>
+                    <span id="pl-active-duration">0:00</span>
+                  </div>
+                </div>
+
+                <div class="pl-action-buttons">
+                  <button class="pl-btn-play" id="btn-play-all-playlist" title="Play Playlist">
+                    <i class="bi bi-play-fill"></i>
+                    <span>Play All</span>
+                  </button>
+                  <button class="pl-btn-secondary" id="btn-shuffle-playlist" title="Shuffle & Play">
+                    <i class="bi bi-shuffle"></i>
+                    <span>Shuffle</span>
+                  </button>
+                  <button class="pl-btn-secondary" id="btn-set-startup-playlist" title="Set this playlist as default startup music">
+                    <i class="bi bi-star" id="btn-startup-star-icon"></i>
+                    <span id="btn-startup-label">Set Startup</span>
+                  </button>
+                  <button class="pl-btn-icon" id="btn-edit-active-playlist" title="Rename Playlist">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="pl-btn-icon" id="btn-delete-active-playlist" title="Delete Playlist">
+                    <i class="bi bi-trash3"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tracks List Container -->
+              <div class="playlist-tracks-container" id="playlist-tracks-container">
+                <!-- Dynamically populated tracks -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. TAB APPEARANCE -->
         <div class="tab-pane" id="tab-appearance">
           <div class="section-header">
             <h3>Waveform Color & Opacity</h3>
@@ -286,10 +361,79 @@
           </div>
         </div>
 
-        <!-- 3. TAB GENERAL -->
+        <!-- 4. TAB GENERAL -->
         <div class="tab-pane" id="tab-general">
+          <!-- DISCORD RICH PRESENCE (RPC) -->
           <div class="section-header">
-            <h3>General Settings</h3>
+            <h3>Discord Rich Presence (RPC)</h3>
+            <p>Broadcast current song, artist, and music source (YouTube, Spotify, SoundCloud) to Discord</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Enable Discord RPC</span>
+              <span class="setting-sub">Displays live playback details on your Discord user profile</span>
+            </div>
+            <div class="setting-control-col rpc-control-col">
+              <span class="status-indicator-badge" id="discord-rpc-status-badge">Checking...</span>
+              <label class="mono-switch">
+                <input type="checkbox" id="check-discord-rpc" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- DEFAULT MUSIC / STARTUP AUTO-PLAY -->
+          <div class="section-header">
+            <h3>Default Music (Auto-Play on Startup)</h3>
+            <p>Instantly start music playback when Novata launches without needing any manual click</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Auto-Play on Launch</span>
+              <span class="setting-sub">Automatically begins playback when application starts</span>
+            </div>
+            <div class="setting-control-col">
+              <label class="mono-switch">
+                <input type="checkbox" id="check-autoplay-startup">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item" id="row-startup-source">
+            <div class="setting-label-col">
+              <span class="setting-title">Startup Music Source</span>
+              <span class="setting-sub">Choose whether to play a specific playlist or resume last song</span>
+            </div>
+            <div class="setting-control-col">
+              <select class="mono-select" id="select-startup-source">
+                <option value="playlist">Selected Playlist</option>
+                <option value="last_played">Resume Last Played Song</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-item" id="row-startup-playlist">
+            <div class="setting-label-col">
+              <span class="setting-title">Startup Playlist</span>
+              <span class="setting-sub">The default playlist to stream upon launching Novata</span>
+            </div>
+            <div class="setting-control-col">
+              <select class="mono-select" id="select-startup-playlist">
+                <!-- Dynamically filled with user playlists -->
+              </select>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- SYSTEM SETTINGS -->
+          <div class="section-header">
+            <h3>System Settings</h3>
             <p>Startup and background system preferences</p>
           </div>
 
@@ -321,6 +465,7 @@
 
           <div class="divider"></div>
 
+          <!-- ABOUT CARD -->
           <div class="about-card">
             <div class="about-header-row">
               <div class="about-logo-box">
@@ -328,15 +473,17 @@
               </div>
               <div class="about-meta">
                 <div class="about-app-name">Novata Visualizer</div>
-                <div class="about-app-ver">Version nvt_0.1 &bull; Lightweight Desktop Audio Visualizer</div>
+                <div class="about-app-ver">Version nvt_0.2 beta &bull; Minimalist Audio Visualizer & Music Player</div>
               </div>
             </div>
             <p class="about-desc">
-              Pure minimalist audio visualizer for Windows. Features seamless wallpaper integration, symmetrical center-out waveform, custom Hex coloring, and in-app music streaming with minimal memory consumption.
+              Pure minimalist audio visualizer for Windows. Features seamless wallpaper integration, symmetrical center-out waveform, Discord Rich Presence, Multi-Playlists with auto-next, and instant startup playback.
             </p>
             <div class="about-credits-row">
-              <span class="credit-badge">Engineered for Windows</span>
-              <span class="credit-badge">Zero Lag Architecture</span>
+              <span class="credit-badge">Discord Rich Presence</span>
+              <span class="credit-badge">Multi-Playlists</span>
+              <span class="credit-badge">Auto-Next & Shuffle</span>
+              <span class="credit-badge">Zero Lag Engine</span>
             </div>
           </div>
         </div>
@@ -411,6 +558,77 @@
           <i class="bi bi-check2"></i>
           <span>Apply Color</span>
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL TẠO / SỬA PLAYLIST (CREATE / EDIT PLAYLIST MODAL) -->
+  <div class="color-modal-backdrop hidden" id="modal-playlist-edit">
+    <div class="color-modal-card playlist-modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="bi bi-collection-play"></i>
+          <span id="modal-playlist-title-text">Create New Playlist</span>
+        </div>
+        <button class="win-btn win-close" id="btn-close-playlist-modal" title="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-form-group">
+          <label class="modal-form-label">Playlist Name</label>
+          <input type="text" id="input-playlist-name" class="modal-form-input" placeholder="e.g. Chill Coding, Night Melodies..." maxlength="48">
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-form-label">Description (Optional)</label>
+          <input type="text" id="input-playlist-desc" class="modal-form-input" placeholder="e.g. Focus beats for productive work sessions" maxlength="100">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" id="btn-cancel-playlist-modal">Cancel</button>
+        <button class="btn-modal-apply" id="btn-save-playlist-modal">
+          <i class="bi bi-check2"></i>
+          <span id="btn-save-playlist-label">Save Playlist</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL THÊM BÀI HÁT VÀO PLAYLIST (ADD TRACK TO PLAYLIST MODAL) -->
+  <div class="color-modal-backdrop hidden" id="modal-add-to-playlist">
+    <div class="color-modal-card playlist-modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="bi bi-folder-plus"></i>
+          <span>Add to Playlist</span>
+        </div>
+        <button class="win-btn win-close" id="btn-close-add-modal" title="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="add-track-target-preview">
+          <img id="add-track-target-thumb" src="../assets/icon.png" class="add-thumb" alt="Track Art">
+          <div class="add-track-meta">
+            <div class="add-track-title" id="add-track-target-title">Song Title</div>
+            <div class="add-track-artist" id="add-track-target-artist">Artist Name</div>
+          </div>
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-form-label">Choose Playlist Destination:</label>
+          <div class="add-playlist-options-list" id="add-playlist-options-container">
+            <!-- Dynamically populated playlists -->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" id="btn-cancel-add-modal">Done</button>
       </div>
     </div>
   </div>

@@ -6,7 +6,7 @@
 
   **Minimalist Desktop Audio Visualizer & Background Music Streamer for Windows**
 
-  [![Release](https://img.shields.io/badge/release-nvt__0.1-18181b?style=for-the-badge&logoColor=white)](https://github.com/Duxgfun/novata)
+  [![Release](https://img.shields.io/badge/release-nvt__0.2--beta-18181b?style=for-the-badge&logoColor=white)](https://github.com/Duxgfun/novata)
   [![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-18181b?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Duxgfun/novata)
   [![Framework](https://img.shields.io/badge/framework-Electron-18181b?style=for-the-badge&logo=electron&logoColor=white)](https://electronjs.org)
   [![Memory](https://img.shields.io/badge/memory-%3C60%20MB%20RAM-10b981?style=for-the-badge)](https://github.com/Duxgfun/novata)
@@ -14,6 +14,7 @@
 
   <p align="center">
     <a href="#overview">Overview</a> &bull;
+    <a href="#whats-new-in-nvt_02-beta">What's New</a> &bull;
     <a href="#key-features">Key Features</a> &bull;
     <a href="#installation">Installation</a> &bull;
     <a href="#quick-start">Quick Start</a> &bull;
@@ -36,11 +37,39 @@ Engineered with a **monochrome matte aesthetic** and a **floating frosted Glass 
 
 ---
 
+## What's New in nvt_0.2 Beta
+
+- **Discord Rich Presence (RPC)**: Broadcast your live playback status to your Discord profile. Shows song title, artist, live elapsed time, album artwork, and source badges (*YouTube Music*, *Spotify*, *SoundCloud*, *Web Browser*).
+- **Multi-Playlists System**: Organize custom playlists for different moods, study sessions, and activities (*Favorites*, *Chill & Relax*, *Deep Focus & Coding*).
+- **Add to Playlist from Search**: Save any song to any playlist with 1 click directly from search results.
+- **Auto-Next Continuous Playback**: Seamlessly transitions to the next track in the playlist queue when a song finishes.
+- **Smart Shuffle & Repeat Modes**: Randomize playlist playback on demand with Fisher-Yates shuffle; cycle between Repeat All, Repeat Single, or Repeat Off.
+- **Default Music (Instant Startup Playback)**: Stream your favorite playlist or resume your last played track immediately when Novata opens without requiring any manual clicks.
+
+---
+
 ## Key Features
+
+### Discord Rich Presence (RPC) Integration
+- **Native Named Pipe Engine**: Connects directly to `\\?\pipe\discord-ipc-0..9` with zero external dependencies, ultra-low resource usage, and automatic reconnects when Discord opens.
+- **Detailed Presence**: Displays track title, artist, elapsed playback timer, album thumbnail, and source label (*YouTube Music*, *Spotify*, *SoundCloud*, or *Web Browser*).
+- **Dual-Source Broadcasting**: Works seamlessly for both in-app streaming and external media players (Spotify desktop app, Chrome/Edge web players) captured via Windows SMTC.
+- **User Control**: Easily toggle Discord Rich Presence on or off in the Settings panel with real-time connection status monitoring.
+
+### Multi-Playlists & Smart Queue
+- **Mood & Purpose Playlists**: Create, rename, and manage custom playlists tailored to your current workflow or mood.
+- **One-Click Track Adding**: Add any discovered song to one or multiple playlists directly from search results or the active player card.
+- **Auto-Next Playback**: When a song finishes playing, Novata automatically resolves the audio stream and transitions to the next track.
+- **Shuffle & Loop Controls**: Dedicated **Shuffle** button on both the desktop player card and playlist manager, plus full repeat mode support (*Repeat All*, *Repeat One*, *No Repeat*).
+
+### Default Music (Instant Startup Auto-Play)
+- **Zero-Click Startup**: Launch Novata and hear music playing right away without needing to click any buttons.
+- **Configurable Startup Source**: Select which playlist to stream on launch or automatically resume your last played track.
+- **Quick Star Selection**: Mark any playlist as the startup default with a single click.
 
 ### Symmetrical Center-Out Waveform
 - **Center-anchored energy**: Bass and low-end frequencies pulse dynamically from the center of your screen, rippling symmetrically outward toward both edges.
-- **Logarithmic frequency mapping**: Employs non-linear band distribution (`Math.pow(t, 1.35)`) and dynamic high-frequency treble compensation, preventing waveform bunching on one side and delivering balanced motion across the entire screen.
+- **Logarithmic frequency mapping**: Employs non-linear band distribution (`Math.pow(t, 1.35)`) and dynamic high-frequency treble compensation, preventing waveform bunching and delivering balanced motion across the entire screen.
 - **Pure transparency**: Completely borderless and containerless canvas rendered flush against the desktop edge (bottom or top).
 - **Native click-through**: Mouse clicks pass through the spectrum canvas directly to desktop icons, games, or underlying windows.
 
@@ -66,7 +95,7 @@ Engineered with a **monochrome matte aesthetic** and a **floating frosted Glass 
 ### System Tray Workflow
 - **Single-Click**: Instant toggle to show or hide the floating Glass UI desktop player widget.
 - **Double-Click**: Quickly brings up the Settings & Music Search panel.
-- **Context menu**: Right-click for playback controls (Play/Pause, Next, Previous), settings shortcut, and clean application exit.
+- **Context menu**: Right-click for playback controls (Play/Pause, Next, Previous), Playlists shortcut, Settings, and clean application exit.
 
 ### Zero-Lag Performance Engineering
 - **Batched Canvas rendering**: All 100 frequency bars are compiled into a single contiguous `ctx.fill()` path operation per frame, eliminating GPU command overhead.
@@ -80,12 +109,14 @@ Engineered with a **monochrome matte aesthetic** and a **floating frosted Glass 
 
 | Parameter | Specification |
 |---|---|
-| **Version** | `nvt_0.1` |
+| **Version** | `nvt_0.2 beta` (`0.2.0-beta`) |
 | **Operating System** | Windows 10 / Windows 11 (64-bit) |
 | **Runtime Environment** | Electron 45.x with Node.js 24.x |
-| **Memory Consumption** | ~35 MB - 55 MB Working Set (Target: <60 MB) |
+| **Memory Consumption** | ~38 MB - 58 MB Working Set (Target: <60 MB) |
 | **CPU Utilization** | ~1.0% - 2.5% during playback; <0.5% idle |
 | **Audio Pipeline** | Web Audio API (`AnalyserNode`, FFT Size: 512, Smoothing: 0.82) |
+| **Discord Integration** | Native Windows Named Pipe (`\\?\pipe\discord-ipc-0..9`) |
+| **Playlist Storage** | Local JSON Store (`%APPDATA%/novata/novata-playlists.json`) |
 | **Rendering Target** | Transparent layered window with Hardware-Accelerated 2D Canvas |
 | **IPC Architecture** | Context Isolation enabled, Preload script bridge |
 
@@ -95,7 +126,7 @@ Engineered with a **monochrome matte aesthetic** and a **floating frosted Glass 
 
 ### Option 1: Automated Windows Installer (Recommended)
 Download the installer from the [`dist/`](file:///c:/Users/zippo/Documents/project/Novata/dist) directory:
-- **Installer binary**: `Novata Setup 0.1.0.exe`
+- **Installer binary**: `Novata Setup 0.2.0-beta.exe`
 - Runs standard NSIS installation with desktop shortcut creation and Start menu integration.
 - Supports clean uninstallation via Windows Settings > Installed Apps.
 
@@ -133,7 +164,7 @@ npm install
 # 3. Launch application in development mode
 npm start
 
-# 4. Launch visualizer alongside the Settings panel
+# 4. Launch visualizer alongside the Settings & Playlists panel
 npx electron . --settings
 
 # 5. Build production Windows Installer and Portable binaries
@@ -144,7 +175,7 @@ npm run dist
 
 ## Architecture
 
-The diagram below outlines the communication flow between the Main process, audio pipeline, and renderer windows:
+The diagram below outlines the communication flow between the Main process, audio pipeline, Discord RPC, playlists manager, and renderer windows:
 
 ```mermaid
 flowchart TD
@@ -163,12 +194,14 @@ flowchart TD
         C1["Window Lifecycle Manager"]
         C2["System Tray Controller"]
         C3["Configuration Store (novata-settings.json)"]
-        C4["Windows SMTC PowerShell Session"]
+        C4["Playlists Manager (novata-playlists.json)"]
+        C5["Discord RPC Named Pipe Manager"]
+        C6["Windows SMTC PowerShell Session"]
     end
 
     subgraph Renderers["Hardware-Accelerated Renderers"]
         D1["Overlay Window\n(Transparent Canvas 2D + Glass UI Widget)"]
-        D2["Settings & Search Window\n(Matte Black Control Panel)"]
+        D2["Settings & Playlists Window\n(Matte Black Control Panel)"]
     end
 
     A1 --> B1
@@ -179,8 +212,12 @@ flowchart TD
 
     C3 <-->|"IPC Bridge"| D1
     C3 <-->|"IPC Bridge"| D2
+    C4 <-->|"Playlists IPC"| D1
+    C4 <-->|"Playlists IPC"| D2
     C2 -->|"Show/Hide Toggle"| D1
-    C4 -.->|"Track Metadata"| D1
+    C6 -.->|"Track Metadata"| D1
+    C6 -.->|"Media Metadata"| C5
+    D1 -.->|"Playback State"| C5
 ```
 
 ---
@@ -191,11 +228,14 @@ flowchart TD
 |---|---|
 | **Single-click Tray Icon** | Toggle visibility of the floating Glass UI player card |
 | **Double-click Tray Icon** | Open the Settings & Music Search panel |
-| **Right-click Tray Icon** | Open quick context menu (Play, Pause, Next, Prev, Exit) |
+| **Right-click Tray Icon** | Open context menu (Play, Pause, Next, Prev, Playlists, Exit) |
 | **Click "Move" on Player Card** | Enable drag-and-drop mode to reposition the widget |
 | **Click "Done" on Player Card** | Lock widget coordinates and save position to storage |
+| **Click Shuffle Button** | Toggle randomized shuffle order for playlist queue |
+| **Click Repeat Button** | Cycle between Repeat All, Repeat One, and Repeat Off |
+| **Click Playlist Button on Card** | Jump directly to the Playlists manager tab |
 | **Click on Progress Bar** | Seek audio track to the selected timestamp |
-| **Press ESC in Settings** | Instantly dismiss the Color Customizer modal |
+| **Press ESC in Settings** | Instantly dismiss any open modal |
 
 ---
 
@@ -218,7 +258,7 @@ Novata is built from the ground up to operate with minimal hardware impact:
 Novata/
 ├── assets/                          # Application branding icons (.ico, .png)
 ├── dist/                            # Production build artifacts
-│   ├── Novata Setup 0.1.0.exe       # Windows NSIS Automated Installer
+│   ├── Novata Setup 0.2.0-beta.exe  # Windows NSIS Automated Installer
 │   └── win-unpacked/Novata.exe      # Portable executable
 ├── preview/                         # Interactive browser-based simulation
 │   ├── index.html                   # Simulated Windows 11 Desktop interface
@@ -229,11 +269,14 @@ Novata/
 │   ├── main/
 │   │   ├── main.js                  # Main Electron entry, window & tray management
 │   │   ├── store.js                 # Persistent user settings store
+│   │   ├── discordRpc.js            # Discord Rich Presence Named Pipe client
+│   │   ├── playlistManager.js       # Multi-playlist persistence and queue manager
 │   │   ├── musicSearch.js           # Audio search & stream extraction module
 │   │   ├── mediaManager.js          # Windows SMTC metadata integration
 │   │   ├── preload.js               # Secure IPC bridge (Context Isolation)
 │   │   └── scripts/
-│   │       └── mediaServer.ps1      # Persistent PowerShell SMTC backend
+│   │       ├── mediaServer.ps1      # Persistent PowerShell SMTC backend
+│   │       └── mediaControl.ps1     # Media key dispatcher (Play/Pause, Next, Prev)
 │   └── renderer/
 │       ├── assets/
 │       │   ├── icon.png             # Application logo asset
@@ -242,11 +285,11 @@ Novata/
 │       │   ├── index.html           # Transparent overlay window layout
 │       │   ├── style.css            # Glass UI styles & screen anchoring
 │       │   ├── visualizer.js        # Waveform generation & Canvas drawing engine
-│       │   └── app.js               # Mini player UI logic & drag positioning
-│       └── settings/                # Settings & Music Search control panel
-│           ├── index.html           # Plain English settings interface & color modal
+│       │   └── app.js               # Mini player UI logic, auto-next, shuffle
+│       └── settings/                # Settings, Playlists & Music Search control panel
+│           ├── index.html           # Monochrome settings interface, tabs, modals
 │           ├── style.css            # Dark matte control panel styles
-│           └── settings.js          # Real-time setting synchronization
+│           └── settings.js          # Real-time settings & playlist synchronization
 └── package.json                     # Project manifest and build scripts
 ```
 
@@ -256,4 +299,4 @@ Novata/
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for full details.
 
-Developed with care by the **Duxgg.fun**.
+Developed with care by **Duxgg.fun**.

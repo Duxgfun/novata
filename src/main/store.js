@@ -1,39 +1,63 @@
 /**
  * Quản lý lưu trữ cấu hình người dùng của Novata
- * Phiên bản Thuần Đen Trắng (Monochrome Minimalist) - Loại bỏ hoàn toàn Glass
+ * Phiên bản nvt_0.2 - Hỗ trợ Discord Rich Presence (RPC), Multi-Playlists, Auto-play Startup
  */
 
 const fs = require('fs');
 const path = require('path');
 const { app } = require('electron');
 
-const CONFIG_PATH = path.join(app.getPath('userData'), 'novata-settings.json');
+// Lấy đường dẫn thư mục userData an toàn trong cả môi trường Electron lẫn môi trường kiểm thử Node
+const getUserDataPath = () => {
+  if (app && typeof app.getPath === 'function') {
+    return app.getPath('userData');
+  }
+  const appData = process.env.APPDATA || (process.platform === 'darwin' ? path.join(process.env.HOME || '.', 'Library', 'Application Support') : '.');
+  const dir = path.join(appData, 'novata');
+  if (!fs.existsSync(dir)) {
+    try { fs.mkdirSync(dir, { recursive: true }); } catch (e) {}
+  }
+  return dir;
+};
 
-// Cau hinh mac dinh phien ban nvt_0.1
+const CONFIG_PATH = path.join(getUserDataPath(), 'novata-settings.json');
+
+// Cấu hình mặc định phiên bản nvt_0.2
 const DEFAULT_SETTINGS = {
-  // Che do song am: Luon la thanh pho doc toa tu giua man hinh
+  // Chế độ sóng âm: Thanh phổ dọc tỏa từ giữa màn hình
   visualizerMode: 'bars',
   spectrumSpread: 'center',
-  // Mau sac tuy chinh Hex va do mo cua Waveform
+  // Màu sắc tùy chỉnh Hex và độ mờ của Waveform
   customColor: '#ffffff',
   waveformOpacity: 0.90,
-  // Huong moc cua song: 'bottom' (tu day man hinh len tren taskbar)
+  // Hướng mọc của sóng: 'bottom' (từ đáy màn hình lên trên taskbar)
   spectrumDirection: 'bottom',
   spectrumHeight: 160,
-  // Tuy chon the dieu khien Glass UI goc man hinh
+  // Tùy chọn thẻ điều khiển Glass UI góc màn hình
   showMediaCard: true,
-  playerCardPos: null, // { left: 28, top: null } hoac toa do tuy chinh qua nut Edit
-  // Song am mac dinh xuyen chuot va nam o lop hinh nen
+  playerCardPos: null, // { left: 28, top: null } hoặc tọa độ tùy chỉnh qua nút Move
+  // Sóng âm mặc định xuyên chuột và nằm ở lớp hình nền
   alwaysOnTop: false,
   clickThrough: true,
-  // Cau hinh am thanh
+  // Cấu hình âm thanh
   sensitivity: 1.3,
   fftSmoothing: 0.82,
   barWidth: 6,
   barGap: 4,
-  // He thong
+  // Hệ thống
   launchOnStartup: false,
-  minimizeToTray: true
+  minimizeToTray: true,
+  // Tích hợp Discord Rich Presence (RPC)
+  discordRpcEnabled: true,
+  discordClientId: '807774172574253056',
+  // Tự động phát nhạc khi khởi động (Default Music / Startup Playlist)
+  autoPlayOnStartup: false,
+  defaultStartupMode: 'playlist', // 'playlist' hoặc 'last_played'
+  defaultPlaylistId: 'chill-lofi',
+  lastPlayedTrack: null,
+  // Chế độ phát danh sách: Xáo bài & Lặp lại
+  shuffle: false,
+  repeatMode: 'all' // 'all', 'one', 'none'
 };
 
 class Store {

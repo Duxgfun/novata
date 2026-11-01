@@ -1,7 +1,7 @@
 {
   "name": "novata",
-  "version": "0.1.0",
-  "description": "Novata nvt_0.1 - Minimalist Audio Visualizer & Music Player",
+  "version": "0.2.0-beta",
+  "description": "Novata nvt_0.2 - Minimalist Audio Visualizer & Music Player with Multi-Playlists & Discord RPC",
   "main": "src/main/main.js",
   "scripts": {
     "start": "electron .",

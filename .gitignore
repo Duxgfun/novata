@@ -43,6 +43,7 @@ $RECYCLE.BIN/
 
 # Local App Data & Settings
 novata-settings.json
+novata-playlists.json
 .env
 .env.local
 .env.*.local

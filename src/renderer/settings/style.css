@@ -1456,3 +1456,586 @@ input:checked + .slider:before {
 .btn-modal-apply:hover {
   background: #e4e4e7;
 }
+
+
+/* ========================================================
+   GIAO DIỆN QUẢN LÝ MULTI-PLAYLISTS & RPC (NVT_0.2)
+   ======================================================== */
+.playlist-header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.playlists-workspace {
+  display: flex;
+  gap: 16px;
+  height: calc(100vh - 190px);
+  min-height: 420px;
+}
+
+/* Cột danh sách playlist bên trái */
+.playlists-sidebar-col {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-right: 1px solid var(--border-subtle);
+  padding-right: 14px;
+  flex-shrink: 0;
+}
+
+.playlists-sidebar-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.playlists-pill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 2px;
+}
+
+.playlist-pill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.playlist-pill-item:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+}
+
+.playlist-pill-item.active {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #09090b;
+}
+
+.playlist-pill-item.active .pill-name {
+  color: #09090b;
+  font-weight: 600;
+}
+
+.playlist-pill-item.active .pill-count,
+.playlist-pill-item.active .pill-startup-icon {
+  color: #52525b;
+}
+
+.pill-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.pill-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pill-count {
+  font-size: 10.5px;
+  color: var(--text-dim);
+}
+
+.pill-icons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pill-startup-icon {
+  font-size: 12px;
+  color: #fbbf24;
+}
+
+/* Cột chi tiết playlist bên phải */
+.playlist-detail-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.playlist-detail-header {
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.pl-detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.pl-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pl-active-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.pl-startup-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  color: #fbbf24;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pl-active-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.pl-stats-row {
+  font-size: 11px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pl-stat-dot {
+  font-size: 10px;
+}
+
+.pl-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pl-btn-play {
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 1px solid #ffffff;
+  color: #09090b;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.pl-btn-play:hover {
+  background: #e4e4e7;
+}
+
+.pl-btn-secondary {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-strong);
+  color: var(--text-main);
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.pl-btn-secondary:hover {
+  background: var(--surface-hover);
+  border-color: #ffffff;
+}
+
+.pl-btn-secondary.active {
+  background: #27272a;
+  border-color: #fbbf24;
+  color: #fbbf24;
+}
+
+.pl-btn-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-strong);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.pl-btn-icon:hover {
+  background: var(--surface-hover);
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+/* Danh sách bài hát trong playlist */
+.playlist-tracks-container {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 4px;
+}
+
+.pl-track-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.15s ease;
+  gap: 12px;
+}
+
+.pl-track-card:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+}
+
+.pl-track-card.playing {
+  border-color: #ffffff;
+  background: #18181b;
+}
+
+.pl-track-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.pl-track-num {
+  font-size: 11px;
+  color: var(--text-dim);
+  width: 18px;
+  text-align: center;
+}
+
+.pl-track-thumb {
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: #18181b;
+  flex-shrink: 0;
+}
+
+.pl-track-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.pl-track-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pl-track-artist {
+  font-size: 11px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pl-track-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.btn-remove-track {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.btn-remove-track:hover {
+  background: #27272a;
+  color: #ef4444;
+  border-color: #3f3f46;
+}
+
+.btn-add-track-playlist {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.btn-add-track-playlist:hover {
+  background: #27272a;
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+/* Trạng thái trống của playlist */
+.playlist-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 20px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.playlist-empty-state i {
+  font-size: 36px;
+  color: var(--text-muted);
+}
+
+.playlist-empty-state span {
+  font-size: 13px;
+  max-width: 320px;
+}
+
+/* Điều khiển Discord RPC & Default Music */
+.rpc-control-col {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-indicator-badge {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: #18181b;
+  border: 1px solid var(--border-strong);
+  color: var(--text-muted);
+}
+
+.status-indicator-badge.connected {
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.35);
+  color: #4ade80;
+}
+
+.status-indicator-badge.waiting {
+  background: rgba(251, 191, 36, 0.12);
+  border-color: rgba(251, 191, 36, 0.35);
+  color: #fbbf24;
+}
+
+.mono-select {
+  background: #141416;
+  border: 1px solid var(--border-strong);
+  color: var(--text-main);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+  min-width: 180px;
+}
+
+.mono-select:focus {
+  border-color: #ffffff;
+}
+
+/* Modals cho Playlist */
+.playlist-modal-card {
+  width: 440px;
+}
+
+.modal-form-group {
+  margin-bottom: 14px;
+}
+
+.modal-form-label {
+  display: block;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.modal-form-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #141416;
+  border: 1px solid var(--border-strong);
+  color: var(--text-main);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.modal-form-input:focus {
+  border-color: #ffffff;
+}
+
+/* Modal thêm bài hát vào playlist */
+.add-track-target-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 6px;
+  background: #141416;
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 16px;
+}
+
+.add-thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: #18181b;
+}
+
+.add-track-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.add-track-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.add-track-artist {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.add-playlist-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.add-playlist-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #18181b;
+  border: 1px solid var(--border-subtle);
+  transition: all 0.15s ease;
+}
+
+.add-playlist-item:hover {
+  background: #27272a;
+  border-color: var(--border-strong);
+}
+
+.add-pl-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.add-pl-item-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.add-pl-item-count {
+  font-size: 10.5px;
+  color: var(--text-dim);
+}
+
+.btn-add-to-target-pl {
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: #ffffff;
+  border: none;
+  color: #09090b;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.btn-add-to-target-pl:hover {
+  background: #e4e4e7;
+}
+
+.btn-add-to-target-pl.added {
+  background: #22c55e;
+  color: #ffffff;
+}

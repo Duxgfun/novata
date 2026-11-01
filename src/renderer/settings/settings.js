@@ -1,8 +1,10 @@
 /**
- * Logic dieu khien cua ung dung Cai dat Novata Settings & Music Center - Phien ban nvt_0.1
- * - Giao dien tieng Anh than thien voi nguoi dung pho thong
- * - Pop up chinh mau Hex dong bo phong cach Settings toi gian
- * - Trinh tim kiem va phat nhac In-App voi phan hoi thoi gian thuc
+ * Logic điều khiển của ứng dụng Cài đặt Novata Settings & Music Center - Phiên bản nvt_0.2
+ * - Giao diện tiếng Anh thân thiện với người dùng phổ thông
+ * - Hỗ trợ hệ thống Multi-Playlists: tạo, sửa, xóa, phát danh sách, xáo bài
+ * - Thêm bài hát vào playlist từ kết quả tìm kiếm
+ * - Quản lý Discord Rich Presence (RPC) và cấu hình Default Music (Auto-play khi mở app)
+ * - Bình luận bằng tiếng Việt theo quy định toàn cục.
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -11,7 +13,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   let activeInAppTrack = null;
   let inAppIsPlaying = false;
 
-  // 1. Chuyen doi cac Tab ben Sidebar
+  // Dữ liệu quản lý danh sách phát Playlists
+  let playlists = [];
+  let activePlaylistId = null;
+  let editingPlaylistId = null;
+  let trackToAddToPlaylist = null;
+
+  // 1. Chuyển đổi các Tab bên Sidebar
   const tabButtons = document.querySelectorAll('.tab-btn');
   const tabPanes = document.querySelectorAll('.tab-pane');
 
@@ -31,6 +39,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         p.classList.remove('active');
       }
     });
+
+    // Nếu chuyển sang tab Playlists, làm mới giao diện playlist
+    if (targetId === 'tab-playlists') {
+      renderPlaylistsList();
+      renderActivePlaylistDetails();
+    }
   }
 
   tabButtons.forEach(btn => {
@@ -40,14 +54,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // Lang nghe tin hieu mo nhanh Tab Tim nhac
+  // Lắng nghe tín hiệu mở nhanh Tab Tìm nhạc
   window.novata.onSwitchToSearchTab(() => {
     switchTab('tab-music-search');
     const searchInput = document.getElementById('music-search-input');
     if (searchInput) searchInput.focus();
   });
 
-  // Nut dong cua so Cai dat
+  // Lắng nghe tín hiệu mở nhanh Tab Danh sách phát Playlists
+  window.novata.onSwitchToPlaylistTab(() => {
+    switchTab('tab-playlists');
+  });
+
+  // Nút đóng cửa sổ Cài đặt
   const btnClose = document.getElementById('btn-close-window');
   if (btnClose) {
     btnClose.addEventListener('click', async () => {
@@ -55,16 +74,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 2. Tai va dong bo cau hinh nguoi dung tu Store
+  // 2. Tải và đồng bộ cấu hình người dùng từ Store
   try {
     settings = await window.novata.getSettings();
     populateUI(settings);
+    await loadPlaylists();
+    await checkDiscordStatus();
   } catch (err) {
-    console.error('Loi khi tai cai dat:', err);
+    console.error('Lỗi khi tải cài đặt:', err);
   }
 
   function populateUI(cfg) {
-    // 2.1. Huong song (bottom, top)
+    // 2.1. Hướng sóng (bottom, top)
     const dirCards = document.querySelectorAll('.mono-choice-card[data-direction]');
     dirCards.forEach(card => {
       if (card.getAttribute('data-direction') === (cfg.spectrumDirection || 'bottom')) {
@@ -74,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
 
-    // 2.2. Mau sac Hex & Do mo hien tai
+    // 2.2. Màu sắc Hex & Độ mờ hiện tại
     const currColor = (cfg.customColor || '#ffffff').toUpperCase();
     const currSwatch = document.getElementById('curr-swatch-display');
     const currHex = document.getElementById('curr-hex-display');
@@ -84,17 +105,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     const opacityVal = typeof cfg.waveformOpacity === 'number' ? cfg.waveformOpacity : 0.90;
     setSlider('range-waveform-opacity', 'val-waveform-opacity', opacityVal, '%', true);
 
-    // 2.3. Cac thanh truot kich thuoc song am
+    // 2.3. Các thanh trượt kích thước sóng âm
     setSlider('range-spectrum-height', 'val-spectrum-height', cfg.spectrumHeight || 160, 'px');
     setSlider('range-bar-width', 'val-bar-width', cfg.barWidth || 6, 'px');
     setSlider('range-bar-gap', 'val-bar-gap', cfg.barGap || 4, 'px');
     setSlider('range-sensitivity', 'val-sensitivity', cfg.sensitivity || 1.3, 'x');
     setSlider('range-smoothing', 'val-smoothing', cfg.fftSmoothing || 0.82, '');
 
-    // 2.4. Cong tac bat tat
+    // 2.4. Công tắc bật tắt
     setCheckbox('check-show-media-card', cfg.showMediaCard !== false);
     setCheckbox('check-startup', !!cfg.launchOnStartup);
     setCheckbox('check-minimize-tray', cfg.minimizeToTray !== false);
+
+    // 2.5. Discord RPC & Default Music Auto-Play
+    setCheckbox('check-discord-rpc', cfg.discordRpcEnabled !== false);
+    setCheckbox('check-autoplay-startup', !!cfg.autoPlayOnStartup);
+
+    const selectStartupSource = document.getElementById('select-startup-source');
+    if (selectStartupSource) {
+      selectStartupSource.value = cfg.defaultStartupMode || 'playlist';
+      updateStartupSourceRow(selectStartupSource.value);
+    }
   }
 
   function setSlider(sliderId, labelId, val, unit, isPercent = false) {
@@ -115,14 +146,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (el) el.checked = checked;
   }
 
-  // 3. Ham luu cai dat cap nhat thoi gian thuc
+  // 3. Hàm lưu cài đặt cập nhật thời gian thực
   async function updateSetting(diff) {
     settings = { ...settings, ...diff };
     await window.novata.saveSettings(diff);
   }
 
-  // 4. Lang nghe cac tuong tac cai dat
-  // 4.1. Huong song
+  // 4. Lắng nghe các tương tác cài đặt
+  // 4.1. Hướng sóng
   const dirCards = document.querySelectorAll('.mono-choice-card[data-direction]');
   dirCards.forEach(card => {
     card.addEventListener('click', () => {
@@ -133,7 +164,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // 4.2. Bang mau goi y nhanh Quick Presets
+  // 4.2. Bảng màu gợi ý nhanh Quick Presets
   const quickSwatches = document.querySelectorAll('.swatch-btn[data-color]');
   quickSwatches.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -157,7 +188,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // 4.3. Pop up Chinh Mau Hex Dong Bo Phong Cach Settings (In-Style Color Modal)
+  // 4.3. Pop up Chỉnh Màu Hex Đồng Bộ Phong Cách Settings
   const colorModal = document.getElementById('color-modal');
   const btnTriggerModal = document.getElementById('btn-trigger-color-modal');
   const btnCloseModal = document.getElementById('btn-close-color-modal');
@@ -191,42 +222,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (colorModal) colorModal.classList.add('hidden');
   }
 
-  if (btnTriggerModal) {
-    btnTriggerModal.addEventListener('click', openColorModal);
-  }
+  if (btnTriggerModal) btnTriggerModal.addEventListener('click', openColorModal);
+  if (btnCloseModal) btnCloseModal.addEventListener('click', closeColorModal);
+  if (btnModalCancel) btnModalCancel.addEventListener('click', closeColorModal);
 
-  if (btnCloseModal) {
-    btnCloseModal.addEventListener('click', closeColorModal);
-  }
-
-  if (btnModalCancel) {
-    btnModalCancel.addEventListener('click', closeColorModal);
-  }
-
-  // Dong modal khi nhan ra ngoai nen toi hoac phim Escape
   if (colorModal) {
     colorModal.addEventListener('click', (e) => {
       if (e.target === colorModal) closeColorModal();
     });
   }
 
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && colorModal && !colorModal.classList.contains('hidden')) {
-      closeColorModal();
-    }
-  });
-
-  // Nut Eyedropper / Mo bang mau he thong
   if (modalBtnPick && modalNativePicker) {
-    modalBtnPick.addEventListener('click', () => {
-      modalNativePicker.click();
-    });
+    modalBtnPick.addEventListener('click', () => modalNativePicker.click());
   }
 
   if (modalNativePicker) {
-    modalNativePicker.addEventListener('input', (e) => {
-      setModalColor(e.target.value);
-    });
+    modalNativePicker.addEventListener('input', (e) => setModalColor(e.target.value));
   }
 
   function setModalColor(hex) {
@@ -248,13 +259,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     modalHexInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        applyModalChanges();
-      }
+      if (e.key === 'Enter') applyModalChanges();
     });
   }
 
-  // 16 Mau trong bang Curated Palette
   const paletteSwatches = document.querySelectorAll('.palette-swatch[data-hex]');
   paletteSwatches.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -263,7 +271,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // Thanh truot do mo trong modal
   if (modalRangeOpacity && modalOpacityVal) {
     modalRangeOpacity.addEventListener('input', (e) => {
       modalSelectedOpacity = parseFloat(e.target.value);
@@ -276,12 +283,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (clean.length === 3) {
       clean = clean[0] + clean[0] + clean[1] + clean[1] + clean[2] + clean[2];
     }
-    if (clean.length !== 6) {
-      clean = 'FFFFFF';
-    }
+    if (clean.length !== 6) clean = 'FFFFFF';
     const finalHex = '#' + clean.toUpperCase();
 
-    // Cap nhat UI chinh
     const currSwatch = document.getElementById('curr-swatch-display');
     const currHex = document.getElementById('curr-hex-display');
     if (currSwatch) currSwatch.style.background = finalHex;
@@ -297,16 +301,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     closeColorModal();
   }
 
-  if (btnModalApply) {
-    btnModalApply.addEventListener('click', applyModalChanges);
-  }
+  if (btnModalApply) btnModalApply.addEventListener('click', applyModalChanges);
 
-  // 4.4. Thanh truot Do mo chinh
+  // 4.4. Thanh trượt Độ mờ chính
   bindSlider('range-waveform-opacity', 'val-waveform-opacity', '%', (val) => {
     updateSetting({ waveformOpacity: parseFloat(val) });
   }, true);
 
-  // 4.5. Cac thanh truot kich thuoc song am
+  // 4.5. Các thanh trượt kích thước sóng âm
   bindSlider('range-spectrum-height', 'val-spectrum-height', 'px', (val) => {
     updateSetting({ spectrumHeight: parseInt(val, 10) });
   });
@@ -327,7 +329,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateSetting({ fftSmoothing: parseFloat(val) });
   });
 
-  // 4.6. Cong tac Hien the dieu khien & Dat lai vi tri
+  // 4.6. Công tắc Hiện thẻ điều khiển & Đặt lại vị trí
   const checkShowCard = document.getElementById('check-show-media-card');
   if (checkShowCard) {
     checkShowCard.addEventListener('change', (e) => {
@@ -347,7 +349,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 4.7. Cai dat he thong
+  // 4.7. Cài đặt hệ thống & Discord RPC & Startup Music
   const checkStartup = document.getElementById('check-startup');
   if (checkStartup) {
     checkStartup.addEventListener('change', (e) => {
@@ -359,6 +361,80 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (checkMinimize) {
     checkMinimize.addEventListener('change', (e) => {
       updateSetting({ minimizeToTray: e.target.checked });
+    });
+  }
+
+  // Cấu hình Discord RPC
+  const checkDiscordRpc = document.getElementById('check-discord-rpc');
+  if (checkDiscordRpc) {
+    checkDiscordRpc.addEventListener('change', async (e) => {
+      const enabled = e.target.checked;
+      const status = await window.novata.setDiscordRpcEnabled(enabled);
+      updateDiscordBadge(status);
+    });
+  }
+
+  async function checkDiscordStatus() {
+    try {
+      const status = await window.novata.getDiscordStatus();
+      updateDiscordBadge(status);
+    } catch (e) {}
+  }
+
+  function updateDiscordBadge(status) {
+    const badge = document.getElementById('discord-rpc-status-badge');
+    if (!badge) return;
+
+    if (!status || !status.enabled) {
+      badge.textContent = 'Disabled';
+      badge.className = 'status-indicator-badge';
+    } else if (status.connected) {
+      badge.textContent = 'Connected';
+      badge.className = 'status-indicator-badge connected';
+    } else {
+      badge.textContent = 'Waiting for Discord';
+      badge.className = 'status-indicator-badge waiting';
+    }
+  }
+
+  window.novata.onDiscordStatusChange((status) => {
+    updateDiscordBadge(status);
+  });
+
+  // Cấu hình Auto-Play on Startup (Default Music)
+  const checkAutoPlayStartup = document.getElementById('check-autoplay-startup');
+  if (checkAutoPlayStartup) {
+    checkAutoPlayStartup.addEventListener('change', (e) => {
+      updateSetting({ autoPlayOnStartup: e.target.checked });
+    });
+  }
+
+  const selectStartupSource = document.getElementById('select-startup-source');
+  if (selectStartupSource) {
+    selectStartupSource.addEventListener('change', (e) => {
+      const mode = e.target.value;
+      updateSetting({ defaultStartupMode: mode });
+      updateStartupSourceRow(mode);
+    });
+  }
+
+  function updateStartupSourceRow(mode) {
+    const rowPlaylist = document.getElementById('row-startup-playlist');
+    if (rowPlaylist) {
+      if (mode === 'playlist') {
+        rowPlaylist.classList.remove('hidden');
+      } else {
+        rowPlaylist.classList.add('hidden');
+      }
+    }
+  }
+
+  const selectStartupPlaylist = document.getElementById('select-startup-playlist');
+  if (selectStartupPlaylist) {
+    selectStartupPlaylist.addEventListener('change', (e) => {
+      updateSetting({ defaultPlaylistId: e.target.value });
+      renderPlaylistsList();
+      renderActivePlaylistDetails();
     });
   }
 
@@ -378,7 +454,423 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 5. Logic Tim kiem & Phat nhac In-App
+  // ========================================================
+  // 5. QUẢN LÝ MULTI-PLAYLISTS
+  // ========================================================
+  const playlistsContainer = document.getElementById('playlists-pills-container');
+  const plActiveTitle = document.getElementById('pl-active-title');
+  const plActiveDesc = document.getElementById('pl-active-desc');
+  const plActiveCount = document.getElementById('pl-active-track-count');
+  const plActiveDuration = document.getElementById('pl-active-duration');
+  const plActiveStartupBadge = document.getElementById('pl-active-startup-badge');
+  const tracksContainer = document.getElementById('playlist-tracks-container');
+
+  const btnPlayAllPl = document.getElementById('btn-play-all-playlist');
+  const btnShufflePl = document.getElementById('btn-shuffle-playlist');
+  const btnSetStartupPl = document.getElementById('btn-set-startup-playlist');
+  const btnEditActivePl = document.getElementById('btn-edit-active-playlist');
+  const btnDeleteActivePl = document.getElementById('btn-delete-active-playlist');
+  const btnCreatePlTrigger = document.getElementById('btn-create-playlist-trigger');
+
+  // Modal tạo / sửa playlist
+  const modalPlaylistEdit = document.getElementById('modal-playlist-edit');
+  const modalPlaylistTitleText = document.getElementById('modal-playlist-title-text');
+  const inputPlName = document.getElementById('input-playlist-name');
+  const inputPlDesc = document.getElementById('input-playlist-desc');
+  const btnClosePlModal = document.getElementById('btn-close-playlist-modal');
+  const btnCancelPlModal = document.getElementById('btn-cancel-playlist-modal');
+  const btnSavePlModal = document.getElementById('btn-save-playlist-modal');
+  const btnSavePlLabel = document.getElementById('btn-save-playlist-label');
+
+  // Modal thêm bài hát vào playlist
+  const modalAddToPlaylist = document.getElementById('modal-add-to-playlist');
+  const btnCloseAddModal = document.getElementById('btn-close-add-modal');
+  const btnCancelAddModal = document.getElementById('btn-cancel-add-modal');
+  const addTrackTargetThumb = document.getElementById('add-track-target-thumb');
+  const addTrackTargetTitle = document.getElementById('add-track-target-title');
+  const addTrackTargetArtist = document.getElementById('add-track-target-artist');
+  const addPlaylistOptionsContainer = document.getElementById('add-playlist-options-container');
+
+  async function loadPlaylists() {
+    try {
+      playlists = await window.novata.getPlaylists();
+      if (!Array.isArray(playlists)) playlists = [];
+
+      // Chọn playlist đầu tiên hoặc playlist mặc định nếu chưa chọn
+      if (!activePlaylistId || !playlists.find(p => p.id === activePlaylistId)) {
+        const defaultId = settings.defaultPlaylistId || 'chill-lofi';
+        const found = playlists.find(p => p.id === defaultId);
+        activePlaylistId = found ? found.id : (playlists[0] ? playlists[0].id : null);
+      }
+
+      updateStartupPlaylistDropdown();
+      renderPlaylistsList();
+      renderActivePlaylistDetails();
+    } catch (err) {
+      console.error('Lỗi tải danh sách playlist:', err);
+    }
+  }
+
+  function updateStartupPlaylistDropdown() {
+    if (!selectStartupPlaylist) return;
+    selectStartupPlaylist.innerHTML = '';
+    playlists.forEach(pl => {
+      const opt = document.createElement('option');
+      opt.value = pl.id;
+      opt.textContent = `${pl.name} (${pl.tracks ? pl.tracks.length : 0} songs)`;
+      if (pl.id === (settings.defaultPlaylistId || 'chill-lofi')) {
+        opt.selected = true;
+      }
+      selectStartupPlaylist.appendChild(opt);
+    });
+  }
+
+  function renderPlaylistsList() {
+    if (!playlistsContainer) return;
+    playlistsContainer.innerHTML = '';
+
+    playlists.forEach(pl => {
+      const pill = document.createElement('div');
+      pill.className = 'playlist-pill-item';
+      if (pl.id === activePlaylistId) {
+        pill.classList.add('active');
+      }
+
+      const isDefault = (settings.defaultPlaylistId || 'chill-lofi') === pl.id;
+      const count = pl.tracks ? pl.tracks.length : 0;
+
+      pill.innerHTML = `
+        <div class="pill-info">
+          <div class="pill-name" title="${escapeHtml(pl.name)}">${escapeHtml(pl.name)}</div>
+          <div class="pill-count">${count} ${count === 1 ? 'track' : 'tracks'}</div>
+        </div>
+        <div class="pill-icons">
+          ${isDefault ? '<i class="bi bi-star-fill pill-startup-icon" title="Default Startup Playlist"></i>' : ''}
+        </div>
+      `;
+
+      pill.addEventListener('click', () => {
+        activePlaylistId = pl.id;
+        renderPlaylistsList();
+        renderActivePlaylistDetails();
+      });
+
+      playlistsContainer.appendChild(pill);
+    });
+  }
+
+  function renderActivePlaylistDetails() {
+    const pl = playlists.find(p => p.id === activePlaylistId);
+    if (!pl) {
+      if (plActiveTitle) plActiveTitle.textContent = 'No Playlist Selected';
+      if (plActiveDesc) plActiveDesc.textContent = 'Please create or choose a playlist.';
+      if (plActiveCount) plActiveCount.textContent = '0 tracks';
+      if (plActiveDuration) plActiveDuration.textContent = '0:00';
+      if (tracksContainer) tracksContainer.innerHTML = '';
+      return;
+    }
+
+    const isDefault = (settings.defaultPlaylistId || 'chill-lofi') === pl.id;
+    const tracks = pl.tracks || [];
+
+    if (plActiveTitle) plActiveTitle.textContent = pl.name;
+    if (plActiveDesc) plActiveDesc.textContent = pl.description || 'Custom user playlist';
+    if (plActiveCount) plActiveCount.textContent = `${tracks.length} ${tracks.length === 1 ? 'track' : 'tracks'}`;
+
+    // Tính tổng thời lượng ước lượng
+    let totalSec = 0;
+    tracks.forEach(t => {
+      if (t.duration && t.duration.includes(':')) {
+        const parts = t.duration.split(':');
+        totalSec += (parseInt(parts[0], 10) || 0) * 60 + (parseInt(parts[1], 10) || 0);
+      } else {
+        totalSec += 210;
+      }
+    });
+    if (plActiveDuration) plActiveDuration.textContent = formatDuration(totalSec);
+
+    // Cập nhật huy hiệu Startup
+    if (plActiveStartupBadge) {
+      if (isDefault) {
+        plActiveStartupBadge.classList.remove('hidden');
+      } else {
+        plActiveStartupBadge.classList.add('hidden');
+      }
+    }
+
+    // Cập nhật nút Set Startup
+    const btnStartupStar = document.getElementById('btn-startup-star-icon');
+    const btnStartupLabel = document.getElementById('btn-startup-label');
+    if (btnStartupStar && btnStartupLabel) {
+      if (isDefault) {
+        btnStartupStar.className = 'bi bi-star-fill';
+        btnStartupLabel.textContent = 'Startup Set';
+        btnSetStartupPl.classList.add('active');
+      } else {
+        btnStartupStar.className = 'bi bi-star';
+        btnStartupLabel.textContent = 'Set Startup';
+        btnSetStartupPl.classList.remove('active');
+      }
+    }
+
+    // Ẩn nút xóa đối với playlist Favorites mặc định của hệ thống
+    if (btnDeleteActivePl) {
+      if (pl.id === 'favorites') {
+        btnDeleteActivePl.style.display = 'none';
+      } else {
+        btnDeleteActivePl.style.display = 'inline-flex';
+      }
+    }
+
+    renderPlaylistTracks(tracks, pl.id);
+  }
+
+  function renderPlaylistTracks(tracks, playlistId) {
+    if (!tracksContainer) return;
+    tracksContainer.innerHTML = '';
+
+    if (!tracks || tracks.length === 0) {
+      tracksContainer.innerHTML = `
+        <div class="playlist-empty-state">
+          <i class="bi bi-music-note-list"></i>
+          <span>This playlist is currently empty.</span>
+          <button class="mono-apply-btn" id="btn-jump-to-search">
+            <i class="bi bi-search"></i>
+            <span>Search & Add Tracks</span>
+          </button>
+        </div>
+      `;
+      const btnJump = document.getElementById('btn-jump-to-search');
+      if (btnJump) {
+        btnJump.addEventListener('click', () => switchTab('tab-music-search'));
+      }
+      return;
+    }
+
+    tracks.forEach((track, idx) => {
+      const card = document.createElement('div');
+      card.className = 'pl-track-card';
+      if (activeInAppTrack && activeInAppTrack.id === track.id) {
+        card.classList.add('playing');
+      }
+
+      const thumb = track.thumbnail || '../assets/icon.png';
+
+      card.innerHTML = `
+        <div class="pl-track-left">
+          <span class="pl-track-num">${idx + 1}</span>
+          <img src="${thumb}" class="pl-track-thumb" alt="Thumb" onerror="this.src='../assets/icon.png'">
+          <div class="pl-track-info">
+            <div class="pl-track-title" title="${escapeHtml(track.title)}">${escapeHtml(track.title)}</div>
+            <div class="pl-track-artist">${escapeHtml(track.artist)}</div>
+          </div>
+        </div>
+        <div class="pl-track-right">
+          <span class="track-duration-text">${track.duration || '3:30'}</span>
+          <button class="btn-play-track" title="Play Song">
+            <i class="bi bi-play-fill"></i>
+          </button>
+          <button class="btn-remove-track" title="Remove from playlist">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </div>
+      `;
+
+      // Nút phát bài trong playlist
+      const btnPlay = card.querySelector('.btn-play-track');
+      btnPlay.addEventListener('click', async () => {
+        await window.novata.playPlaylist(playlistId, idx, false);
+      });
+
+      card.addEventListener('dblclick', async () => {
+        await window.novata.playPlaylist(playlistId, idx, false);
+      });
+
+      // Nút xóa bài khỏi playlist
+      const btnRemove = card.querySelector('.btn-remove-track');
+      btnRemove.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        await window.novata.removeFromPlaylist(playlistId, track.id);
+        await loadPlaylists();
+      });
+
+      tracksContainer.appendChild(card);
+    });
+  }
+
+  function formatDuration(sec) {
+    const mins = Math.floor(sec / 60);
+    const secs = sec % 60;
+    return `${mins}m ${secs < 10 ? '0' : ''}${secs}s`;
+  }
+
+  // Phát toàn bộ playlist
+  if (btnPlayAllPl) {
+    btnPlayAllPl.addEventListener('click', async () => {
+      if (!activePlaylistId) return;
+      await window.novata.playPlaylist(activePlaylistId, 0, false);
+    });
+  }
+
+  // Xáo bài & Phát toàn bộ playlist (Shuffle & Play)
+  if (btnShufflePl) {
+    btnShufflePl.addEventListener('click', async () => {
+      if (!activePlaylistId) return;
+      await window.novata.playPlaylist(activePlaylistId, 0, true);
+    });
+  }
+
+  // Đặt playlist này làm Default Music khi khởi động app
+  if (btnSetStartupPl) {
+    btnSetStartupPl.addEventListener('click', async () => {
+      if (!activePlaylistId) return;
+      await window.novata.setStartupPlaylist(activePlaylistId);
+      settings.defaultPlaylistId = activePlaylistId;
+      settings.autoPlayOnStartup = true;
+      setCheckbox('check-autoplay-startup', true);
+      updateStartupPlaylistDropdown();
+      renderPlaylistsList();
+      renderActivePlaylistDetails();
+    });
+  }
+
+  // Modal tạo playlist mới
+  if (btnCreatePlTrigger) {
+    btnCreatePlTrigger.addEventListener('click', () => {
+      editingPlaylistId = null;
+      if (modalPlaylistTitleText) modalPlaylistTitleText.textContent = 'Create New Playlist';
+      if (btnSavePlLabel) btnSavePlLabel.textContent = 'Create Playlist';
+      if (inputPlName) inputPlName.value = '';
+      if (inputPlDesc) inputPlDesc.value = '';
+      if (modalPlaylistEdit) modalPlaylistEdit.classList.remove('hidden');
+      if (inputPlName) inputPlName.focus();
+    });
+  }
+
+  // Modal sửa / đổi tên playlist
+  if (btnEditActivePl) {
+    btnEditActivePl.addEventListener('click', () => {
+      const pl = playlists.find(p => p.id === activePlaylistId);
+      if (!pl) return;
+      editingPlaylistId = pl.id;
+      if (modalPlaylistTitleText) modalPlaylistTitleText.textContent = 'Edit Playlist';
+      if (btnSavePlLabel) btnSavePlLabel.textContent = 'Save Changes';
+      if (inputPlName) inputPlName.value = pl.name || '';
+      if (inputPlDesc) inputPlDesc.value = pl.description || '';
+      if (modalPlaylistEdit) modalPlaylistEdit.classList.remove('hidden');
+      if (inputPlName) inputPlName.focus();
+    });
+  }
+
+  // Xóa playlist
+  if (btnDeleteActivePl) {
+    btnDeleteActivePl.addEventListener('click', async () => {
+      const pl = playlists.find(p => p.id === activePlaylistId);
+      if (!pl || pl.id === 'favorites') return;
+
+      const ok = confirm(`Are you sure you want to delete playlist "${pl.name}"?`);
+      if (ok) {
+        await window.novata.deletePlaylist(pl.id);
+        activePlaylistId = 'favorites';
+        await loadPlaylists();
+      }
+    });
+  }
+
+  function closePlaylistModal() {
+    if (modalPlaylistEdit) modalPlaylistEdit.classList.add('hidden');
+  }
+
+  if (btnClosePlModal) btnClosePlModal.addEventListener('click', closePlaylistModal);
+  if (btnCancelPlModal) btnCancelPlModal.addEventListener('click', closePlaylistModal);
+
+  if (btnSavePlModal) {
+    btnSavePlModal.addEventListener('click', async () => {
+      const name = (inputPlName ? inputPlName.value : '').trim();
+      const desc = (inputPlDesc ? inputPlDesc.value : '').trim();
+      if (!name) return;
+
+      if (editingPlaylistId) {
+        await window.novata.updatePlaylist(editingPlaylistId, { name, description: desc });
+      } else {
+        const newPl = await window.novata.createPlaylist({ name, description: desc });
+        if (newPl && newPl.id) {
+          activePlaylistId = newPl.id;
+        }
+      }
+
+      closePlaylistModal();
+      await loadPlaylists();
+    });
+  }
+
+  // Modal Thêm bài hát vào Playlist (Add Track to Playlist)
+  function openAddToPlaylistModal(track) {
+    trackToAddToPlaylist = track;
+    if (!modalAddToPlaylist) return;
+
+    if (addTrackTargetTitle) addTrackTargetTitle.textContent = track.title;
+    if (addTrackTargetArtist) addTrackTargetArtist.textContent = track.artist;
+    if (addTrackTargetThumb) addTrackTargetThumb.src = track.thumbnail || '../assets/icon.png';
+
+    renderAddPlaylistOptions();
+    modalAddToPlaylist.classList.remove('hidden');
+  }
+
+  function renderAddPlaylistOptions() {
+    if (!addPlaylistOptionsContainer) return;
+    addPlaylistOptionsContainer.innerHTML = '';
+
+    playlists.forEach(pl => {
+      const item = document.createElement('div');
+      item.className = 'add-playlist-item';
+
+      const count = pl.tracks ? pl.tracks.length : 0;
+      const alreadyHas = pl.tracks && pl.tracks.some(t => t.id === trackToAddToPlaylist?.id);
+
+      item.innerHTML = `
+        <div class="add-pl-item-info">
+          <span class="add-pl-item-name">${escapeHtml(pl.name)}</span>
+          <span class="add-pl-item-count">${count} tracks</span>
+        </div>
+        <button class="btn-add-to-target-pl ${alreadyHas ? 'added' : ''}" data-pl-id="${pl.id}">
+          <i class="bi ${alreadyHas ? 'bi-check-lg' : 'bi-plus-lg'}"></i>
+          <span>${alreadyHas ? 'Added' : 'Add'}</span>
+        </button>
+      `;
+
+      const btnAdd = item.querySelector('.btn-add-to-target-pl');
+      btnAdd.addEventListener('click', async () => {
+        if (!trackToAddToPlaylist) return;
+        await window.novata.addToPlaylist(pl.id, trackToAddToPlaylist);
+        btnAdd.classList.add('added');
+        btnAdd.innerHTML = '<i class="bi bi-check-lg"></i> <span>Added</span>';
+        await loadPlaylists();
+      });
+
+      addPlaylistOptionsContainer.appendChild(item);
+    });
+  }
+
+  function closeAddModal() {
+    if (modalAddToPlaylist) modalAddToPlaylist.classList.add('hidden');
+    trackToAddToPlaylist = null;
+  }
+
+  if (btnCloseAddModal) btnCloseAddModal.addEventListener('click', closeAddModal);
+  if (btnCancelAddModal) btnCancelAddModal.addEventListener('click', closeAddModal);
+
+  // Lắng nghe cập nhật playlists từ các tiến trình khác
+  window.novata.onPlaylistsChanged((updatedList) => {
+    playlists = updatedList || [];
+    renderPlaylistsList();
+    renderActivePlaylistDetails();
+    updateStartupPlaylistDropdown();
+  });
+
+  // ========================================================
+  // 6. TÌM KIẾM & PHÁT NHẠC IN-APP
+  // ========================================================
   const searchInput = document.getElementById('music-search-input');
   const btnSubmitSearch = document.getElementById('btn-submit-search');
   const btnClearSearch = document.getElementById('btn-clear-search');
@@ -395,7 +887,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const miniBtnNext = document.getElementById('mini-btn-next');
   const miniTimeDisplay = document.getElementById('mini-time-display');
 
-  // Tai danh sach nhac goi y sau khi cua so da hien thi
   setTimeout(() => {
     executeSearch('chill lofi beats');
   }, 350);
@@ -452,7 +943,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    tracks.forEach((track, index) => {
+    tracks.forEach((track) => {
       const card = document.createElement('div');
       card.className = 'music-track-item';
       if (activeInAppTrack && activeInAppTrack.id === track.id) {
@@ -470,6 +961,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
         </div>
         <div class="track-item-right">
+          <button class="btn-add-track-playlist" title="Add to Playlist">
+            <i class="bi bi-folder-plus"></i>
+          </button>
           <span class="track-duration-text">${track.duration || '3:30'}</span>
           <button class="btn-play-track" title="Play Track">
             <i class="bi bi-play-fill"></i>
@@ -477,6 +971,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
       `;
 
+      // Nút thêm vào Playlist
+      const btnAdd = card.querySelector('.btn-add-track-playlist');
+      btnAdd.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openAddToPlaylistModal(track);
+      });
+
+      // Nút phát bài trực tiếp
       const playBtn = card.querySelector('.btn-play-track');
       playBtn.addEventListener('click', async () => {
         await playTrackInApp(track, playBtn);
@@ -503,7 +1005,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     inAppIsPlaying = true;
     updateMiniPlayer(track, true, 'Loading audio stream...');
 
-    // Danh dau track dang phat trong danh sach
     const allItems = document.querySelectorAll('.music-track-item');
     allItems.forEach(item => item.classList.remove('playing'));
     if (playBtn) {
@@ -542,15 +1043,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Lang nghe su kien tim kiem
   if (btnSubmitSearch && searchInput) {
-    btnSubmitSearch.addEventListener('click', () => {
-      executeSearch(searchInput.value);
-    });
+    btnSubmitSearch.addEventListener('click', () => executeSearch(searchInput.value));
     searchInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        executeSearch(searchInput.value);
-      }
+      if (e.key === 'Enter') executeSearch(searchInput.value);
     });
   }
 
@@ -570,7 +1066,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Chips goi y tu khoa nhanh
   const tagChips = document.querySelectorAll('.tag-chip[data-query]');
   tagChips.forEach(chip => {
     chip.addEventListener('click', () => {
@@ -581,7 +1076,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // Dieu khien qua Mini Player
+  // Điều khiển qua Mini Player
   if (miniBtnPlay) {
     miniBtnPlay.addEventListener('click', async () => {
       inAppIsPlaying = !inAppIsPlaying;
@@ -604,12 +1099,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Dong bo thoi gian tu Overlay Player
+  // Đồng bộ trạng thái bài hát từ Overlay
+  window.novata.onInAppTrackChanged((data) => {
+    if (data && data.track) {
+      activeInAppTrack = data.track;
+      inAppIsPlaying = data.isPlaying;
+      updateMiniPlayer(data.track, inAppIsPlaying);
+
+      // Cập nhật highlight bài hát trong danh sách playlist
+      const allCards = document.querySelectorAll('.pl-track-card');
+      allCards.forEach(c => {
+        const titleEl = c.querySelector('.pl-track-title');
+        if (titleEl && titleEl.textContent === data.track.title) {
+          c.classList.add('playing');
+        } else {
+          c.classList.remove('playing');
+        }
+      });
+    }
+  });
+
+  // Đồng bộ tiến trình phát từ Overlay Player
   window.novata.onInAppStateSync((state) => {
     if (!state) return;
     inAppIsPlaying = state.isPlaying;
     if (miniPlayIcon) {
       miniPlayIcon.className = inAppIsPlaying ? 'bi bi-pause-fill' : 'bi bi-play-fill';
+    }
+
+    if (state.track && (!activeInAppTrack || activeInAppTrack.id !== state.track.id)) {
+      activeInAppTrack = state.track;
+      updateMiniPlayer(state.track, inAppIsPlaying);
     }
 
     if (miniTimeDisplay && state.duration) {
