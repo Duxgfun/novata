@@ -12,7 +12,7 @@
 // ==========================================================================
 // CAU HINH LINK GITHUB REPOSITORY CUA DU AN (NGUOI DUNG THAY LINK O DAY)
 // ==========================================================================
-const GITHUB_REPO_URL = 'https://github.com/Duxgfun/novata';
+const GITHUB_REPO_URL = 'https://github.com/Duxgfun/novata/releases';
 
 // ==========================================================================
 // DANH SACH 3 BAI HAT DEMO CO DINH CHAT LUONG CAO
@@ -1121,13 +1121,12 @@ document.addEventListener('DOMContentLoaded', () => {
     desktopContextMenu.classList.add('hidden');
   });
 
-  document.getElementById('ctx-next-wallpaper').addEventListener('click', () => {
-    const list = ['bloom_dark', 'cyberpunk', 'minimal_obsidian', 'aurora'];
-    const curWp = (document.getElementById('desktop-wallpaper').className.match(/wp-([a-z_]+)/) || [])[1] || 'bloom_dark';
-    const nextWp = list[(list.indexOf(curWp) + 1) % list.length];
-    document.getElementById('desktop-wallpaper').className = `desktop-wallpaper-layer wp-${nextWp}`;
-    desktopContextMenu.classList.add('hidden');
-  });
+  const nextWpBtn = document.getElementById('ctx-next-wallpaper');
+  if (nextWpBtn) {
+    nextWpBtn.addEventListener('click', () => {
+      desktopContextMenu.classList.add('hidden');
+    });
+  }
 
   trayShowDesktop.addEventListener('click', () => {
     settingsWindow.classList.add('window-minimized');

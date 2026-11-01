@@ -406,7 +406,7 @@ html, body {
   transform: translateY(-1px);
 }
 
-/* Hinh nen Desktop */
+/* Hinh nen Desktop gia lap Windows 11 */
 .desktop-wallpaper-layer {
   position: absolute;
   top: 0;
@@ -418,12 +418,8 @@ html, body {
   background-repeat: no-repeat;
   transition: background-image 0.4s ease;
   z-index: 0;
+  background-image: url('assets/wallpapers/wallpaper.png');
 }
-
-.desktop-wallpaper-layer.wp-bloom_dark { background-image: url('assets/wallpapers/bloom_dark.svg'); }
-.desktop-wallpaper-layer.wp-cyberpunk { background-image: url('assets/wallpapers/cyberpunk.svg'); }
-.desktop-wallpaper-layer.wp-minimal_obsidian { background-image: url('assets/wallpapers/minimal_obsidian.svg'); }
-.desktop-wallpaper-layer.wp-aurora { background-image: url('assets/wallpapers/aurora.svg'); }
 
 /* Desktop Shortcuts Grid */
 .desktop-shortcuts-grid {
