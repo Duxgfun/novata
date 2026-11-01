@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
   <title>Novata nvt_0.2 - Settings & Music Center</title>
   <link rel="stylesheet" href="../assets/bootstrap-icons/bootstrap-icons.css">
   <link rel="stylesheet" href="style.css">
@@ -140,53 +141,72 @@
             <div class="playlists-sidebar-col">
               <div class="playlists-sidebar-title">Your Playlists</div>
               <div class="playlists-pill-list" id="playlists-pills-container">
-                <!-- Dynamically populated playlist tabs -->
+                <!-- Dynamically populated playlist tabs with delete buttons -->
               </div>
             </div>
 
             <!-- Right Column: Active Playlist Details & Songs -->
             <div class="playlist-detail-col">
-              <div class="playlist-detail-header" id="playlist-detail-header">
-                <div class="pl-detail-info">
-                  <div class="pl-title-row">
-                    <h4 class="pl-active-title" id="pl-active-title">Select a Playlist</h4>
-                    <span class="pl-startup-badge hidden" id="pl-active-startup-badge" title="Will play automatically when Novata launches">
-                      <i class="bi bi-star-fill"></i> Default Startup
-                    </span>
-                  </div>
-                  <p class="pl-active-desc" id="pl-active-desc">Choose a playlist from the left or create one.</p>
-                  <div class="pl-stats-row">
-                    <span id="pl-active-track-count">0 tracks</span>
-                    <span class="pl-stat-dot">&bull;</span>
-                    <span id="pl-active-duration">0:00</span>
-                  </div>
-                </div>
-
-                <div class="pl-action-buttons">
-                  <button class="pl-btn-play" id="btn-play-all-playlist" title="Play Playlist">
-                    <i class="bi bi-play-fill"></i>
-                    <span>Play All</span>
-                  </button>
-                  <button class="pl-btn-secondary" id="btn-shuffle-playlist" title="Shuffle & Play">
-                    <i class="bi bi-shuffle"></i>
-                    <span>Shuffle</span>
-                  </button>
-                  <button class="pl-btn-secondary" id="btn-set-startup-playlist" title="Set this playlist as default startup music">
-                    <i class="bi bi-star" id="btn-startup-star-icon"></i>
-                    <span id="btn-startup-label">Set Startup</span>
-                  </button>
-                  <button class="pl-btn-icon" id="btn-edit-active-playlist" title="Rename Playlist">
-                    <i class="bi bi-pencil"></i>
-                  </button>
-                  <button class="pl-btn-icon" id="btn-delete-active-playlist" title="Delete Playlist">
-                    <i class="bi bi-trash3"></i>
-                  </button>
-                </div>
+              <!-- Zero State when no playlist exists -->
+              <div class="playlists-zero-state hidden" id="playlists-zero-state">
+                <div class="zero-state-icon"><i class="bi bi-collection-play"></i></div>
+                <h3>No Playlists Yet</h3>
+                <p>You haven't created any playlists. Click below to create your first playlist.</p>
+                <button class="mono-apply-btn" id="btn-zero-create-pl">
+                  <i class="bi bi-plus-lg"></i>
+                  <span>Create Playlist</span>
+                </button>
               </div>
 
-              <!-- Tracks List Container -->
-              <div class="playlist-tracks-container" id="playlist-tracks-container">
-                <!-- Dynamically populated tracks -->
+              <!-- Content view when a playlist is selected -->
+              <div class="playlist-active-view" id="playlist-active-view">
+                <div class="playlist-detail-header" id="playlist-detail-header">
+                  <!-- Row 1: Title, Startup Badge, Rename & Delete buttons -->
+                  <div class="pl-header-top-row">
+                    <div class="pl-header-title-box">
+                      <h4 class="pl-active-title" id="pl-active-title">Playlist Name</h4>
+                      <span class="pl-startup-badge hidden" id="pl-active-startup-badge" title="Will play automatically when Novata launches">
+                        <i class="bi bi-star-fill"></i> Startup Default
+                      </span>
+                      <span class="pl-track-count-badge" id="pl-active-track-count">0 tracks</span>
+                    </div>
+
+                    <div class="pl-header-tools">
+                      <button class="pl-tool-btn" id="btn-edit-active-playlist" title="Rename Playlist">
+                        <i class="bi bi-pencil"></i>
+                        <span>Rename</span>
+                      </button>
+                      <button class="pl-tool-btn pl-tool-danger" id="btn-delete-active-playlist" title="Delete Playlist">
+                        <i class="bi bi-trash3"></i>
+                        <span>Delete</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Row 2: Playback Actions & Duration -->
+                  <div class="pl-header-bottom-row">
+                    <div class="pl-playback-actions">
+                      <button class="pl-btn-play" id="btn-play-all-playlist" title="Play Playlist">
+                        <i class="bi bi-play-fill"></i>
+                        <span>Play All</span>
+                      </button>
+                      <button class="pl-btn-secondary" id="btn-shuffle-playlist" title="Shuffle & Play">
+                        <i class="bi bi-shuffle"></i>
+                        <span>Shuffle</span>
+                      </button>
+                      <button class="pl-btn-secondary" id="btn-set-startup-playlist" title="Set this playlist as default on startup">
+                        <i class="bi bi-star" id="btn-startup-star-icon"></i>
+                        <span id="btn-startup-label">Set Startup</span>
+                      </button>
+                    </div>
+                    <span class="pl-duration-text" id="pl-active-duration">0m 00s</span>
+                  </div>
+                </div>
+
+                <!-- Tracks List Container -->
+                <div class="playlist-tracks-container" id="playlist-tracks-container">
+                  <!-- Dynamically populated tracks -->
+                </div>
               </div>
             </div>
           </div>
@@ -578,12 +598,7 @@
       <div class="modal-body">
         <div class="modal-form-group">
           <label class="modal-form-label">Playlist Name</label>
-          <input type="text" id="input-playlist-name" class="modal-form-input" placeholder="e.g. Chill Coding, Night Melodies..." maxlength="48">
-        </div>
-
-        <div class="modal-form-group">
-          <label class="modal-form-label">Description (Optional)</label>
-          <input type="text" id="input-playlist-desc" class="modal-form-input" placeholder="e.g. Focus beats for productive work sessions" maxlength="100">
+          <input type="text" id="input-playlist-name" class="modal-form-input" placeholder="e.g. Chill, Coding, Workout..." maxlength="48">
         </div>
       </div>
 

@@ -5,6 +5,7 @@
  */
 
 :root {
+  color-scheme: dark;
   --bg-main: #09090b;
   --bg-sidebar: #0e0e11;
   --surface-card: #141416;
@@ -24,6 +25,50 @@
   padding: 0;
   box-sizing: border-box;
   user-select: none;
+}
+
+/* ========================================================
+   GLOBAL CUSTOM MATTE BLACK SCROLLBAR
+   Loại bỏ hoàn toàn thanh cuộn màu trắng mặc định của Windows
+   ======================================================== */
+::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+::-webkit-scrollbar-track,
+*::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-thumb {
+  background: #27272a !important;
+  border-radius: 4px !important;
+  border: 1px solid #141416 !important;
+}
+
+::-webkit-scrollbar-thumb:hover,
+*::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46 !important;
+}
+
+::-webkit-scrollbar-corner,
+*::-webkit-scrollbar-corner {
+  background: transparent !important;
+}
+
+::-webkit-scrollbar-button,
+*::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+html, body, * {
+  scrollbar-width: thin !important;
+  scrollbar-color: #27272a transparent !important;
 }
 
 .hidden {
@@ -1471,18 +1516,17 @@ input:checked + .slider:before {
 .playlists-workspace {
   display: flex;
   gap: 16px;
-  height: calc(100vh - 190px);
-  min-height: 420px;
+  height: calc(100vh - 170px);
 }
 
 /* Cột danh sách playlist bên trái */
 .playlists-sidebar-col {
-  width: 220px;
+  width: 200px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   border-right: 1px solid var(--border-subtle);
-  padding-right: 14px;
+  padding-right: 12px;
   flex-shrink: 0;
 }
 
@@ -1579,32 +1623,46 @@ input:checked + .slider:before {
 }
 
 .playlist-detail-header {
-  padding-bottom: 14px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--border-subtle);
-  margin-bottom: 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-}
-
-.pl-detail-info {
+  margin-bottom: 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 0;
+  gap: 10px;
 }
 
-.pl-title-row {
+.pl-header-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pl-header-title-box {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+  flex: 1;
 }
 
 .pl-active-title {
   font-size: 17px;
   font-weight: 700;
   color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pl-track-count-badge {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #18181b;
+  border: 1px solid var(--border-strong);
+  color: var(--text-dim);
+  white-space: nowrap;
 }
 
 .pl-startup-badge {
@@ -1618,30 +1676,146 @@ input:checked + .slider:before {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  white-space: nowrap;
 }
 
-.pl-active-desc {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.pl-stats-row {
-  font-size: 11px;
-  color: var(--text-dim);
+.pl-header-tools {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
 }
 
-.pl-stat-dot {
-  font-size: 10px;
+.pl-tool-btn {
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-strong);
+  color: var(--text-muted);
+  font-size: 11.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
 }
 
-.pl-action-buttons {
+.pl-tool-btn:hover {
+  background: var(--surface-hover);
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+.pl-tool-danger {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.pl-tool-danger:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #ef4444;
+  color: #ffffff;
+}
+
+.pl-header-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pl-playback-actions {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-shrink: 0;
+}
+
+.pl-duration-text {
+  font-size: 11.5px;
+  color: var(--text-dim);
+}
+
+.pill-del-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  opacity: 0;
+  transition: all 0.15s ease;
+}
+
+.playlist-pill-item:hover .pill-del-btn {
+  opacity: 1;
+}
+
+.pill-del-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.playlist-pill-item.active .pill-del-btn {
+  color: #71717a;
+}
+
+.playlist-pill-item.active .pill-del-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* Khung hiển thị nội dung playlist đang chọn */
+.playlist-active-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Zero state khi chưa có playlist nào */
+.playlists-zero-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.zero-state-icon {
+  font-size: 42px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.playlists-zero-state h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.playlists-zero-state p {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+.pills-empty-note {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  padding: 16px 8px;
+  text-align: center;
 }
 
 .pl-btn-play {
@@ -1847,9 +2021,12 @@ input:checked + .slider:before {
   text-align: center;
 }
 
-.playlist-empty-state i {
-  font-size: 36px;
-  color: var(--text-muted);
+.playlist-empty-state .empty-state-icon {
+  font-size: 38px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .playlist-empty-state span {

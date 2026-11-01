@@ -458,8 +458,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 5. QUẢN LÝ MULTI-PLAYLISTS
   // ========================================================
   const playlistsContainer = document.getElementById('playlists-pills-container');
+  const playlistsZeroState = document.getElementById('playlists-zero-state');
+  const playlistActiveView = document.getElementById('playlist-active-view');
+  const btnZeroCreatePl = document.getElementById('btn-zero-create-pl');
+
   const plActiveTitle = document.getElementById('pl-active-title');
-  const plActiveDesc = document.getElementById('pl-active-desc');
   const plActiveCount = document.getElementById('pl-active-track-count');
   const plActiveDuration = document.getElementById('pl-active-duration');
   const plActiveStartupBadge = document.getElementById('pl-active-startup-badge');
@@ -472,11 +475,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnDeleteActivePl = document.getElementById('btn-delete-active-playlist');
   const btnCreatePlTrigger = document.getElementById('btn-create-playlist-trigger');
 
-  // Modal tạo / sửa playlist
+  // Modal tạo / sửa playlist (chỉ cần tên, không cần description)
   const modalPlaylistEdit = document.getElementById('modal-playlist-edit');
   const modalPlaylistTitleText = document.getElementById('modal-playlist-title-text');
   const inputPlName = document.getElementById('input-playlist-name');
-  const inputPlDesc = document.getElementById('input-playlist-desc');
   const btnClosePlModal = document.getElementById('btn-close-playlist-modal');
   const btnCancelPlModal = document.getElementById('btn-cancel-playlist-modal');
   const btnSavePlModal = document.getElementById('btn-save-playlist-modal');
@@ -491,16 +493,33 @@ document.addEventListener('DOMContentLoaded', async () => {
   const addTrackTargetArtist = document.getElementById('add-track-target-artist');
   const addPlaylistOptionsContainer = document.getElementById('add-playlist-options-container');
 
+  // Nút tạo playlist khi đang ở trạng thái rỗng
+  if (btnZeroCreatePl) {
+    btnZeroCreatePl.addEventListener('click', () => {
+      if (btnCreatePlTrigger) btnCreatePlTrigger.click();
+    });
+  }
+
   async function loadPlaylists() {
     try {
       playlists = await window.novata.getPlaylists();
       if (!Array.isArray(playlists)) playlists = [];
 
-      // Chọn playlist đầu tiên hoặc playlist mặc định nếu chưa chọn
-      if (!activePlaylistId || !playlists.find(p => p.id === activePlaylistId)) {
-        const defaultId = settings.defaultPlaylistId || 'chill-lofi';
-        const found = playlists.find(p => p.id === defaultId);
-        activePlaylistId = found ? found.id : (playlists[0] ? playlists[0].id : null);
+      // Kiểm tra nếu danh sách trống thì hiển thị Zero State
+      if (playlists.length === 0) {
+        if (playlistsZeroState) playlistsZeroState.classList.remove('hidden');
+        if (playlistActiveView) playlistActiveView.classList.add('hidden');
+        activePlaylistId = null;
+      } else {
+        if (playlistsZeroState) playlistsZeroState.classList.add('hidden');
+        if (playlistActiveView) playlistActiveView.classList.remove('hidden');
+
+        // Nếu chưa chọn playlist hoặc playlist được chọn không còn tồn tại
+        if (!activePlaylistId || !playlists.find(p => p.id === activePlaylistId)) {
+          const defaultId = settings.defaultPlaylistId;
+          const found = defaultId ? playlists.find(p => p.id === defaultId) : null;
+          activePlaylistId = found ? found.id : playlists[0].id;
+        }
       }
 
       updateStartupPlaylistDropdown();
@@ -514,11 +533,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   function updateStartupPlaylistDropdown() {
     if (!selectStartupPlaylist) return;
     selectStartupPlaylist.innerHTML = '';
+
+    if (playlists.length === 0) {
+      const opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = 'No playlists available';
+      selectStartupPlaylist.appendChild(opt);
+      return;
+    }
+
     playlists.forEach(pl => {
       const opt = document.createElement('option');
       opt.value = pl.id;
       opt.textContent = `${pl.name} (${pl.tracks ? pl.tracks.length : 0} songs)`;
-      if (pl.id === (settings.defaultPlaylistId || 'chill-lofi')) {
+      if (pl.id === settings.defaultPlaylistId) {
         opt.selected = true;
       }
       selectStartupPlaylist.appendChild(opt);
@@ -529,6 +557,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!playlistsContainer) return;
     playlistsContainer.innerHTML = '';
 
+    if (playlists.length === 0) {
+      playlistsContainer.innerHTML = '<div class="pills-empty-note">No playlists yet</div>';
+      return;
+    }
+
     playlists.forEach(pl => {
       const pill = document.createElement('div');
       pill.className = 'playlist-pill-item';
@@ -536,7 +569,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         pill.classList.add('active');
       }
 
-      const isDefault = (settings.defaultPlaylistId || 'chill-lofi') === pl.id;
+      const isDefault = settings.defaultPlaylistId === pl.id;
       const count = pl.tracks ? pl.tracks.length : 0;
 
       pill.innerHTML = `
@@ -546,35 +579,45 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
         <div class="pill-icons">
           ${isDefault ? '<i class="bi bi-star-fill pill-startup-icon" title="Default Startup Playlist"></i>' : ''}
+          <button class="pill-del-btn" title="Delete playlist" data-id="${pl.id}">
+            <i class="bi bi-trash3"></i>
+          </button>
         </div>
       `;
 
+      // Bấm vào pill để chọn playlist
       pill.addEventListener('click', () => {
         activePlaylistId = pl.id;
         renderPlaylistsList();
         renderActivePlaylistDetails();
       });
 
+      // Bấm nút xóa nhanh trên pill
+      const btnDelPill = pill.querySelector('.pill-del-btn');
+      if (btnDelPill) {
+        btnDelPill.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          await deletePlaylistWithConfirm(pl.id, pl.name);
+        });
+      }
+
       playlistsContainer.appendChild(pill);
     });
   }
 
   function renderActivePlaylistDetails() {
-    const pl = playlists.find(p => p.id === activePlaylistId);
-    if (!pl) {
-      if (plActiveTitle) plActiveTitle.textContent = 'No Playlist Selected';
-      if (plActiveDesc) plActiveDesc.textContent = 'Please create or choose a playlist.';
-      if (plActiveCount) plActiveCount.textContent = '0 tracks';
-      if (plActiveDuration) plActiveDuration.textContent = '0:00';
+    if (playlists.length === 0 || !activePlaylistId) {
       if (tracksContainer) tracksContainer.innerHTML = '';
       return;
     }
 
-    const isDefault = (settings.defaultPlaylistId || 'chill-lofi') === pl.id;
+    const pl = playlists.find(p => p.id === activePlaylistId);
+    if (!pl) return;
+
+    const isDefault = settings.defaultPlaylistId === pl.id;
     const tracks = pl.tracks || [];
 
     if (plActiveTitle) plActiveTitle.textContent = pl.name;
-    if (plActiveDesc) plActiveDesc.textContent = pl.description || 'Custom user playlist';
     if (plActiveCount) plActiveCount.textContent = `${tracks.length} ${tracks.length === 1 ? 'track' : 'tracks'}`;
 
     // Tính tổng thời lượng ước lượng
@@ -613,13 +656,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
-    // Ẩn nút xóa đối với playlist Favorites mặc định của hệ thống
+    // Nút xóa luôn hiển thị cho mọi playlist
     if (btnDeleteActivePl) {
-      if (pl.id === 'favorites') {
-        btnDeleteActivePl.style.display = 'none';
-      } else {
-        btnDeleteActivePl.style.display = 'inline-flex';
-      }
+      btnDeleteActivePl.style.display = 'inline-flex';
     }
 
     renderPlaylistTracks(tracks, pl.id);
@@ -632,7 +671,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!tracks || tracks.length === 0) {
       tracksContainer.innerHTML = `
         <div class="playlist-empty-state">
-          <i class="bi bi-music-note-list"></i>
+          <div class="empty-state-icon"><i class="bi bi-music-note-list"></i></div>
           <span>This playlist is currently empty.</span>
           <button class="mono-apply-btn" id="btn-jump-to-search">
             <i class="bi bi-search"></i>
@@ -741,7 +780,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (modalPlaylistTitleText) modalPlaylistTitleText.textContent = 'Create New Playlist';
       if (btnSavePlLabel) btnSavePlLabel.textContent = 'Create Playlist';
       if (inputPlName) inputPlName.value = '';
-      if (inputPlDesc) inputPlDesc.value = '';
       if (modalPlaylistEdit) modalPlaylistEdit.classList.remove('hidden');
       if (inputPlName) inputPlName.focus();
     });
@@ -753,27 +791,40 @@ document.addEventListener('DOMContentLoaded', async () => {
       const pl = playlists.find(p => p.id === activePlaylistId);
       if (!pl) return;
       editingPlaylistId = pl.id;
-      if (modalPlaylistTitleText) modalPlaylistTitleText.textContent = 'Edit Playlist';
+      if (modalPlaylistTitleText) modalPlaylistTitleText.textContent = 'Rename Playlist';
       if (btnSavePlLabel) btnSavePlLabel.textContent = 'Save Changes';
       if (inputPlName) inputPlName.value = pl.name || '';
-      if (inputPlDesc) inputPlDesc.value = pl.description || '';
       if (modalPlaylistEdit) modalPlaylistEdit.classList.remove('hidden');
       if (inputPlName) inputPlName.focus();
     });
   }
 
-  // Xóa playlist
+  // Xóa playlist với hộp thoại xác nhận an toàn
+  async function deletePlaylistWithConfirm(id, name) {
+    const ok = confirm(`Are you sure you want to delete playlist "${name}"?`);
+    if (!ok) return;
+
+    await window.novata.deletePlaylist(id);
+
+    // Nếu playlist này đang được chọn làm startup default, xóa cấu hình startup
+    if (settings.defaultPlaylistId === id) {
+      settings.defaultPlaylistId = null;
+      await updateSetting({ defaultPlaylistId: null });
+    }
+
+    if (activePlaylistId === id) {
+      activePlaylistId = null;
+    }
+
+    await loadPlaylists();
+  }
+
+  // Nút xóa playlist trên thanh công cụ
   if (btnDeleteActivePl) {
     btnDeleteActivePl.addEventListener('click', async () => {
       const pl = playlists.find(p => p.id === activePlaylistId);
-      if (!pl || pl.id === 'favorites') return;
-
-      const ok = confirm(`Are you sure you want to delete playlist "${pl.name}"?`);
-      if (ok) {
-        await window.novata.deletePlaylist(pl.id);
-        activePlaylistId = 'favorites';
-        await loadPlaylists();
-      }
+      if (!pl) return;
+      await deletePlaylistWithConfirm(pl.id, pl.name);
     });
   }
 
@@ -787,13 +838,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (btnSavePlModal) {
     btnSavePlModal.addEventListener('click', async () => {
       const name = (inputPlName ? inputPlName.value : '').trim();
-      const desc = (inputPlDesc ? inputPlDesc.value : '').trim();
       if (!name) return;
 
       if (editingPlaylistId) {
-        await window.novata.updatePlaylist(editingPlaylistId, { name, description: desc });
+        await window.novata.updatePlaylist(editingPlaylistId, { name });
       } else {
-        const newPl = await window.novata.createPlaylist({ name, description: desc });
+        const newPl = await window.novata.createPlaylist({ name });
         if (newPl && newPl.id) {
           activePlaylistId = newPl.id;
         }
@@ -820,6 +870,26 @@ document.addEventListener('DOMContentLoaded', async () => {
   function renderAddPlaylistOptions() {
     if (!addPlaylistOptionsContainer) return;
     addPlaylistOptionsContainer.innerHTML = '';
+
+    if (playlists.length === 0) {
+      addPlaylistOptionsContainer.innerHTML = `
+        <div class="add-pl-empty-prompt" style="padding: 18px 12px; text-align: center; color: var(--text-dim); font-size: 12.5px;">
+          <p style="margin-bottom: 12px;">No playlists yet. Create a playlist first to add songs.</p>
+          <button class="mono-apply-btn" id="btn-quick-create-pl" style="margin: 0 auto;">
+            <i class="bi bi-plus-lg"></i>
+            <span>Create Playlist</span>
+          </button>
+        </div>
+      `;
+      const btnQuick = document.getElementById('btn-quick-create-pl');
+      if (btnQuick) {
+        btnQuick.addEventListener('click', () => {
+          closeAddModal();
+          if (btnCreatePlTrigger) btnCreatePlTrigger.click();
+        });
+      }
+      return;
+    }
 
     playlists.forEach(pl => {
       const item = document.createElement('div');

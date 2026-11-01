@@ -53,7 +53,7 @@ const DEFAULT_SETTINGS = {
   // Tự động phát nhạc khi khởi động (Default Music / Startup Playlist)
   autoPlayOnStartup: false,
   defaultStartupMode: 'playlist', // 'playlist' hoặc 'last_played'
-  defaultPlaylistId: 'chill-lofi',
+  defaultPlaylistId: null,
   lastPlayedTrack: null,
   // Chế độ phát danh sách: Xáo bài & Lặp lại
   shuffle: false,

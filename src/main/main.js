@@ -118,12 +118,12 @@ function checkAndTriggerStartupPlayback() {
     try {
       const startupMode = store.get('defaultStartupMode') || 'playlist';
       if (startupMode === 'playlist') {
-        const defaultPlId = store.get('defaultPlaylistId') || 'chill-lofi';
-        let playlist = playlistManager.get(defaultPlId);
+        const defaultPlId = store.get('defaultPlaylistId');
+        let playlist = defaultPlId ? playlistManager.get(defaultPlId) : null;
         if (!playlist || !playlist.tracks || playlist.tracks.length === 0) {
           // Lấy playlist đầu tiên có bài hát
           const all = playlistManager.getAll();
-          playlist = all.find(p => p.tracks && p.tracks.length > 0) || all[0];
+          playlist = all.find(p => p.tracks && p.tracks.length > 0) || null;
         }
 
         if (playlist && playlist.tracks && playlist.tracks.length > 0) {
@@ -166,8 +166,8 @@ function createSettingsWindow() {
 
   const primaryDisplay = screen.getPrimaryDisplay();
   const { workArea } = primaryDisplay;
-  const width = 840;
-  const height = 640;
+  const width = 880;
+  const height = 660;
 
   settingsWindow = new BrowserWindow({
     width,
