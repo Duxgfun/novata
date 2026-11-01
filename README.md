@@ -256,4 +256,4 @@ Novata/
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for full details.
 
-Developed with care by the **Antigravity Team**.
+Developed with care by the **Duxgg.fun**.
