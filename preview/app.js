@@ -12,7 +12,7 @@
 // ==========================================================================
 // CAU HINH LINK GITHUB REPOSITORY CUA DU AN (NGUOI DUNG THAY LINK O DAY)
 // ==========================================================================
-const GITHUB_REPO_URL = 'https://github.com/your-username/novata';
+const GITHUB_REPO_URL = 'https://github.com/Duxgfun/novata';
 
 // ==========================================================================
 // DANH SACH 3 BAI HAT DEMO CO DINH CHAT LUONG CAO

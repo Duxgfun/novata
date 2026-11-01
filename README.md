@@ -6,10 +6,10 @@
 
   **Minimalist Desktop Audio Visualizer & Background Music Streamer for Windows**
 
-  [![Release](https://img.shields.io/badge/release-nvt__0.1-18181b?style=for-the-badge&logoColor=white)](https://github.com)
-  [![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-18181b?style=for-the-badge&logo=windows&logoColor=white)](https://github.com)
+  [![Release](https://img.shields.io/badge/release-nvt__0.1-18181b?style=for-the-badge&logoColor=white)](https://github.com/Duxgfun/novata)
+  [![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-18181b?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Duxgfun/novata)
   [![Framework](https://img.shields.io/badge/framework-Electron-18181b?style=for-the-badge&logo=electron&logoColor=white)](https://electronjs.org)
-  [![Memory](https://img.shields.io/badge/memory-%3C60%20MB%20RAM-10b981?style=for-the-badge)](https://github.com)
+  [![Memory](https://img.shields.io/badge/memory-%3C60%20MB%20RAM-10b981?style=for-the-badge)](https://github.com/Duxgfun/novata)
   [![License](https://img.shields.io/badge/license-MIT-18181b?style=for-the-badge)](LICENSE)
 
   <p align="center">
@@ -124,7 +124,7 @@ Or open [`preview/index.html`](file:///c:/Users/zippo/Documents/project/Novata/p
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-username/novata.git
+git clone https://github.com/Duxgfun/novata.git
 cd novata
 
 # 2. Install dependencies
