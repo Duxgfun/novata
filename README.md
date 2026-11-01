@@ -37,17 +37,6 @@ Engineered with a **monochrome matte aesthetic** and a **floating frosted Glass 
 
 ---
 
-## What's New in nvt_0.2 Beta
-
-- **Discord Rich Presence (RPC)**: Broadcast your live playback status to your Discord profile. Shows song title, artist, live elapsed time, album artwork, and source badges (*YouTube Music*, *Spotify*, *SoundCloud*, *Web Browser*).
-- **Multi-Playlists System**: Organize custom playlists for different moods, study sessions, and activities (*Favorites*, *Chill & Relax*, *Deep Focus & Coding*).
-- **Add to Playlist from Search**: Save any song to any playlist with 1 click directly from search results.
-- **Auto-Next Continuous Playback**: Seamlessly transitions to the next track in the playlist queue when a song finishes.
-- **Smart Shuffle & Repeat Modes**: Randomize playlist playback on demand with Fisher-Yates shuffle; cycle between Repeat All, Repeat Single, or Repeat Off.
-- **Default Music (Instant Startup Playback)**: Stream your favorite playlist or resume your last played track immediately when Novata opens without requiring any manual clicks.
-
----
-
 ## Key Features
 
 ### Discord Rich Presence (RPC) Integration
