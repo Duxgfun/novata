@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="lofiSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#181528"/>
+      <stop offset="45%" stop-color="#4a2545"/>
+      <stop offset="75%" stop-color="#934654"/>
+      <stop offset="100%" stop-color="#e89569"/>
+    </linearGradient>
+    <linearGradient id="moonGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff5db"/>
+      <stop offset="100%" stop-color="#fed18c"/>
+    </linearGradient>
+    <linearGradient id="tableGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#120f1a"/>
+      <stop offset="100%" stop-color="#0a0810"/>
+    </linearGradient>
+  </defs>
+  <!-- Nen bau troi hoang hon Lofi -->
+  <rect width="400" height="400" fill="url(#lofiSky)"/>
+  <!-- Mat trang / Mat troi hoang hon -->
+  <circle cx="280" cy="190" r="65" fill="url(#moonGrad)" opacity="0.9"/>
+  <!-- May troi ngang -->
+  <path d="M 40 180 Q 90 160 160 175 Q 220 185 270 170 Q 320 160 360 175" stroke="#7a3754" stroke-width="12" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M 80 220 Q 140 205 210 215 Q 280 225 330 210" stroke="#9e4e5e" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <!-- Khung cua so phong Lofi -->
+  <rect x="0" y="300" width="400" height="100" fill="url(#tableGrad)"/>
+  <!-- Tach ca phe bieu tuong Lofi -->
+  <path d="M 80 340 L 90 380 Q 115 390 140 380 L 150 340 Z" fill="#2d2238" stroke="#fce2c4" stroke-width="2"/>
+  <path d="M 148 350 Q 165 350 165 365 Q 165 380 145 378" stroke="#fce2c4" stroke-width="2" fill="none"/>
+  <!-- Lan khoi ca phe -->
+  <path d="M 110 330 Q 105 315 115 300 Q 125 285 115 270" stroke="#fce2c4" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <path d="M 125 328 Q 135 310 125 295 Q 115 280 128 265" stroke="#fce2c4" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <!-- Tai nghe headphone dat tren ban -->
+  <path d="M 230 355 Q 265 325 300 355" stroke="#3f334d" stroke-width="6" fill="none"/>
+  <rect x="220" y="350" width="16" height="28" rx="8" fill="#e89569"/>
+  <rect x="294" y="350" width="16" height="28" rx="8" fill="#e89569"/>
+  <!-- Chu ky hieu -->
+  <text x="200" y="70" text-anchor="middle" fill="#fed18c" font-family="'Segoe UI', sans-serif" font-weight="800" font-size="20" letter-spacing="6">LOFI CHILL BEATS</text>
+  <text x="200" y="95" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', sans-serif" font-weight="400" font-size="12" letter-spacing="4" opacity="0.8">STUDY &amp; RELAX</text>
+</svg>

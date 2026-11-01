@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%">
+  <defs>
+    <linearGradient id="cyberSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#05030a"/>
+      <stop offset="60%" stop-color="#190729"/>
+      <stop offset="100%" stop-color="#090312"/>
+    </linearGradient>
+    <radialGradient id="cyberGlow" cx="50%" cy="60%" r="50%">
+      <stop offset="0%" stop-color="#ff007f" stop-opacity="0.35"/>
+      <stop offset="50%" stop-color="#00f0ff" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#05030a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cyberGrid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff007f" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#00f0ff" stop-opacity="0.7"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#cyberSky)"/>
+  <rect width="1920" height="1080" fill="url(#cyberGlow)"/>
+
+  <!-- Mat troi neon neon duong chan troi -->
+  <circle cx="960" cy="650" r="180" fill="#ff007f" opacity="0.8"/>
+  <rect x="700" y="620" width="520" height="6" fill="#190729"/>
+  <rect x="700" y="640" width="520" height="10" fill="#190729"/>
+  <rect x="700" y="670" width="520" height="16" fill="#190729"/>
+
+  <!-- Nha cao tang skyline silhouette -->
+  <polygon points="0,750 120,680 180,720 280,620 360,700 480,580 580,720 720,640 850,700 950,660 1100,720 1250,600 1380,690 1520,590 1680,680 1800,640 1920,740 1920,850 0,850" fill="#0b0312"/>
+
+  <!-- Luoi phoi canh toa tu duong chan troi -->
+  <polygon points="0,750 1920,750 1920,1080 0,1080" fill="url(#cyberGrid)" opacity="0.25"/>
+  <line x1="960" y1="750" x2="0" y2="1080" stroke="#00f0ff" stroke-width="2" opacity="0.6"/>
+  <line x1="960" y1="750" x2="480" y2="1080" stroke="#00f0ff" stroke-width="2" opacity="0.6"/>
+  <line x1="960" y1="750" x2="960" y2="1080" stroke="#00f0ff" stroke-width="2" opacity="0.6"/>
+  <line x1="960" y1="750" x2="1440" y2="1080" stroke="#00f0ff" stroke-width="2" opacity="0.6"/>
+  <line x1="960" y1="750" x2="1920" y2="1080" stroke="#00f0ff" stroke-width="2" opacity="0.6"/>
+  <line x1="0" y1="800" x2="1920" y2="800" stroke="#ff007f" stroke-width="1.5" opacity="0.5"/>
+  <line x1="0" y1="880" x2="1920" y2="880" stroke="#ff007f" stroke-width="2" opacity="0.7"/>
+  <line x1="0" y1="980" x2="1920" y2="980" stroke="#ff007f" stroke-width="3" opacity="0.9"/>
+</svg>

@@ -1,0 +1,75 @@
+{
+  "name": "novata",
+  "version": "0.1.0",
+  "description": "Novata nvt_0.1 - Minimalist Audio Visualizer & Music Player",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "preview": "npx serve preview -l 3000",
+    "build": "electron-builder --win",
+    "dist": "electron-builder --win nsis"
+  },
+  "keywords": [
+    "audio-visualizer",
+    "spectrum",
+    "waveform",
+    "monochrome",
+    "minimalist",
+    "spotify",
+    "youtube-music",
+    "soundcloud",
+    "taskbar-widget"
+  ],
+  "author": "Antigravity Team",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "@distube/ytdl-core": "^5.2.0",
+    "bootstrap-icons": "^1.13.2"
+  },
+  "devDependencies": {
+    "electron": "^45.2.1",
+    "electron-builder": "^26.7.0"
+  },
+  "build": {
+    "appId": "com.antigravity.novata",
+    "productName": "Novata",
+    "copyright": "Copyright 2026 Antigravity",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "**/scripts/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Novata Visualizer",
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "uninstallDisplayName": "Novata Visualizer",
+      "runAfterFinish": true
+    }
+  }
+}

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe" />
+      <stop offset="50%" stop-color="#4facfe" />
+      <stop offset="100%" stop-color="#7f00ff" />
+    </linearGradient>
+    <linearGradient id="waveGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.95" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <!-- Glass Outer Ring -->
+  <circle cx="256" cy="256" r="230" fill="url(#bgGrad)" fill-opacity="0.25" stroke="rgba(255,255,255,0.4)" stroke-width="6" />
+  <!-- Glass Core -->
+  <circle cx="256" cy="256" r="190" fill="#0f172a" fill-opacity="0.65" stroke="rgba(255,255,255,0.2)" stroke-width="3" filter="url(#glow)" />
+  <!-- Audio Spectrum Bars in Core -->
+  <g fill="url(#waveGrad)">
+    <rect x="126" y="220" width="16" height="72" rx="8" />
+    <rect x="156" y="180" width="16" height="152" rx="8" />
+    <rect x="186" y="140" width="16" height="232" rx="8" />
+    <rect x="216" y="190" width="16" height="132" rx="8" />
+    <rect x="246" y="110" width="16" height="292" rx="8" />
+    <rect x="276" y="160" width="16" height="192" rx="8" />
+    <rect x="306" y="130" width="16" height="252" rx="8" />
+    <rect x="336" y="200" width="16" height="112" rx="8" />
+    <rect x="366" y="230" width="16" height="52" rx="8" />
+  </g>
+</svg>

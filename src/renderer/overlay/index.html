@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Novata nvt_0.1</title>
+  <link rel="stylesheet" href="../assets/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Canvas song am: 100% trong suot, khong hop nen, mac dinh xuyen chuot -->
+  <canvas id="visualizer-canvas"></canvas>
+
+  <!-- Trinh phat am thanh Native Stream ket noi truc tiep Web Audio API voi CORS -->
+  <audio id="inapp-audio-player" preload="auto" crossorigin="anonymous"></audio>
+
+  <!-- The dieu khien nhac Glass UI noi tren man hinh (Co the keo tha vi tri) -->
+  <div class="glass-player-card" id="player-card">
+    <!-- Bang chi dan khi o che do keo tha vi tri (Edit Mode) -->
+    <div class="drag-hint hidden" id="drag-hint">
+      <i class="bi bi-arrows-move"></i>
+      <span>Drag card to desired position, then click Done</span>
+    </div>
+
+    <div class="player-inner-content">
+      <!-- Dia nhac / Biah bai hat -->
+      <div class="card-album-wrap">
+        <div class="album-disc-scallop" id="album-disc">
+          <i class="bi bi-disc disc-spinning" id="album-icon"></i>
+          <img id="album-thumb" class="album-thumb-img hidden" alt="Album Cover">
+        </div>
+        <div class="source-tag" id="source-tag" title="Music Source">
+          <i class="bi bi-music-note-beamed" id="source-icon"></i>
+        </div>
+      </div>
+
+      <!-- Thong tin bai hat & Tien trinh -->
+      <div class="card-info-wrap">
+        <div class="track-meta">
+          <div class="track-title" id="track-title">Ready to listen</div>
+          <div class="track-artist-row">
+            <span class="track-artist" id="track-artist">Spotify / YouTube / Music Player</span>
+            <span class="track-time-badge" id="track-time">0:00</span>
+          </div>
+        </div>
+
+        <!-- Thanh tien trinh bai hat -->
+        <div class="track-progress-bar" id="progress-container" title="Click to seek">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <!-- Cum nut dieu khien -->
+        <div class="control-row">
+          <button class="mono-btn btn-small" id="btn-shuffle" title="Shuffle">
+            <i class="bi bi-shuffle"></i>
+          </button>
+
+          <button class="mono-btn btn-small" id="btn-prev" title="Previous">
+            <i class="bi bi-skip-start-fill"></i>
+          </button>
+
+          <!-- Nut Play/Pause vien thuoc noi bat -->
+          <button class="mono-btn btn-pill-play" id="btn-play-pause" title="Play / Pause">
+            <i class="bi bi-play-fill" id="play-pause-icon"></i>
+          </button>
+
+          <button class="mono-btn btn-small" id="btn-next" title="Next">
+            <i class="bi bi-skip-end-fill"></i>
+          </button>
+
+          <button class="mono-btn btn-small" id="btn-repeat" title="Repeat">
+            <i class="bi bi-repeat" id="repeat-icon"></i>
+          </button>
+
+          <!-- Nut di chuyen / Thay doi vi tri the (Edit Position) -->
+          <button class="mono-btn btn-small btn-utility" id="btn-edit-position" title="Move widget position">
+            <i class="bi bi-arrows-move"></i>
+          </button>
+
+          <!-- Nut xac nhan vi tri khi dang keo tha (Done) -->
+          <button class="mono-btn btn-small btn-confirm-pos hidden" id="btn-confirm-position" title="Save position">
+            <i class="bi bi-check-lg"></i>
+            <span>Done</span>
+          </button>
+
+          <!-- Nut Tim kiem & Phat nhac -->
+          <button class="mono-btn btn-small btn-utility" id="btn-open-search" title="Search & Play Music">
+            <i class="bi bi-search"></i>
+          </button>
+
+          <!-- Nut Mo Cai dat -->
+          <button class="mono-btn btn-small btn-utility" id="btn-open-settings" title="Open Settings">
+            <i class="bi bi-gear-fill"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="visualizer.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
