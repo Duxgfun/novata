@@ -46,3 +46,9 @@ novata-settings.json
 .env
 .env.local
 .env.*.local
+
+# Local Agent Customizations & Skills (Do not upload to git)
+.agents/
+.agent/
+_agents/
+_agent/
