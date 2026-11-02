@@ -1,5 +1,5 @@
 /**
- * Module Discord Rich Presence (RPC) cho Novata nvt_0.2
+ * Module Discord Rich Presence (RPC) cho Novata nvt_0.3
  * Kết nối trực tiếp qua Windows Named Pipe của Discord (\??\pipe\discord-ipc-0..9)
  * Không phụ thuộc thư viện ngoài, xử lý lỗi an toàn không gây crash app khi không có Discord.
  * Bình luận bằng tiếng Việt theo quy định toàn cục.
@@ -277,7 +277,7 @@ class DiscordRpcManager extends EventEmitter {
         large_image: trackInfo.Thumbnail && trackInfo.Thumbnail.startsWith('http') 
           ? trackInfo.Thumbnail 
           : 'https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/sound.svg',
-        large_text: `Novata nvt_0.2`,
+        large_text: `Novata nvt_0.3`,
         small_image: smallImage,
         small_text: `Playing via ${sourceLabel}`
       }

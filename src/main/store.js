@@ -1,6 +1,6 @@
 /**
  * Quản lý lưu trữ cấu hình người dùng của Novata
- * Phiên bản nvt_0.2 - Hỗ trợ Discord Rich Presence (RPC), Multi-Playlists, Auto-play Startup
+ * Phiên bản nvt_0.3 - Hỗ trợ Discord Rich Presence (RPC), Multi-Playlists, Auto-play Startup & Windows SMTC
  */
 
 const fs = require('fs');
@@ -22,7 +22,7 @@ const getUserDataPath = () => {
 
 const CONFIG_PATH = path.join(getUserDataPath(), 'novata-settings.json');
 
-// Cấu hình mặc định phiên bản nvt_0.2
+// Cấu hình mặc định phiên bản nvt_0.3
 const DEFAULT_SETTINGS = {
   // Chế độ sóng âm: Thanh phổ dọc tỏa từ giữa màn hình
   visualizerMode: 'bars',

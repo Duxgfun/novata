@@ -1,5 +1,5 @@
 /**
- * Logic điều khiển của ứng dụng Cài đặt Novata Settings & Music Center - Phiên bản nvt_0.2
+ * Logic điều khiển của ứng dụng Cài đặt Novata Settings & Music Center - Phiên bản nvt_0.3
  * - Giao diện tiếng Anh thân thiện với người dùng phổ thông
  * - Hỗ trợ hệ thống Multi-Playlists: tạo, sửa, xóa, phát danh sách, xáo bài
  * - Thêm bài hát vào playlist từ kết quả tìm kiếm

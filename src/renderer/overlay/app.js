@@ -1,5 +1,5 @@
 /**
- * Logic điều khiển giao diện Novata Overlay - Phiên bản nvt_0.2
+ * Logic điều khiển giao diện Novata Overlay - Phiên bản nvt_0.3
  * - Sóng âm 100% trong suốt không hộp nền, mặc định xuyên chuột
  * - Thẻ điều khiển Glass UI có thể kéo thả vị trí (Draggable) và lưu tọa độ
  * - Trình phát nhạc In-App hỗ trợ Multi-Playlists, Auto-next bài kế tiếp, Xáo bài (Shuffle), Lặp lại
@@ -372,7 +372,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!track) {
       navigator.mediaSession.metadata = null;
       navigator.mediaSession.playbackState = 'none';
-      document.title = 'Novata nvt_0.2';
+      document.title = 'Novata nvt_0.3';
       return;
     }
 

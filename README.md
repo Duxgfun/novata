@@ -98,7 +98,7 @@ Engineered with a **monochrome matte aesthetic** and a **floating frosted Glass 
 
 | Parameter | Specification |
 |---|---|
-| **Version** | `nvt_0.2 beta` (`0.2.0-beta`) |
+| **Version** | `nvt_0.3` (`0.3.0`) |
 | **Operating System** | Windows 10 / Windows 11 (64-bit) |
 | **Runtime Environment** | Electron 45.x with Node.js 24.x |
 | **Memory Consumption** | ~38 MB - 58 MB Working Set (Target: <60 MB) |
@@ -115,7 +115,7 @@ Engineered with a **monochrome matte aesthetic** and a **floating frosted Glass 
 
 ### Option 1: Automated Windows Installer (Recommended)
 Download the installer from the [`dist/`](file:///c:/Users/zippo/Documents/project/Novata/dist) directory:
-- **Installer binary**: `Novata Setup 0.2.0-beta.exe`
+- **Installer binary**: `Novata Setup 0.3.0.exe`
 - Runs standard NSIS installation with desktop shortcut creation and Start menu integration.
 - Supports clean uninstallation via Windows Settings > Installed Apps.
 
@@ -247,7 +247,7 @@ Novata is built from the ground up to operate with minimal hardware impact:
 Novata/
 ├── assets/                          # Application branding icons (.ico, .png)
 ├── dist/                            # Production build artifacts
-│   ├── Novata Setup 0.2.0-beta.exe  # Windows NSIS Automated Installer
+│   ├── Novata Setup 0.3.0.exe       # Windows NSIS Automated Installer
 │   └── win-unpacked/Novata.exe      # Portable executable
 ├── preview/                         # Interactive browser-based simulation
 │   ├── index.html                   # Simulated Windows 11 Desktop interface

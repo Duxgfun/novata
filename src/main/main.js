@@ -1,5 +1,5 @@
 /**
- * Tiến trình chính (Main Process) của Novata - Phiên bản nvt_0.2
+ * Tiến trình chính (Main Process) của Novata - Phiên bản nvt_0.3
  * Tích hợp Discord Rich Presence (RPC), Hệ thống Multi-Playlists, Auto-play Startup
  * Sóng âm thanh tối giản không nền, tràn cạnh màn hình và xuyên chuột.
  * Bình luận bằng tiếng Việt theo quy định toàn cục.
@@ -238,7 +238,7 @@ let trayClickTimer = null;
 function createTray() {
   const icon = nativeImage.createFromPath(iconPath);
   tray = new Tray(icon.resize({ width: 18, height: 18 }));
-  tray.setToolTip('Novata nvt_0.2 - Minimalist Audio Visualizer');
+  tray.setToolTip('Novata nvt_0.3 - Minimalist Audio Visualizer');
 
   updateTrayMenu();
 
@@ -281,7 +281,7 @@ function updateTrayMenu() {
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'Novata nvt_0.2',
+      label: 'Novata nvt_0.3',
       enabled: false,
       icon: nativeImage.createFromPath(iconPath).resize({ width: 14, height: 14 })
     },

@@ -1,6 +1,6 @@
 /**
  * Preload Script - Cung cấp cầu nối IPC an toàn cho giao diện Renderer
- * Phiên bản nvt_0.2 - Bổ sung API Multi-Playlists, Discord RPC, Default Music Startup
+ * Phiên bản nvt_0.3 - Bổ sung API Multi-Playlists, Discord RPC, Default Music Startup & Windows SMTC
  * Tuân thủ bảo mật contextIsolation và cấm trực tiếp Node integration.
  * Bình luận bằng tiếng Việt theo quy định toàn cục.
  */

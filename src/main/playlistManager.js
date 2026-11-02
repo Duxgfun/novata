@@ -1,5 +1,5 @@
 /**
- * Quản lý danh sách phát đa năng (Multi-Playlist Manager) cho Novata nvt_0.2
+ * Quản lý danh sách phát đa năng (Multi-Playlist Manager) cho Novata nvt_0.3
  * Lưu trữ tại %APPDATA%/novata/novata-playlists.json
  * Hỗ trợ tạo nhiều playlist theo tên, tự động phát bài kế tiếp, xáo bài.
  * Mới vào danh sách trống, người dùng tự tạo playlist theo ý thích.
