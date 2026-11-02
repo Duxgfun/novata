@@ -8,6 +8,11 @@
 const { app, BrowserWindow, Tray, Menu, ipcMain, screen, desktopCapturer, session, nativeImage } = require('electron');
 const path = require('path');
 
+// Dinh danh Windows App User Model ID cho Windows 10/11 SMTC
+if (process.platform === 'win32') {
+  app.setAppUserModelId('com.antigravity.novata');
+}
+
 // Cờ Chromium & V8 tối ưu hóa hiệu năng mượt mà, không lag hệ thống
 app.commandLine.appendSwitch('renderer-process-limit', '1');
 app.commandLine.appendSwitch('disable-background-networking');
@@ -545,17 +550,27 @@ ipcMain.handle('control-inapp-player', (event, action, payload) => {
   return { success: true };
 });
 
-// IPC Đồng bộ tiến trình phát nhạc In-App
+// IPC Dong bo tien trinh phat nhac In-App
 ipcMain.handle('sync-inapp-state', (event, state) => {
   const wasPlaying = inAppPlaybackState.isPlaying;
+  const previousTrackId = currentInAppTrack ? currentInAppTrack.id : null;
   inAppPlaybackState = { ...inAppPlaybackState, ...state };
+
+  let trackChanged = false;
+  if (state.track) {
+    if (!previousTrackId || previousTrackId !== state.track.id) {
+      trackChanged = true;
+    }
+    currentInAppTrack = state.track;
+    store.save({ lastPlayedTrack: state.track });
+  }
 
   if (settingsWindow && !settingsWindow.isDestroyed()) {
     settingsWindow.webContents.send('inapp-state-sync', inAppPlaybackState);
   }
 
-  // Cập nhật Discord Rich Presence khi trạng thái play/pause thay đổi
-  if (currentInAppTrack && wasPlaying !== inAppPlaybackState.isPlaying) {
+  // Cap nhat Discord Rich Presence khi bai hat doi hoac trang thai play/pause thay doi
+  if (currentInAppTrack && (trackChanged || wasPlaying !== inAppPlaybackState.isPlaying)) {
     updateDiscordForCurrentTrack(currentInAppTrack, inAppPlaybackState.isPlaying, inAppPlaybackState.currentTime);
   }
 
@@ -605,6 +620,12 @@ ipcMain.handle('play-playlist', async (event, playlistId, startIndex = 0, shuffl
   }
 
   store.save({ defaultPlaylistId: playlistId });
+
+  const targetTrack = pl.tracks[startIndex] || pl.tracks[0];
+  currentInAppTrack = targetTrack;
+  inAppPlaybackState.isPlaying = true;
+  updateDiscordForCurrentTrack(targetTrack, true, 0);
+  updateTrayMenu();
 
   if (overlayWindow && !overlayWindow.isDestroyed()) {
     overlayWindow.webContents.send('play-playlist-queue', {

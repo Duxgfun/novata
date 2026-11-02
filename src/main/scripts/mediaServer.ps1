@@ -86,6 +86,13 @@ while ($cmd = [Console]::In.ReadLine()) {
     if ($mgr) {
         try {
             $session = $mgr.GetCurrentSession()
+            if ($session) {
+                $srcId = $session.SourceAppId
+                # Bo qua phien phat nhac cua chinh Novata de tranh doc nham nhac In-App lam nhac he thong ngoai
+                if ($srcId -and ($srcId -match "Novata" -or $srcId -match "electron")) {
+                    $session = $null
+                }
+            }
         } catch {
             $session = $null
         }

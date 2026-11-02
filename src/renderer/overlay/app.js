@@ -81,6 +81,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   await visualizer.initAudio('system');
   visualizer.start();
 
+  // Khoi tao bo dieu khien MediaSession cho Windows SMTC & Lock Screen
+  initMediaSessionActionHandlers();
+
   // Kết nối thẻ Audio Element vào Web Audio Analyser để sóng âm nhảy trực tiếp theo nhạc
   function connectAudioToVisualizer() {
     if (inAppAudioConnected || !visualizer.audioContext) return;
@@ -358,6 +361,156 @@ document.addEventListener('DOMContentLoaded', async () => {
     playInAppSong(track);
   });
 
+  // ========================================================
+  // QUAN LY WINDOWS SYSTEM MEDIA TRANSPORT CONTROLS (SMTC)
+  // Dong bo thong tin bai hat va dieu khien len Lock Screen / Flyout
+  // ========================================================
+
+  function updateMediaSession(track) {
+    if (!('mediaSession' in navigator)) return;
+
+    if (!track) {
+      navigator.mediaSession.metadata = null;
+      navigator.mediaSession.playbackState = 'none';
+      document.title = 'Novata nvt_0.2';
+      return;
+    }
+
+    const cleanTitle = (track.title || 'Unknown Title').trim();
+    const cleanArtist = (track.artist || 'Novata Music').trim();
+    const albumName = currentPlaylistName ? `Playlist: ${currentPlaylistName}` : (track.source || 'Novata Music');
+
+    // Cap nhat tieu de cua so de cac thanh widget va Taskbar dong bo ten bai hat
+    document.title = `${cleanTitle} • ${cleanArtist}`;
+
+    // Tao danh sach artwork anh bia cho Windows SMTC va Lock Screen
+    const artworkList = [];
+    let thumbUrl = track.thumbnail || '';
+    if (thumbUrl) {
+      if (thumbUrl.startsWith('//')) {
+        thumbUrl = 'https:' + thumbUrl;
+      }
+      if (thumbUrl.startsWith('http://') || thumbUrl.startsWith('https://') || thumbUrl.startsWith('data:')) {
+        artworkList.push(
+          { src: thumbUrl, sizes: '96x96' },
+          { src: thumbUrl, sizes: '128x128' },
+          { src: thumbUrl, sizes: '192x192' },
+          { src: thumbUrl, sizes: '256x256' },
+          { src: thumbUrl, sizes: '384x384' },
+          { src: thumbUrl, sizes: '512x512' }
+        );
+      }
+    }
+
+    // Luon bo sung logo Novata mac dinh lam anh fallback
+    try {
+      const fallbackUrl = new URL('../assets/icon.png', window.location.href).href;
+      artworkList.push({ src: fallbackUrl, sizes: '512x512', type: 'image/png' });
+    } catch (e) {}
+
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: cleanTitle,
+        artist: cleanArtist,
+        album: albumName,
+        artwork: artworkList
+      });
+      navigator.mediaSession.playbackState = inAppIsPlaying ? 'playing' : 'paused';
+    } catch (err) {
+      console.warn('Loi khi tao MediaMetadata:', err.message);
+    }
+
+    updateMediaSessionPosition();
+  }
+
+  function updateMediaSessionPosition() {
+    if (!('mediaSession' in navigator) || !('setPositionState' in navigator.mediaSession)) return;
+    if (!audioEl || !audioEl.duration || isNaN(audioEl.duration) || !isFinite(audioEl.duration) || audioEl.duration <= 0) return;
+
+    try {
+      navigator.mediaSession.setPositionState({
+        duration: audioEl.duration,
+        playbackRate: audioEl.playbackRate || 1.0,
+        position: Math.min(Math.max(0, audioEl.currentTime || 0), audioEl.duration)
+      });
+    } catch (err) {
+      // Bo qua loi tam thoi khi audio dang load duration
+    }
+  }
+
+  function initMediaSessionActionHandlers() {
+    if (!('mediaSession' in navigator)) return;
+
+    const actionMap = [
+      ['play', () => {
+        if (currentInAppTrack) {
+          handleInAppPlayPause();
+        } else {
+          window.novata.controlMedia('play_pause');
+        }
+      }],
+      ['pause', () => {
+        if (currentInAppTrack) {
+          handleInAppPlayPause();
+        } else {
+          window.novata.controlMedia('play_pause');
+        }
+      }],
+      ['previoustrack', () => {
+        if (currentInAppTrack) {
+          handleInAppPrev();
+        } else {
+          window.novata.controlMedia('prev');
+        }
+      }],
+      ['nexttrack', () => {
+        if (currentInAppTrack) {
+          handleInAppNext();
+        } else {
+          window.novata.controlMedia('next');
+        }
+      }],
+      ['stop', () => {
+        if (audioEl) {
+          audioEl.pause();
+          audioEl.currentTime = 0;
+        }
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.playbackState = 'none';
+        }
+      }],
+      ['seekto', (details) => {
+        if (audioEl && typeof details.seekTime === 'number' && !isNaN(details.seekTime)) {
+          audioEl.currentTime = details.seekTime;
+          updateMediaSessionPosition();
+        }
+      }],
+      ['seekbackward', (details) => {
+        if (audioEl) {
+          const offset = details.seekOffset || 10;
+          audioEl.currentTime = Math.max(0, audioEl.currentTime - offset);
+          updateMediaSessionPosition();
+        }
+      }],
+      ['seekforward', (details) => {
+        if (audioEl) {
+          const offset = details.seekOffset || 10;
+          const max = audioEl.duration || 0;
+          audioEl.currentTime = Math.min(max, audioEl.currentTime + offset);
+          updateMediaSessionPosition();
+        }
+      }]
+    ];
+
+    for (const [action, handler] of actionMap) {
+      try {
+        navigator.mediaSession.setActionHandler(action, handler);
+      } catch (err) {
+        // Bo qua cac action khong ho tro
+      }
+    }
+  }
+
   /**
    * Phát bài hát In-App qua HTML5 Audio và trích xuất direct audio stream
    * @param {Object} track 
@@ -394,6 +547,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     albumIcon.classList.add('active');
     progressFill.style.width = '0%';
 
+    // Cap nhat ngay lap tuc Windows SMTC va Lock Screen
+    updateMediaSession(track);
+
     let url = track.streamUrl;
     if (!url) {
       try {
@@ -406,6 +562,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       connectAudioToVisualizer();
       try {
         await audioEl.play();
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.playbackState = 'playing';
+        }
+        updateMediaSessionPosition();
       } catch (playErr) {
         console.error('Lỗi khi bắt đầu phát âm thanh:', playErr);
       }
@@ -425,6 +585,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         progressFill.style.width = `${percent}%`;
         trackTime.textContent = `${formatTime(inAppCurrentTime)} / ${formatTime(inAppDuration)}`;
 
+        updateMediaSessionPosition();
+
         window.novata.syncInAppState({
           isPlaying: inAppIsPlaying,
           currentTime: inAppCurrentTime,
@@ -441,12 +603,31 @@ document.addEventListener('DOMContentLoaded', async () => {
       inAppIsPlaying = true;
       playPauseIcon.className = 'bi bi-pause-fill';
       albumIcon.classList.add('active');
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'playing';
+      }
+      updateMediaSessionPosition();
     });
 
     audioEl.addEventListener('pause', () => {
       inAppIsPlaying = false;
       playPauseIcon.className = 'bi bi-play-fill';
       albumIcon.classList.remove('active');
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'paused';
+      }
+    });
+
+    audioEl.addEventListener('durationchange', () => {
+      updateMediaSessionPosition();
+    });
+
+    audioEl.addEventListener('ratechange', () => {
+      updateMediaSessionPosition();
+    });
+
+    audioEl.addEventListener('seeked', () => {
+      updateMediaSessionPosition();
     });
 
     // Tự động phát bài tiếp theo khi bài này phát xong (Auto-next)
@@ -488,6 +669,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (repeatMode === 'one') {
       audioEl.currentTime = 0;
       audioEl.play().catch(() => {});
+      updateMediaSessionPosition();
       return;
     }
 
@@ -505,6 +687,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         inAppIsPlaying = false;
         playPauseIcon.className = 'bi bi-play-fill';
         albumIcon.classList.remove('active');
+        updateMediaSession(null);
       }
       return;
     }
@@ -520,6 +703,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       inAppIsPlaying = false;
       playPauseIcon.className = 'bi bi-play-fill';
       albumIcon.classList.remove('active');
+      updateMediaSession(null);
     }
   }
 
@@ -527,6 +711,15 @@ document.addEventListener('DOMContentLoaded', async () => {
    * Chuyển bài kế tiếp theo thao tác người dùng
    */
   function handleInAppNext() {
+    if (!inAppQueue || inAppQueue.length === 0) return;
+
+    if (inAppQueue.length === 1) {
+      audioEl.currentTime = 0;
+      audioEl.play().catch(() => {});
+      updateMediaSessionPosition();
+      return;
+    }
+
     if (isShuffle) {
       if (shufflePointer < shuffleIndices.length - 1) {
         shufflePointer++;
@@ -552,9 +745,19 @@ document.addEventListener('DOMContentLoaded', async () => {
    * Quay lại bài trước
    */
   function handleInAppPrev() {
+    if (!inAppQueue || inAppQueue.length === 0) return;
+
     // Nếu bài đã phát hơn 3 giây, tua lại từ đầu bài
     if (audioEl && audioEl.currentTime > 3) {
       audioEl.currentTime = 0;
+      updateMediaSessionPosition();
+      return;
+    }
+
+    if (inAppQueue.length === 1) {
+      audioEl.currentTime = 0;
+      audioEl.play().catch(() => {});
+      updateMediaSessionPosition();
       return;
     }
 
