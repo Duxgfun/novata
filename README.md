@@ -1,165 +1,182 @@
-# Novata - Huong Dan Su Dung & Wiki Huong Dan (User Guide)
+# Novata - User Guide & Documentation Wiki
 
-Chao mung ban den voi Novata - Trinh hien thi song nhac va phat nhac toi gian danh rieng cho Windows 10 va Windows 11. Novata mang den phong cach toi gian (monochrome matte) ket hop cung giao dien the kinh mo (frosted glass) noi tren man hinh desktop.
-
----
-
-## Muc Luc
-
-1. [Tong Quan Ve Novata](#1-tong-quan-ve-novata)
-2. [Cai Dat Va Khoi Chay Tu Ma Nguon](#2-cai-dat-va-khoi-chay-tu-ma-nguon)
-3. [Huong Dan Su Dung Desktop Widget](#3-huong-dan-su-dung-desktop-widget)
-4. [Tuy Chinh Giao Dien Song Nhac (Appearance)](#4-tuy-chinh-giao-dien-song-nhac-appearance)
-5. [Trinh Phat Nhac Va Quan Ly Playlist](#5-trinh-phat-nhac-va-quan-ly-playlist)
-6. [Tich Hop Discord Rich Presence](#6-tich-hop-discord-rich-presence)
-7. [Bang Phim Tat & Thao Tac Nhanh](#7-bang-phim-tat--thao-tac-nhanh)
-8. [Xu Ly Su Co Thuong Gap (Troubleshooting)](#8-xu-ly-su-co-thuong-gap-troubleshooting)
+Welcome to **Novata** - a minimalist desktop audio spectrum visualizer and background music streamer engineered specifically for Windows 10 and Windows 11. Novata combines a sleek monochrome matte aesthetic with floating frosted glass UI elements designed to sit unobtrusively on your desktop.
 
 ---
 
-## 1. Tong Quan Ve Novata
+## Table of Contents
 
-Novata duoc thiet ke de hoa minh hoan toan vao man hinh lam viec cua ban:
-- **Khong che khuat tam nhin**: Song nhac nam sat canh taskbar, khong co khung vien den thui, xuyen thau chuot (click-through) de ban choi game hoac lam viec ma khong bi vuong vi.
-- **Bat am thanh thoi gian thuc**: Tu dong bat am thanh he thong (Spotify, YouTube tren Chrome/Edge, Apple Music, Game) hoac phat nhac truc tiep tu ung dung.
-- **Doi moi voi nvt_0.4**: Bo sung Dang song lien tuc (Wave) voi co che vat lieu tach biet giua Vien tren cung (Top Crest Border) va Than ben trong (Inner Body), tuy bien tuy y giua Mau dac (Solid) va Kinh mo trong suot (Frosted Glass).
+1. [Overview](#1-overview)
+2. [What's New in nvt_0.4 Beta](#2-whats-new-in-nvt_04-beta)
+3. [System Requirements & Quick Start](#3-system-requirements--quick-start)
+4. [Desktop Widget & 8-Direction Resizing](#4-desktop-widget--8-direction-resizing)
+5. [Visualizer & Material Customization](#5-visualizer--material-customization)
+6. [Music Streaming & Playlist Management](#6-music-streaming--playlist-management)
+7. [Discord Rich Presence (RPC)](#7-discord-rich-presence-rpc)
+8. [Shortcuts & Quick Actions](#8-shortcuts--quick-actions)
+9. [Troubleshooting & FAQ](#9-troubleshooting--faq)
 
 ---
 
-## 2. Cai Dat Va Khoi Chay Tu Ma Nguon
+## 1. Overview
 
-### 2.1. Yeu Cau He Thong
-- He dieu hanh: Windows 10 hoac Windows 11 (64-bit).
-- Moi truong: Node.js phien ban 18 tro len (khuyen nghi Node.js 20 hoac 24).
+Novata is built from the ground up to integrate seamlessly into your daily desktop workflow:
 
-### 2.2. Cac Buoc Thuc Hien
+- **Unobtrusive Desktop Integration**: Renders directly above your Windows taskbar without any bulky borders or black bounding boxes. Mouse events pass through the spectrum canvas natively (click-through) so your gaming, coding, and browsing remain entirely uninterrupted.
+- **Real-Time Dual Audio Capture**: Automatically detects and visualizes desktop audio from external applications (Spotify, YouTube on Chrome/Edge/Firefox, Apple Music, games) or directly streams audio in-app with zero latency.
+- **Minimalist Aesthetic**: Inspired by modern architectural matte finishes and authentic translucent glassmorphism.
 
-1. **Clone hoac tai ma nguon**:
+---
+
+## 2. What's New in nvt_0.4 Beta
+
+Version `nvt_0.4 beta` introduces major visual, material, and interaction enhancements:
+
+- **Continuous Waveform with Dual-Layer Materials**: Alongside vertical spectrum bars, users can enable a smooth, organic continuous wave. The waveform features two independently configurable components:
+  - **Top Crest Border**: A crisp outline along the upper crest of the wave with dedicated color pickers, opacity control, or pure frosted glass reflection.
+  - **Wave Inner Body**: The filled region beneath the wave down to the baseline, supporting either a 100% solid color fill or pure monochrome frosted glass.
+- **Pure Colorless Frosted Glass**: Both wave layers and the desktop widget offer genuine translucent frosted glass with independent **Transparency** and **Blur** sliders and zero artificial tinting.
+- **Streamlined Desktop Widget**:
+  - Direct **Move & Resize** button (`arrows-move`) and **Settings** button (`gear-fill`) placed conveniently on the widget control bar.
+  - Replaced dark muddy blocks with translucent frosted glass buttons for high legibility across light and dark wallpapers.
+  - Enhanced typography contrast ensures track titles and artist names remain legible on bright backgrounds.
+- **8-Direction Window-Like Resizing**: Freely resize the player widget from any of its 4 edges or 4 corners just like a native Windows window, or drag to position anywhere on screen.
+
+---
+
+## 3. System Requirements & Quick Start
+
+### 3.1. System Requirements
+- **Operating System**: Windows 10 or Windows 11 (64-bit).
+- **Runtime**: Node.js v18 or later (Node.js v20 or v24 recommended).
+
+### 3.2. Installation & Running from Source
+
+1. **Clone the repository**:
    ```bash
    git clone https://github.com/Duxgfun/novata.git
-   cd novata/release
+   cd novata
    ```
 
-2. **Cai dat cac goi thu vien can thiet**:
+2. **Install project dependencies**:
    ```bash
    npm install
    ```
 
-3. **Khoi chay ung dung**:
+3. **Launch the application in development mode**:
    ```bash
    npm start
    ```
 
-4. **Dong goi file cai dat `.exe` (tuy chon)**:
+4. **Package the standalone Windows installer (optional)**:
    ```bash
    npm run build
    ```
-   Sau khi build xong, file cai dat `.exe` se nam trong thu muc `dist/`.
+   The generated NSIS setup executable and unpacked binaries will be located in the `dist/` directory.
 
 ---
 
-## 3. Huong Dan Su Dung Desktop Widget
+## 4. Desktop Widget & 8-Direction Resizing
 
-Desktop Widget la the phat nhac kinh mo noi tren man hinh desktop cua ban.
+The Desktop Widget is a floating media controller card layered smoothly over your desktop.
 
-### 3.1. Cac Nut Chuc Nang Tren Widget
-- **Play / Pause**: Phat hoac tam dung bai hat dang phat.
-- **Next / Previous**: Chuyen den bai hat ke tiep hoac quay lai bai truoc.
-- **Shuffle**: Bat/tat che do phat ngau nhien danh sach.
-- **Repeat**: Chuyen doi giua cac che do lap: Lap toan bo danh sach, Lap 1 bai, hoac Khong lap.
-- **Nut Move & Resize (icon 4 mui ten)**: Bat/tat che do chinh vi tri va kich thuoc widget.
-- **Nut Settings (icon banh rang)**: Mo ngay bang cai dat Novata.
+### 4.1. Widget Control Buttons
+- **Play / Pause**: Start or pause audio playback.
+- **Next / Previous**: Skip to the next or previous track in the active queue.
+- **Shuffle**: Toggle randomized playback order on or off.
+- **Repeat**: Cycle through repeat modes (Repeat All, Repeat One, No Repeat).
+- **Move & Resize Button (4-way arrows icon)**: Toggle widget editing mode.
+- **Settings Button (gear icon)**: Open the Novata Settings window immediately.
 
-### 3.2. Che Do Chinh Vi Tri & Kich Thuoc (Move & Resize)
-1. Nhan vao nut **Move & Resize** tren the widget (hoac nhan chuot phai vao widget).
-2. Widget se hien vien vien net dut de ban biet dang o che do chinh sua:
-   - **Di chuyen**: Giu chuot trai vao giua the widget va keo den bat ky vi tri nao ban muon tren man hinh.
-   - **Chinh do to nho 8 huong**: Di chuot vao 4 canh hoac 4 goc cua widget (chuot se bien thanh mui ten resize), giu va keo de phong to hoac thu nho nhu mot cua so Windows thong thuong.
-3. Nhan lai vao nut **Move & Resize** (hoac nhan chuot phai lan nua) de khoa vi tri va kich thuoc. Vi tri se duoc tu dong luu lai cho nhung lan mo app tiep theo.
-
----
-
-## 4. Tuy Chinh Giao Dien Song Nhac (Appearance)
-
-Mo bang **Settings** -> chon muc **Appearance** o menu ben trai de tuy bien toan dien:
-
-### 4.1. Chon Dang Song (Waveform Type)
-- **Vertical Bars (Cot song)**: Cac cot song nhac truyen thong nhay deu tu giua ra hai ben.
-- **Continuous Wave (Dang song)**: Duong song uon luon mem mai lien tuc.
-
-### 4.2. Tuy Chinh Chat Lieu Dang Song (Waveform Material)
-Dang song co 2 thanh phan doc lap, moi thanh phan deu cho phep ban chon giua **Solid Color** hoac **Glass**:
-
-1. **Top Crest Border (Vien tren cung cua song)**:
-   - **Solid Color**: Chon mau vien tu bang mau (do, cam, xanh, trang...) va chinh do trong suot.
-   - **Glass (Kinh mo trong suot)**: Vien kinh phan chieu trong suot, tuy chinh do mo (Blur) va do trong (Transparency).
-2. **Wave Inner Body (Than ben trong cua song)**:
-   - **Solid Color**: To kin vung ben duoi song thanh mot mang mau dong nhat (vi du: mau cam sang nhu thiet ke) voi do phu 100%.
-   - **Glass (Kinh mo trong suot)**: Vung ben duoi bien thanh mang kinh trong suot mo ao, phan chieu hinh nen may tinh ma khong co bat ky mau nhan tao nao.
-
-### 4.3. Tuy Chinh Chat Lieu The Widget (Widget Material)
-- **Solid**: Be mat nham toi mau hien dai, phu hop phong cach matte toi gian.
-- **Glass**: Mat kinh mo trong suot cao cap, co the dieu chinh muc do lam mo nen (Blur) va do trong suot theo y thich.
-
-### 4.4. Thong So Kich Thuoc & Do Nhay
-- **Spectrum Height**: Tang giam chieu cao cuc dai cua song nhac (tu 40px den 320px).
-- **Audio Sensitivity**: Tang giam do nhay cua song theo bien do am luong cua bai hat.
+### 4.2. Move & Resize Editing Mode
+1. Click the **Move & Resize** button on the widget (or right-click the widget surface).
+2. The widget will display a dashed outline indicating editing mode is active:
+   - **Repositioning**: Left-click and drag from the center area of the widget to reposition it anywhere on your desktop.
+   - **8-Direction Resizing**: Hover over any of the 4 edges (`North`, `South`, `East`, `West`) or 4 corners (`NW`, `NE`, `SW`, `SE`). The cursor will switch to a native resize arrow. Click and drag to expand or shrink the widget freely.
+3. Click the **Move & Resize** button again (or right-click) to lock the position and dimensions. Coordinates and dimensions are automatically persisted across launches.
 
 ---
 
-## 5. Trinh Phat Nhac Va Quan Ly Playlist
+## 5. Visualizer & Material Customization
 
-### 5.1. Tim Kiem & Nghe Nhac Truc Tiep
-1. Vao muc **Music Player** trong bang cai dat.
-2. Go ten bai hat hoac ten nghe si vao o tim kiem roi nhan Enter.
-3. Nhan vao ket qua de nghe ngay lap tuc.
+Open **Settings** and navigate to the **Appearance** tab to customize your visualizer:
 
-### 5.2. Tao Va Quan Ly Playlists
-- Vao muc **Playlists** de tao cac danh sach bai hat rieng biet (Study, Chill, Workout...).
-- Them nhanh bai hat vao playlist bang cach nhan vao nut them playlist o the bai hat.
-- Ho tro doi ten playlist va xoa playlist khi khong con su dung.
+### 5.1. Waveform Types
+- **Vertical Bars**: Classic spectrum analyzer bars pulsing symmetrically from the center outward to both screen edges.
+- **Continuous Wave**: Organic flowing wave driven by Catmull-Rom to Cubic Bezier curve interpolation.
 
-### 5.3. Nhac Mac Dinh Khoi Dong (Startup Auto-Play)
-- Ban co the danh dau bat ky Playlist nao bang icon ngoi sao hoac chon trong muc cai dat de Novata tu dong phat ngay khi ban vua khoi dong ung dung ma khong can thao tac thu cong.
+### 5.2. Waveform Material System
+When Continuous Wave is active, you can configure both layers independently:
 
-### 5.4. Tu Dong Dong Bo Voi Trinh Phat Ben Ngoai
-- Neu ban mo nhac tren Spotify, YouTube (trinh duyet Chrome/Edge), Apple Music... Novata se tu dong bat ten bai hat, anh bia va tao song nhac phu hop voi am thanh he thong.
+1. **Top Crest Border**:
+   - **Solid Color**: Pick any solid color (pure white, coral, blue, emerald) with adjustable opacity.
+   - **Glass**: Colorless translucent frosted glass with fine-tuned Blur (px) and Transparency sliders.
+2. **Wave Inner Body**:
+   - **Solid Color**: Fills the entire area beneath the wave with vibrant 100% solid color coverage.
+   - **Glass**: Turns the area beneath the wave into a pure, colorless translucent frosted glass panel that organically reflects your wallpaper.
+
+### 5.3. Widget Board Material
+- **Solid**: Sleek matte dark finish (`#111116`) with subtle edge highlights.
+- **Glass**: Authentic frosted glass surface with customizable Blur radius and Transparency.
+
+### 5.4. Dimensions & Sensitivity
+- **Spectrum Height**: Adjust peak visualizer amplitude (from 40px up to 320px).
+- **Audio Sensitivity**: Fine-tune responsiveness to low-volume or high-gain audio sources (0.1x to 2.0x).
 
 ---
 
-## 6. Tich Hop Discord Rich Presence
+## 6. Music Streaming & Playlist Management
 
-Novata cho phep ban khoe voi ban be tren Discord bai hat ban dang nghe:
-1. Mo **Settings** -> muc **General**.
-2. Bat cong tac **Discord Rich Presence**.
-3. Discord cua ban se tu dong hien thi trang thai nghe nhac kem ten bai, nghe si, anh bia va thoi gian bai hat da phat.
+### 6.1. Search & In-App Streaming
+1. Open **Settings** and navigate to the **Music Player** tab.
+2. Enter any song, artist, or album title into the search field and press Enter.
+3. Click any search result to begin streaming immediately with real-time waveform visualization.
+
+### 6.2. Custom Playlists
+- Navigate to the **Playlists** tab to create, rename, and manage custom collections (e.g., Focus, Lo-Fi, Workout).
+- Add songs to playlists with a single click from search results or the active player card.
+
+### 6.3. Default Music (Startup Auto-Play)
+- Configure Novata to automatically resume playback on application launch. Mark any playlist as default using the star icon, or select "Last Played Track" in settings.
+
+### 6.4. Windows SMTC Automatic Synchronization
+- When playing music externally through Spotify, YouTube (Chrome/Edge/Firefox), or Apple Music, Novata automatically synchronizes metadata (title, artist, artwork) and renders real-time loopback waveforms.
 
 ---
 
-## 7. Bang Phim Tat & Thao Tac Nhanh
+## 7. Discord Rich Presence (RPC)
 
-| Thao tac | Chuc nang |
+Novata features native Discord Rich Presence integration via Win32 Named Pipes:
+1. Open **Settings** -> **General**.
+2. Enable the **Discord Rich Presence** toggle.
+3. Your Discord profile will automatically display the track title, artist, elapsed timer, album thumbnail, and playback source.
+
+---
+
+## 8. Shortcuts & Quick Actions
+
+| Action | Result |
 | :--- | :--- |
-| **Nhan vao the Widget** | Tap trung vao the phat nhac |
-| **Nhan chuot phai vao the Widget** | Bat/tat nhanh che do di chuyen & chinh size (Move & Resize) |
-| **Keo tha chuot o the Widget** | Di chuyen vi tri the toi bat ky dau tren man hinh |
-| **Keo cac canh/goc widget** | Thay doi chieu dai, chieu rong cua the widget |
-| **Media Play / Pause tren ban phim** | Phat hoac dung bai hat |
-| **Media Next / Previous tren ban phim** | Chuyen bai tiep theo hoac bai truoc |
+| **Left-Click Widget Body** | Focus widget |
+| **Right-Click Widget Body** | Toggle Move & Resize editing mode |
+| **Drag Widget Center** | Reposition widget across screens |
+| **Drag Widget Handles (8 directions)** | Resize widget width and height |
+| **Keyboard Media Play / Pause** | Toggle play and pause |
+| **Keyboard Media Next / Previous** | Skip to next or previous track |
 
 ---
 
-## 8. Xu Ly Su Co Thuong Gap (Troubleshooting)
+## 9. Troubleshooting & FAQ
 
-### 8.1. Song nhac khong nhay khi phat am thanh tren may tinh
-- Kiem tra xem am luong tren may tinh cua ban co dang bi Mute khong.
-- Neu dang nghe tu trinh duyet web, hay dam bao tab trinh duyet dang phat ra am thanh thuc te.
-- Vao **Settings** -> **Appearance** va tang thanh truyen **Audio Sensitivity** len muc cao hon (vi du 0.8x - 1.2x).
+### 9.1. Waveform does not react to system audio
+- Ensure your Windows system output volume is not muted.
+- If streaming from a web browser, confirm that audio is actively playing through the tab.
+- In **Settings** -> **Appearance**, increase the **Audio Sensitivity** slider (e.g., set to 0.8x - 1.2x).
 
-### 8.2. Discord khong hien thi bai hat dang nghe
-- Dam bao ung dung Discord da duoc mo truoc hoac mo cung luc voi Novata.
-- Kiem tra trong phan **User Settings** -> **Activity Privacy** tren Discord xem tuy chon "Display current activity as a status message" da duoc bat hay chua.
-- Tat va bat lai cong tac **Discord Rich Presence** trong phan cai dat cua Novata de ung dung ket noi lai duong ong IPC.
+### 9.2. Discord does not display the current song
+- Ensure the Discord desktop app is running.
+- In Discord, verify that **User Settings** -> **Activity Privacy** -> "Display current activity as a status message" is enabled.
+- Toggle the **Discord Rich Presence** switch off and back on in Novata Settings to re-establish the named pipe connection.
 
-### 8.3. The Widget bi lech ra khoi man hinh
-- Mo **Settings** -> **Appearance**, nhan nut **Reset Widget Position** de the widget tu dong quay ve vi tri mac dinh o goc duoi ben trai man hinh.
+### 9.3. Widget is positioned outside the visible screen
+- Open **Settings** -> **Appearance** and click the **Reset Widget Position** button to instantly restore default coordinates at the bottom-left of your primary display.
