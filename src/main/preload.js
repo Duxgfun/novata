@@ -1,6 +1,6 @@
 /**
  * Preload Script - Cung cấp cầu nối IPC an toàn cho giao diện Renderer
- * Phiên bản nvt_0.4 beta - Hỗ trợ Dạng sóng (Waveform), Chất liệu Solid/Glass trong suốt, Chế độ chỉnh vị trí & kích cỡ Widget
+ * Phiên bản nvt_0.5 beta - Hỗ trợ Lyrics Widget (chỉnh vị trí, kích thước, font chữ), Dán link trực tiếp, Dạng sóng (Waveform), Chất liệu Solid/Glass trong suốt
  * Tuân thủ bảo mật contextIsolation và cấm trực tiếp Node integration.
  * Bình luận bằng tiếng Việt theo quy định toàn cục.
  */
@@ -78,10 +78,25 @@ contextBridge.exposeInMainWorld('novata', {
   // Quản lý Discord Rich Presence (RPC)
   getDiscordStatus: () => ipcRenderer.invoke('get-discord-status'),
   setDiscordRpcEnabled: (enabled) => ipcRenderer.invoke('set-discord-rpc-enabled', enabled),
+  setDiscordClientId: (clientId) => ipcRenderer.invoke('set-discord-client-id', clientId),
   onDiscordStatusChange: (callback) => {
     const handler = (event, status) => callback(status);
     ipcRenderer.on('discord-status-updated', handler);
     return () => ipcRenderer.removeListener('discord-status-updated', handler);
+  },
+
+  // Phân tích link dán trực tiếp (Spotify, YouTube, SoundCloud, Apple Music)
+  resolveMediaUrl: (url) => ipcRenderer.invoke('resolve-media-url', url),
+
+  // Quản lý Lời bài hát (Lyrics) & Tùy biến Font chữ
+  getLyrics: (trackInfo) => ipcRenderer.invoke('get-lyrics', trackInfo),
+  selectFontFile: () => ipcRenderer.invoke('select-font-file'),
+  resetCustomFont: () => ipcRenderer.invoke('reset-custom-font'),
+  toggleLyricsWidget: (show) => ipcRenderer.invoke('toggle-lyrics-widget', show),
+  onToggleLyricsCard: (callback) => {
+    const handler = (event, show) => callback(show);
+    ipcRenderer.on('toggle-lyrics-card', handler);
+    return () => ipcRenderer.removeListener('toggle-lyrics-card', handler);
   },
 
   // Chuyển nhanh giữa các Tab

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Novata nvt_0.4 beta</title>
+  <title>Novata nvt_0.5 beta</title>
   <link rel="stylesheet" href="../assets/bootstrap-icons/bootstrap-icons.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -87,6 +87,11 @@
           <div class="control-divider"></div>
 
           <div class="control-group-tools">
+            <!-- Nút bật/tắt bảng hiển thị lời bài hát (Lyrics Widget) -->
+            <button class="mono-btn btn-small" id="btn-toggle-lyrics" title="Toggle Lyrics">
+              <i class="bi bi-chat-square-quote"></i>
+            </button>
+
             <!-- Nút bật chế độ di chuyển & co giãn kích thước (Move & Resize) -->
             <button class="mono-btn btn-small" id="btn-edit-position" title="Move & Resize Widget">
               <i class="bi bi-arrows-move"></i>
@@ -103,6 +108,56 @@
             <i class="bi bi-check-lg"></i>
             <span>Done</span>
           </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Thẻ hiển thị lời bài hát Lyrics Widget (Có thể kéo thả vị trí & co giãn kích thước 8 hướng giống widget điều khiển) -->
+  <div class="glass-player-card mat-glass glass-lyrics-card" id="lyrics-card">
+    <!-- 8 Điểm neo co giãn kích cỡ giống cửa sổ Windows (Resize Handles) -->
+    <div class="resize-handle handle-n" data-dir="n"></div>
+    <div class="resize-handle handle-s" data-dir="s"></div>
+    <div class="resize-handle handle-w" data-dir="w"></div>
+    <div class="resize-handle handle-e" data-dir="e"></div>
+    <div class="resize-handle handle-nw" data-dir="nw"></div>
+    <div class="resize-handle handle-ne" data-dir="ne"></div>
+    <div class="resize-handle handle-sw" data-dir="sw"></div>
+    <div class="resize-handle handle-se" data-dir="se"></div>
+
+    <!-- Bảng chỉ dẫn khi ở chế độ Edit Mode -->
+    <div class="drag-hint hidden" id="lyrics-drag-hint">
+      <i class="bi bi-arrows-move"></i>
+      <span>Drag lyrics to move • Drag edges to resize • Right-click or Done when finished</span>
+    </div>
+
+    <div class="lyrics-card-inner">
+      <div class="lyrics-card-header">
+        <div class="lyrics-header-meta">
+          <i class="bi bi-chat-square-quote"></i>
+          <span class="lyrics-header-title">Lyrics</span>
+          <span class="lyrics-badge" id="lyrics-type-badge">Ready</span>
+        </div>
+        <div class="lyrics-header-controls">
+          <button class="mono-btn btn-small" id="btn-edit-lyrics-pos" title="Move & Resize Lyrics">
+            <i class="bi bi-arrows-move"></i>
+          </button>
+          <button class="mono-btn btn-small" id="btn-close-lyrics" title="Hide Lyrics">
+            <i class="bi bi-x-lg"></i>
+          </button>
+          <button class="mono-btn btn-small btn-confirm-pos hidden" id="btn-confirm-lyrics-pos" title="Save position and size">
+            <i class="bi bi-check-lg"></i>
+            <span>Done</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="lyrics-scroll-container" id="lyrics-scroll-container">
+        <div class="lyrics-lines-wrapper" id="lyrics-lines-wrapper">
+          <div class="lyrics-idle-prompt">
+            <i class="bi bi-music-note-beamed"></i>
+            <span>Play a song to view lyrics</span>
+          </div>
         </div>
       </div>
     </div>

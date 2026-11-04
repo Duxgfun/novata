@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark">
-  <title>Novata nvt_0.4 beta - Settings & Music Center</title>
+  <title>Novata nvt_0.5 beta - Settings & Music Center</title>
   <link rel="stylesheet" href="../assets/bootstrap-icons/bootstrap-icons.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -15,7 +15,7 @@
       <div class="title-branding">
         <img src="../assets/icon.png" class="brand-logo-img" alt="Novata Logo">
         <span class="brand-title">Novata</span>
-        <span class="brand-badge">nvt_0.4 beta</span>
+        <span class="brand-badge">nvt_0.5 beta</span>
       </div>
 
       <div class="window-actions">
@@ -59,15 +59,19 @@
             <p>Search and play music with real-time waveform visualization</p>
           </div>
 
-          <!-- Search Bar -->
+          <!-- Search Bar & Direct Link Paste -->
           <div class="search-bar-wrap">
             <div class="search-input-box">
               <i class="bi bi-search search-box-icon"></i>
-              <input type="text" id="music-search-input" placeholder="Search songs, artists, or beats..." autocomplete="off">
+              <input type="text" id="music-search-input" placeholder="Search songs, or paste Spotify / YouTube / SoundCloud / Apple Music link..." autocomplete="off">
               <button id="btn-clear-search" class="search-clear-btn hidden" title="Clear search">
                 <i class="bi bi-x"></i>
               </button>
             </div>
+            <button id="btn-paste-link" class="mono-btn-search btn-paste-link" title="Paste link from clipboard">
+              <i class="bi bi-clipboard"></i>
+              <span>Paste</span>
+            </button>
             <button id="btn-submit-search" class="mono-btn-search">
               <i class="bi bi-arrow-right"></i>
               <span>Search</span>
@@ -581,6 +585,21 @@
             </div>
           </div>
 
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Render Framerate (FPS)</span>
+              <span class="setting-sub">Cap visualizer animation speed to save CPU and battery</span>
+            </div>
+            <div class="setting-control-col">
+              <select class="mono-select" id="select-render-fps">
+                <option value="20">20 FPS (Eco Saver • Lowest CPU)</option>
+                <option value="30" selected>30 FPS (Balanced • Recommended)</option>
+                <option value="45">45 FPS (Smooth)</option>
+                <option value="60">60 FPS (Ultra Smooth • Higher CPU)</option>
+              </select>
+            </div>
+          </div>
+
           <div class="divider"></div>
 
           <!-- 3.4. VỊ TRÍ MỌC SÓNG (SCREEN EDGE POSITION) -->
@@ -696,6 +715,118 @@
               </button>
             </div>
           </div>
+
+          <div class="divider"></div>
+
+          <!-- LYRICS WIDGET & CUSTOM TYPOGRAPHY -->
+          <div class="section-header">
+            <h3>Desktop Floating Lyrics & Typography</h3>
+            <p>Display real-time synchronized song lyrics with custom font support and freeform 8-direction resizing</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Show Lyrics Widget</span>
+              <span class="setting-sub">Display floating karaoke-style lyrics card on desktop</span>
+            </div>
+            <div class="setting-control-col">
+              <label class="mono-switch">
+                <input type="checkbox" id="check-show-lyrics" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Chọn tệp font chữ tùy chỉnh (.ttf, .otf, .woff, .woff2) -->
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Custom Font File</span>
+              <span class="setting-sub">Choose any font file (.ttf, .otf, .woff, .woff2) from your computer to render lyrics</span>
+            </div>
+            <div class="setting-control-col custom-font-control-col">
+              <div class="custom-font-box">
+                <div class="font-current-info">
+                  <i class="bi bi-file-earmark-font"></i>
+                  <span id="font-file-name-label">Default System Font</span>
+                </div>
+                <div class="font-buttons-group">
+                  <button class="mono-apply-btn btn-small" id="btn-choose-font-file">
+                    <i class="bi bi-folder2-open"></i>
+                    <span>Choose Font File...</span>
+                  </button>
+                  <button class="mono-reset-btn btn-small hidden" id="btn-reset-font-file" title="Reset font to default">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                    <span>Reset</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chọn bộ font có sẵn -->
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Font Family Style</span>
+              <span class="setting-sub">Select typography style or use your uploaded custom font</span>
+            </div>
+            <div class="setting-control-col">
+              <select id="select-lyrics-font" class="mono-select">
+                <option value="system">Default System (Segoe UI / Inter)</option>
+                <option value="custom" id="opt-custom-font" disabled>Custom Uploaded Font</option>
+                <option value="'Outfit', sans-serif">Modern Sans (Outfit)</option>
+                <option value="'Playfair Display', serif">Editorial Serif (Playfair)</option>
+                <option value="'Consolas', 'Courier New', monospace">Monospace (Code Style)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Kích thước chữ Lyrics -->
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Lyrics Font Size</span>
+              <span class="setting-sub">Adjust text size of the lyrics lines</span>
+            </div>
+            <div class="setting-control-col">
+              <div class="range-wrap">
+                <input type="range" id="range-lyrics-font-size" min="12" max="36" step="1" value="18">
+                <span class="range-val" id="val-lyrics-font-size">18px</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Căn lề chữ Lyrics (Left / Center) -->
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Text Alignment</span>
+              <span class="setting-sub">Align lyrics text to center or left side</span>
+            </div>
+            <div class="setting-control-col">
+              <div class="choice-tabs-row">
+                <button class="choice-tab-btn active" id="btn-align-center" data-align="center">
+                  <i class="bi bi-text-center"></i>
+                  <span>Center</span>
+                </button>
+                <button class="choice-tab-btn" id="btn-align-left" data-align="left">
+                  <i class="bi bi-text-left"></i>
+                  <span>Left</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chỉnh vị trí và kích thước Lyrics trên Desktop -->
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Adjust Lyrics on Desktop</span>
+              <span class="setting-sub">Activate drag-to-move and 8-direction window resizing for the lyrics widget</span>
+            </div>
+            <div class="setting-control-col">
+              <button class="mono-apply-btn" id="btn-trigger-lyrics-edit-mode">
+                <i class="bi bi-arrows-move"></i>
+                <span>Adjust on Desktop</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- 4. TAB GENERAL -->
@@ -709,7 +840,7 @@
           <div class="setting-item">
             <div class="setting-label-col">
               <span class="setting-title">Enable Discord RPC</span>
-              <span class="setting-sub">Displays live playback details on your Discord user profile</span>
+              <span class="setting-sub">Displays live playback details on your Discord user profile as Novata</span>
             </div>
             <div class="setting-control-col rpc-control-col">
               <span class="status-indicator-badge" id="discord-rpc-status-badge">Checking...</span>
@@ -809,17 +940,19 @@
                 <img src="../assets/icon.png" class="about-logo-img" alt="Novata Logo">
               </div>
               <div class="about-meta">
-                <div class="about-app-name">Novata Visualizer</div>
-                <div class="about-app-ver">Version nvt_0.4 beta &bull; Minimalist Audio Visualizer & Music Player</div>
+                <div class="about-app-name">Novata</div>
+                <div class="about-app-ver">Version nvt_0.5 beta &bull; Minimalist Audio Visualizer, Music Player & Floating Lyrics</div>
               </div>
             </div>
             <p class="about-desc">
-              Pure minimalist audio visualizer for Windows. Features seamless wallpaper integration, symmetrical center-out waveform, Discord Rich Presence, Multi-Playlists with auto-next, and instant startup playback.
+              Pure minimalist audio visualizer for Windows. Features seamless wallpaper integration, symmetrical center-out waveform, floating synchronized lyrics with custom font support, direct Spotify/YouTube/SoundCloud/Apple Music link player, Discord Rich Presence, and Multi-Playlists.
             </p>
             <div class="about-credits-row">
+              <span class="credit-badge">Floating Lyrics</span>
+              <span class="credit-badge">Direct Link Player</span>
+              <span class="credit-badge">Custom Typography</span>
               <span class="credit-badge">Discord Rich Presence</span>
               <span class="credit-badge">Multi-Playlists</span>
-              <span class="credit-badge">Auto-Next & Shuffle</span>
               <span class="credit-badge">Zero Lag Engine</span>
             </div>
           </div>

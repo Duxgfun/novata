@@ -42,13 +42,14 @@ body {
 /* 1. Canvas sóng âm: 100% trong suốt không nền, không bắt chuột */
 #visualizer-canvas {
   position: absolute;
-  top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
   z-index: 1;
   pointer-events: none;
   background: transparent !important;
+  contain: strict;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 /* 2. Thẻ điều khiển bài hát Widget nổi trên màn hình */
@@ -67,6 +68,9 @@ body {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   pointer-events: auto;
   box-sizing: border-box;
+  contain: layout style;
+  isolation: isolate;
+  transform: translateZ(0);
 }
 
 /* Chất liệu Solid cho thẻ Widget */
@@ -240,6 +244,8 @@ body {
   flex-shrink: 0;
   width: 60px;
   height: 60px;
+  contain: paint layout;
+  transform: translateZ(0);
 }
 
 .album-disc-scallop {
@@ -256,6 +262,9 @@ body {
   box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.6);
   overflow: hidden;
   position: relative;
+  contain: paint layout style;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .album-thumb-img {
@@ -273,6 +282,8 @@ body {
 }
 
 .disc-spinning {
+  will-change: transform;
+  transform: translateZ(0);
   animation: spin 12s linear infinite;
   animation-play-state: paused;
 }
@@ -370,11 +381,14 @@ body {
 
 .progress-fill {
   height: 100%;
-  width: 0%;
+  width: 100%;
   background: #ffffff;
   border-radius: 2px;
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
-  transition: width 0.15s linear;
+  transform-origin: left center;
+  transform: scaleX(0);
+  will-change: transform;
+  transition: transform 0.2s linear;
 }
 
 /* Hàng nút điều khiển - Được cấu trúc cân đối và đẹp mắt */
@@ -416,8 +430,6 @@ body {
   align-items: center;
   justify-content: center;
   transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
 }
 
@@ -505,6 +517,163 @@ body {
 .glass-player-card.hidden {
   display: none !important;
 }
+
+/* ========================================================
+   GIAO DIỆN THẺ LỜI BÀI HÁT (LYRICS WIDGET)
+   Kế thừa hệ thống kính mờ không màu và co giãn 8 hướng
+   ======================================================== */
+.glass-lyrics-card {
+  position: absolute;
+  left: 28px;
+  top: 100px;
+  width: 380px;
+  height: 260px;
+  min-width: 260px;
+  min-height: 120px;
+  max-width: 90vw;
+  max-height: 80vh;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  contain: layout style;
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+.lyrics-card-inner {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.lyrics-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.lyrics-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.3px;
+}
+
+.lyrics-header-title {
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.8px;
+}
+
+.lyrics-badge {
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.lyrics-badge.synced {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.lyrics-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lyrics-scroll-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px 4px 20px 4px;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: none; /* Ẩn thanh cuộn mặc định để giữ thẩm mỹ tối giản */
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+}
+
+.lyrics-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.lyrics-lines-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 40px 0;
+  width: 100%;
+}
+
+.lyric-line {
+  font-size: var(--lyrics-font-size, 18px);
+  font-family: var(--lyrics-font-family, inherit);
+  text-align: var(--lyrics-text-align, center);
+  font-weight: var(--lyrics-font-weight, 600);
+  line-height: 1.45;
+  color: var(--lyrics-active-color, #ffffff);
+  opacity: var(--lyrics-inactive-opacity, 0.35);
+  transition: opacity 0.25s ease, transform 0.25s ease, color 0.25s ease;
+  user-select: none;
+  word-break: break-word;
+  cursor: pointer;
+}
+
+.lyric-line:hover {
+  opacity: 0.70;
+}
+
+.lyric-line.active {
+  opacity: 1.0 !important;
+  transform: scale(1.04);
+  text-shadow: 0 0 16px rgba(255, 255, 255, 0.45);
+}
+
+.lyric-line.plain {
+  opacity: 0.90;
+  font-size: calc(var(--lyrics-font-size, 18px) * 0.9);
+  padding: 4px 0;
+  cursor: default;
+}
+
+.lyrics-idle-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 100%;
+  min-height: 120px;
+  color: var(--text-dim);
+  font-size: 13px;
+  text-align: center;
+  user-select: none;
+}
+
+.lyrics-idle-prompt i {
+  font-size: 24px;
+  opacity: 0.6;
+}
+
 
 .hidden {
   display: none !important;

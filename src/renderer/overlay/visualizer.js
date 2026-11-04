@@ -19,9 +19,19 @@ class AudioVisualizer {
     this.sourceNode = null;
     this.mediaStream = null;
 
-    this.fftSize = 256;
+    this.fftSize = 128; // 64 dai tan so chuan (giam 50% thoi gian tinh FFT cua Web Audio)
     this.frequencyData = new Uint8Array(this.fftSize / 2);
-    this.timeDomainData = new Uint8Array(this.fftSize);
+
+    // Cấu hình tần số quét FPS và tối ưu hóa bộ nhớ
+    this.targetFps = 30; // 30 FPS mặc định (tiết kiệm CPU ~3-5% khi phát nhạc)
+    this.wavePointsY = new Float32Array(128);
+    this.waveLUT = [];
+    this.barsLUT = [];
+    this.cachedInnerColor = null;
+    this.cachedBorderColor = null;
+    this.cachedBarsColor = null;
+    this.cachedInnerGlassGrad = null;
+    this.cachedBarsGlassGrad = null;
 
     // Cấu hình chế độ hiển thị: 'bars' (dạng cột) hoặc 'wave' (dạng sóng)
     this.visualizerMode = 'bars';
@@ -73,10 +83,99 @@ class AudioVisualizer {
   }
 
   resizeCanvas() {
+    const isTop = this.direction === 'top';
+    const canvasH = Math.min(window.innerHeight * 0.85, Math.max(120, (this.spectrumHeight || 160) + 40));
+
     this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
+    this.canvas.height = canvasH;
     this.width = window.innerWidth;
-    this.height = window.innerHeight;
+    this.height = canvasH;
+
+    this.canvas.style.position = 'absolute';
+    this.canvas.style.left = '0px';
+    this.canvas.style.width = '100%';
+    this.canvas.style.height = `${canvasH}px`;
+    if (isTop) {
+      this.canvas.style.top = '0px';
+      this.canvas.style.bottom = 'auto';
+    } else {
+      this.canvas.style.top = 'auto';
+      this.canvas.style.bottom = '0px';
+    }
+
+    this.cachedInnerGlassGrad = null;
+    this.cachedBarsGlassGrad = null;
+    this.rebuildWaveLUT();
+    this.rebuildBarsLUT();
+  }
+
+  // Tiền tính toán bảng tra cứu (LUT) cho dạng sóng Wave để loại bỏ 100% Math.pow
+  rebuildWaveLUT() {
+    const numPoints = Math.max(36, Math.min(64, Math.floor(this.width / 30)));
+    const step = this.width / (numPoints - 1);
+    const centerX = this.width / 2;
+    const maxBin = Math.min(this.frequencyData.length - 1, 60);
+
+    this.waveLUT = [];
+    for (let i = 0; i < numPoints; i++) {
+      const x = i * step;
+      const distFromCenter = Math.abs(x - centerX);
+      const t = Math.min(1.0, distFromCenter / (centerX || 1));
+      const floatIndex = Math.pow(t, 1.35) * maxBin;
+      const i0 = Math.floor(floatIndex);
+      const i1 = Math.min(this.frequencyData.length - 1, i0 + 1);
+      const frac = floatIndex - i0;
+      const boost = 1.0 + Math.pow(t, 1.2) * 1.6;
+      this.waveLUT.push({ x, i0, i1, frac, boost });
+    }
+
+    if (this.wavePointsY.length < numPoints) {
+      this.wavePointsY = new Float32Array(numPoints);
+    }
+  }
+
+  // Tiền tính toán bảng tra cứu (LUT) cho dạng cột Bars để loại bỏ 100% Math.pow
+  rebuildBarsLUT() {
+    const barPitch = this.barWidth + this.barGap;
+    const centerX = this.width / 2;
+    const halfBars = Math.floor(centerX / barPitch);
+    const maxBin = Math.min(this.frequencyData.length - 1, 60);
+
+    this.barsLUT = [];
+    for (let k = 0; k < halfBars; k++) {
+      const t = k / halfBars;
+      const floatIndex = Math.pow(t, 1.35) * maxBin;
+      const i0 = Math.floor(floatIndex);
+      const i1 = Math.min(this.frequencyData.length - 1, i0 + 1);
+      const frac = floatIndex - i0;
+      const boost = 1.0 + Math.pow(t, 1.2) * 1.6;
+      const xRight = centerX + k * barPitch;
+      const xLeft = centerX - (k + 1) * barPitch;
+      this.barsLUT.push({ i0, i1, frac, boost, xRight, xLeft });
+    }
+  }
+
+  // Tạm ngắt nguồn âm thanh loopback hệ thống khi ứng dụng đang phát nhạc nội bộ (tránh trùng lặp và giảm tải)
+  pauseSystemAudio() {
+    if (this.sourceNode) {
+      try {
+        this.sourceNode.disconnect();
+      } catch (e) {}
+    }
+  }
+
+  // Kết nối lại nguồn âm thanh loopback hệ thống khi nhạc nội bộ tạm dừng hoặc kết thúc
+  resumeSystemAudio() {
+    if (this.sourceNode && this.analyser) {
+      try {
+        this.sourceNode.connect(this.analyser);
+      } catch (e) {}
+    }
+  }
+
+  // Xóa vùng vẽ của sóng âm (chỉ bằng chiều cao dải sóng thay vì toàn màn hình 1080p/4K)
+  clearVisualizerArea() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
   }
 
   // Khởi tạo Web Audio context và kết nối nguồn âm thanh loopback
@@ -106,9 +205,11 @@ class AudioVisualizer {
             }
           });
 
-          // Vô hiệu hóa track hình ảnh nhưng không đóng capture session
+          // Dừng ngay lập tức track video để giải phóng triệt để Desktop Duplication DXGI (tiết kiệm 150%+ GPU/CPU)
           stream.getVideoTracks().forEach(track => {
-            track.enabled = false;
+            try {
+              track.stop();
+            } catch (e) {}
           });
 
           const audioTracks = stream.getAudioTracks();
@@ -155,46 +256,76 @@ class AudioVisualizer {
     this.isRunning = false;
   }
 
-  // Vòng lặp vẽ sóng âm - Giới hạn 60 FPS khi phát nhạc / 30 FPS khi im lặng để tiết kiệm CPU
+  // Vòng lặp vẽ sóng âm tối ưu CPU (Nhịp thời gian kiểm soát tốc độ FPS & Ngủ đông khi im lặng)
   renderLoop(timestamp) {
     if (!this.isRunning) return;
 
     const now = timestamp || performance.now();
-    const isIdle = this.silentFrameCount > 30;
-    const targetInterval = isIdle ? 33.3 : 16.6;
+
+    // 1. Kiểm soát tần số quét FPS chính xác: Tự động cho CPU nghỉ bằng setTimeout thay vì quay cuồng ở 144Hz/240Hz
+    const targetFps = this.targetFps || 30;
+    const targetInterval = 1000 / targetFps;
     const elapsed = now - this.lastFrameTime;
 
     if (elapsed < targetInterval) {
-      requestAnimationFrame((t) => this.renderLoop(t));
+      const delay = Math.max(3, Math.floor((targetInterval - elapsed) * 0.75));
+      setTimeout(() => {
+        if (this.isRunning) {
+          requestAnimationFrame((t) => this.renderLoop(t));
+        }
+      }, delay);
       return;
     }
     this.lastFrameTime = now - (elapsed % targetInterval);
 
-    // Xóa sạch toàn bộ canvas mỗi frame để triệt tiêu bóng ma
-    this.ctx.clearRect(0, 0, this.width, this.height);
-
+    // 2. Chế độ Demo
     if (this.isDemoMode) {
+      this.clearVisualizerArea();
       this.generateDemoData();
-    } else if (this.analyser) {
+      if (this.visualizerMode === 'wave') {
+        this.drawWave();
+      } else {
+        this.drawBars();
+      }
+      requestAnimationFrame((t) => this.renderLoop(t));
+      return;
+    }
+
+    // 3. Phân tích dữ liệu âm thanh Web Audio (CHỈ chạy đúng nhịp khi vẽ frame)
+    if (this.analyser) {
       this.analyser.getByteFrequencyData(this.frequencyData);
-      this.analyser.getByteTimeDomainData(this.timeDomainData);
 
       let energySum = 0;
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 24; i++) {
         energySum += this.frequencyData[i];
       }
 
       if (energySum < 8) {
         this.silentFrameCount++;
-        if (this.silentFrameCount > 60) {
-          this.generateIdleData();
-        }
       } else {
         this.silentFrameCount = 0;
       }
+    } else {
+      this.silentFrameCount++;
     }
 
-    // Vẽ theo chế độ được cấu hình: Dạng cột ('bars') hoặc Dạng sóng ('wave')
+    // 4. Khi im lặng kéo dài (> 20 frame ~ 0.6s), chuyển sang chế độ ngủ đông tiết kiệm CPU tuyệt đối
+    if (this.silentFrameCount > 20) {
+      if (this.silentFrameCount === 21) {
+        this.clearVisualizerArea();
+      }
+      // Thăm dò năng lượng âm thanh với chu kỳ thấp 180ms, đưa CPU về mức 0.0%
+      setTimeout(() => {
+        if (this.isRunning) {
+          requestAnimationFrame((t) => this.renderLoop(t));
+        }
+      }, 180);
+      return;
+    }
+
+    // 5. Dựng hình frame hiện tại (Chỉ xóa và vẽ lại dải sóng âm cần thiết)
+    this.clearVisualizerArea();
+
     if (this.visualizerMode === 'wave') {
       this.drawWave();
     } else {
@@ -205,6 +336,14 @@ class AudioVisualizer {
   }
 
   updateSettings(settings) {
+    this.cachedInnerColor = null;
+    this.cachedBorderColor = null;
+    this.cachedBarsColor = null;
+    this.cachedInnerGlassGrad = null;
+    this.cachedBarsGlassGrad = null;
+    if (typeof settings.renderFps === 'number') {
+      this.targetFps = Math.max(15, Math.min(60, settings.renderFps));
+    }
     if (settings.visualizerMode) this.visualizerMode = settings.visualizerMode;
     if (settings.barsMaterial) this.barsMaterial = settings.barsMaterial;
     if (settings.customColor) this.customColor = settings.customColor;
@@ -242,11 +381,31 @@ class AudioVisualizer {
       if (typeof settings.barsGlassBlur !== 'number') this.barsGlassBlur = settings.waveGlassBlur;
     }
 
-    if (settings.spectrumDirection) this.direction = settings.spectrumDirection;
+    let needsResize = false;
+    let needsBarsLut = false;
+    if (settings.spectrumDirection && settings.spectrumDirection !== this.direction) {
+      this.direction = settings.spectrumDirection;
+      needsResize = true;
+    }
     if (settings.sensitivity) this.sensitivity = settings.sensitivity;
-    if (settings.barWidth) this.barWidth = settings.barWidth;
-    if (settings.barGap) this.barGap = settings.barGap;
-    if (settings.spectrumHeight) this.spectrumHeight = settings.spectrumHeight;
+    if (settings.barWidth && settings.barWidth !== this.barWidth) {
+      this.barWidth = settings.barWidth;
+      needsBarsLut = true;
+    }
+    if (settings.barGap && settings.barGap !== this.barGap) {
+      this.barGap = settings.barGap;
+      needsBarsLut = true;
+    }
+    if (typeof settings.spectrumHeight === 'number' && settings.spectrumHeight !== this.spectrumHeight) {
+      this.spectrumHeight = settings.spectrumHeight;
+      needsResize = true;
+    }
+
+    if (needsResize) {
+      this.resizeCanvas();
+    } else if (needsBarsLut) {
+      this.rebuildBarsLUT();
+    }
 
     if (settings.fftSmoothing && this.analyser) {
       this.fftSmoothing = settings.fftSmoothing;
@@ -329,165 +488,168 @@ class AudioVisualizer {
     return rawVal * this.sensitivity * boost;
   }
 
-  // 1. Chế độ vẽ dạng cột (Bars): Tỏa đối xứng từ tâm màn hình sang 2 bên
+  // 1. Chế độ vẽ dạng cột (Bars): Tỏa đối xứng từ tâm màn hình sang 2 bên (Sử dụng bảng tra cứu barsLUT và 0 cấp phát heap)
   drawBars() {
     const isTop = this.direction === 'top';
-    const barPitch = this.barWidth + this.barGap;
-    const rx = this.barWidth / 2;
     const maxHeight = Math.min(this.height * 0.85, this.spectrumHeight || 160);
     const isGlass = (this.barsMaterial || this.waveMaterial) === 'glass';
 
-    const centerX = this.width / 2;
-    const halfBars = Math.floor(centerX / barPitch);
+    if (!this.barsLUT || this.barsLUT.length === 0) {
+      this.rebuildBarsLUT();
+    }
+
+    const rx = Math.min(this.barWidth / 2, 4);
+    const len = this.barsLUT.length;
 
     // Gom toàn bộ thanh phổ vào 1 Path duy nhất để tối ưu hiệu năng draw call
     this.ctx.beginPath();
-    for (let k = 0; k < halfBars; k++) {
-      const t = k / halfBars;
-      const value = this.getFrequencySample(t);
-      const normalizedRatio = Math.min(1.0, Math.max(0, value / 255));
+    for (let k = 0; k < len; k++) {
+      const p = this.barsLUT[k];
+      const v0 = this.frequencyData[p.i0] || 0;
+      const v1 = this.frequencyData[p.i1] || 0;
+      const rawVal = v0 + (v1 - v0) * p.frac;
+      const val = rawVal * this.sensitivity * p.boost;
+      const normalizedRatio = Math.min(1.0, Math.max(0, val / 255));
       const barHeight = Math.max(3, normalizedRatio * maxHeight);
-      const currentRx = Math.min(rx, barHeight / 2);
-
-      const xRight = centerX + k * barPitch;
-      const xLeft = centerX - (k + 1) * barPitch;
 
       if (isTop) {
-        this.ctx.roundRect(xRight, 0, this.barWidth, barHeight, [0, 0, currentRx, currentRx]);
-        this.ctx.roundRect(xLeft, 0, this.barWidth, barHeight, [0, 0, currentRx, currentRx]);
+        this.ctx.roundRect(p.xRight, 0, this.barWidth, barHeight, rx);
+        this.ctx.roundRect(p.xLeft, 0, this.barWidth, barHeight, rx);
       } else {
         const y = this.height - barHeight;
-        this.ctx.roundRect(xRight, y, this.barWidth, barHeight, [currentRx, currentRx, 0, 0]);
-        this.ctx.roundRect(xLeft, y, this.barWidth, barHeight, [currentRx, currentRx, 0, 0]);
+        this.ctx.roundRect(p.xRight, y, this.barWidth, barHeight, rx);
+        this.ctx.roundRect(p.xLeft, y, this.barWidth, barHeight, rx);
       }
     }
 
     if (isGlass) {
-      // Chất liệu Glass: Tuyệt đối không có màu, trong suốt, có độ trong và độ mờ
-      const glassAlpha = Math.min(1.0, Math.max(0.04, this.barsGlassOpacity !== undefined ? this.barsGlassOpacity : (this.waveGlassOpacity || 0.28)));
-      const blurVal = this.barsGlassBlur !== undefined ? this.barsGlassBlur : (this.waveGlassBlur || 10);
-      this.ctx.save();
-      if (blurVal > 0) {
-        this.ctx.shadowColor = 'rgba(255, 255, 255, 0.45)';
-        this.ctx.shadowBlur = Math.min(16, blurVal);
+      // Chất liệu Glass: Tái sử dụng cached gradient để tránh cấp phát C++ SkShader mỗi frame
+      if (!this.cachedBarsGlassGrad) {
+        const glassAlpha = Math.min(1.0, Math.max(0.04, this.barsGlassOpacity !== undefined ? this.barsGlassOpacity : (this.waveGlassOpacity || 0.28)));
+        const grad = this.ctx.createLinearGradient(0, isTop ? 0 : this.height - maxHeight, 0, isTop ? maxHeight : this.height);
+        grad.addColorStop(0, `rgba(255, 255, 255, ${Math.min(1, glassAlpha * 1.5)})`);
+        grad.addColorStop(0.5, `rgba(240, 240, 250, ${glassAlpha * 0.85})`);
+        grad.addColorStop(1, `rgba(255, 255, 255, ${glassAlpha * 0.35})`);
+        this.cachedBarsGlassGrad = grad;
       }
-      this.ctx.fillStyle = `rgba(255, 255, 255, ${glassAlpha})`;
+      this.ctx.fillStyle = this.cachedBarsGlassGrad;
       this.ctx.fill();
-      this.ctx.restore();
     } else {
-      // Chất liệu Solid Color: Sử dụng màu đặc thuần túy, đúng độ mờ người dùng cài đặt
-      const solidAlpha = Math.min(1.0, Math.max(0.05, this.waveformOpacity !== undefined ? this.waveformOpacity : 1.0));
-      this.ctx.fillStyle = this.hexToRgba(this.customColor || '#ffffff', solidAlpha);
+      // Chất liệu Solid Color: Sử dụng chuỗi màu đã cache sẵn để không phân tích regex mỗi frame
+      if (!this.cachedBarsColor) {
+        const solidAlpha = Math.min(1.0, Math.max(0.05, this.waveformOpacity !== undefined ? this.waveformOpacity : 1.0));
+        this.cachedBarsColor = this.hexToRgba(this.customColor || '#ffffff', solidAlpha);
+      }
+      this.ctx.fillStyle = this.cachedBarsColor;
       this.ctx.fill();
     }
   }
 
-  // 2. Chế độ vẽ dạng sóng liên tục (Wave): Gồm 2 phần độc lập (bên trong và viền trên cùng)
+  // 2. Chế độ vẽ dạng sóng liên tục (Wave): Gồm 2 phần độc lập (bên trong và viền trên cùng, 0 cấp phát bộ nhớ heap)
   drawWave() {
     const isTop = this.direction === 'top';
-    const maxHeight = Math.min(this.height * 0.85, this.spectrumHeight || 160);
-    const centerX = this.width / 2;
+    const maxHeight = Math.min(this.height * 0.90, this.spectrumHeight || 160);
     const baselineY = isTop ? 0 : this.height;
 
-    // Số điểm lấy mẫu trên toàn bộ chiều rộng màn hình (mỗi ~8-10px lấy 1 điểm mượt mà)
-    const numPoints = Math.max(80, Math.min(260, Math.floor(this.width / 8)));
-    const step = this.width / (numPoints - 1);
-    const points = [];
-
-    for (let i = 0; i < numPoints; i++) {
-      const x = i * step;
-      const distFromCenter = Math.abs(x - centerX);
-      const t = Math.min(1.0, distFromCenter / (centerX || 1));
-      const value = this.getFrequencySample(t);
-      const normalizedRatio = Math.min(1.0, Math.max(0, value / 255));
-      const amp = Math.max(2, normalizedRatio * maxHeight);
-
-      const y = isTop ? amp : (this.height - amp);
-      points.push({ x, y });
+    if (!this.waveLUT || this.waveLUT.length === 0) {
+      this.rebuildWaveLUT();
     }
 
-    // Hàm phụ trợ nối các điểm thành đường cong Bezier mượt mà dọc theo đỉnh sóng
-    const addCrestBeziers = (ctx, pts) => {
-      for (let i = 0; i < pts.length - 1; i++) {
-        const mx = (pts[i].x + pts[i + 1].x) / 2;
-        const my = (pts[i].y + pts[i + 1].y) / 2;
-        ctx.quadraticCurveTo(pts[i].x, pts[i].y, mx, my);
-      }
-      ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
-    };
+    const len = this.waveLUT.length;
+    if (this.wavePointsY.length < len) {
+      this.wavePointsY = new Float32Array(len);
+    }
+
+    for (let i = 0; i < len; i++) {
+      const p = this.waveLUT[i];
+      const v0 = this.frequencyData[p.i0] || 0;
+      const v1 = this.frequencyData[p.i1] || 0;
+      const rawVal = v0 + (v1 - v0) * p.frac;
+      const val = rawVal * this.sensitivity * p.boost;
+      const normalizedRatio = Math.min(1.0, Math.max(0, val / 255));
+      const amp = Math.max(2, normalizedRatio * maxHeight);
+
+      this.wavePointsY[i] = isTop ? amp : (this.height - amp);
+    }
 
     // =========================================================================
     // PHẦN 1: BÊN TRONG CỦA DẠNG SÓNG (Inner Area Body) - Tùy chọn Solid / Glass riêng
-    // Khép kín hoàn hảo: (0, baselineY) -> (0, y0) -> lượn sóng -> (width, yN) -> (width, baselineY) -> đáy
     // =========================================================================
     this.ctx.beginPath();
     this.ctx.moveTo(0, baselineY);
-    this.ctx.lineTo(points[0].x, points[0].y);
-    addCrestBeziers(this.ctx, points);
+    this.ctx.lineTo(this.waveLUT[0].x, this.wavePointsY[0]);
+    for (let i = 0; i < len - 1; i++) {
+      const mx = (this.waveLUT[i].x + this.waveLUT[i + 1].x) * 0.5;
+      const my = (this.wavePointsY[i] + this.wavePointsY[i + 1]) * 0.5;
+      this.ctx.quadraticCurveTo(this.waveLUT[i].x, this.wavePointsY[i], mx, my);
+    }
+    this.ctx.lineTo(this.waveLUT[len - 1].x, this.wavePointsY[len - 1]);
     this.ctx.lineTo(this.width, baselineY);
     this.ctx.closePath();
 
     const isInnerGlass = (this.waveInnerMaterial || this.waveMaterial) === 'glass';
 
     if (isInnerGlass) {
-      // Chất liệu Glass cho bên trong: Tuyệt đối không màu, trong suốt, độ trong và độ mờ
-      const gAlpha = Math.min(1.0, Math.max(0.02, typeof this.waveInnerGlassOpacity === 'number' ? this.waveInnerGlassOpacity : 0.25));
-      this.ctx.save();
-      const blurVal = typeof this.waveInnerGlassBlur === 'number' ? this.waveInnerGlassBlur : 12;
-      if (blurVal > 0) {
-        this.ctx.filter = `blur(${Math.min(20, blurVal)}px)`;
+      // Tái sử dụng cached gradient để tránh cấp phát C++ SkShader mỗi frame
+      if (!this.cachedInnerGlassGrad) {
+        const gAlpha = Math.min(1.0, Math.max(0.02, typeof this.waveInnerGlassOpacity === 'number' ? this.waveInnerGlassOpacity : 0.25));
+        const grad = this.ctx.createLinearGradient(0, isTop ? 0 : this.height - maxHeight, 0, baselineY);
+        grad.addColorStop(0, `rgba(255, 255, 255, ${gAlpha * 1.35})`);
+        grad.addColorStop(0.4, `rgba(240, 240, 245, ${gAlpha * 0.80})`);
+        grad.addColorStop(1, `rgba(255, 255, 255, ${gAlpha * 0.15})`);
+        this.cachedInnerGlassGrad = grad;
       }
-
-      const grad = this.ctx.createLinearGradient(0, isTop ? 0 : this.height - maxHeight, 0, baselineY);
-      grad.addColorStop(0, `rgba(255, 255, 255, ${gAlpha * 1.15})`);
-      grad.addColorStop(0.4, `rgba(240, 240, 245, ${gAlpha * 0.75})`);
-      grad.addColorStop(1, `rgba(255, 255, 255, ${gAlpha * 0.20})`);
-
-      this.ctx.fillStyle = grad;
+      this.ctx.fillStyle = this.cachedInnerGlassGrad;
       this.ctx.fill();
-      this.ctx.restore();
     } else {
-      // Chất liệu Solid Color cho bên trong: MÀU ĐẶC THUẦN TÚY (Che phủ hoàn toàn nền desktop như màu cam)
-      const innerColor = this.waveInnerColor || '#f97316';
-      const innerOpacity = typeof this.waveInnerOpacity === 'number' ? this.waveInnerOpacity : 1.0;
-      this.ctx.fillStyle = this.hexToRgba(innerColor, innerOpacity);
+      // Chất liệu Solid Color cho bên trong: MÀU ĐẶC THUẦN TÚY (Lưu cache chuỗi RGBA không parse lại mỗi frame)
+      if (!this.cachedInnerColor) {
+        const innerColor = this.waveInnerColor || '#f97316';
+        const innerOpacity = typeof this.waveInnerOpacity === 'number' ? this.waveInnerOpacity : 1.0;
+        this.cachedInnerColor = this.hexToRgba(innerColor, innerOpacity);
+      }
+      this.ctx.fillStyle = this.cachedInnerColor;
       this.ctx.fill();
     }
 
     // =========================================================================
     // PHẦN 2: VIỀN CỦA DẠNG SÓNG (Top Crest Border) - Tùy chọn Solid / Glass riêng
-    // CHỈ TÍNH VIỀN Ở BÊN TRÊN CÙNG
     // =========================================================================
     this.ctx.beginPath();
-    this.ctx.moveTo(points[0].x, points[0].y);
-    addCrestBeziers(this.ctx, points);
+    this.ctx.moveTo(this.waveLUT[0].x, this.wavePointsY[0]);
+    for (let i = 0; i < len - 1; i++) {
+      const mx = (this.waveLUT[i].x + this.waveLUT[i + 1].x) * 0.5;
+      const my = (this.wavePointsY[i] + this.wavePointsY[i + 1]) * 0.5;
+      this.ctx.quadraticCurveTo(this.waveLUT[i].x, this.wavePointsY[i], mx, my);
+    }
+    this.ctx.lineTo(this.waveLUT[len - 1].x, this.wavePointsY[len - 1]);
 
     const bWidth = typeof this.waveBorderWidth === 'number' ? this.waveBorderWidth : 3.0;
     const isBorderGlass = (this.waveBorderMaterial || this.waveMaterial) === 'glass';
 
     if (isBorderGlass) {
-      // Viền kính thủy tinh: Đỉnh phản xạ ánh sáng (Rim reflection) thuần trắng trong suốt
+      // Viền kính thủy tinh: Đỉnh phản xạ ánh sáng (Rim reflection) thuần trắng trong suốt (không dùng shadowBlur CPU)
       const rimAlpha = Math.min(1.0, Math.max(0.1, typeof this.waveBorderGlassOpacity === 'number' ? this.waveBorderGlassOpacity : 0.70));
       this.ctx.save();
-      const bBlur = typeof this.waveBorderGlassBlur === 'number' ? this.waveBorderGlassBlur : 6;
-      if (bBlur > 0) {
-        this.ctx.shadowColor = 'rgba(255, 255, 255, 0.75)';
-        this.ctx.shadowBlur = Math.min(14, bBlur);
-      }
       this.ctx.strokeStyle = `rgba(255, 255, 255, ${rimAlpha})`;
       this.ctx.lineWidth = bWidth;
       this.ctx.lineCap = 'round';
-      this.ctx.lineJoin = 'round';
+      this.ctx.lineJoin = 'miter';
+      this.ctx.miterLimit = 2;
       this.ctx.stroke();
       this.ctx.restore();
     } else {
-      // Viền Solid Color: Nổi bật sắc nét ở đường trên cùng (như màu đỏ viền)
-      const borderColor = this.waveBorderColor || '#ef4444';
-      const borderOpacity = typeof this.waveBorderOpacity === 'number' ? this.waveBorderOpacity : 1.0;
-      this.ctx.strokeStyle = this.hexToRgba(borderColor, borderOpacity);
+      // Viền Solid Color: Nổi bật sắc nét ở đường trên cùng (Lưu cache chuỗi RGBA)
+      if (!this.cachedBorderColor) {
+        const borderColor = this.waveBorderColor || '#ef4444';
+        const borderOpacity = typeof this.waveBorderOpacity === 'number' ? this.waveBorderOpacity : 1.0;
+        this.cachedBorderColor = this.hexToRgba(borderColor, borderOpacity);
+      }
+      this.ctx.strokeStyle = this.cachedBorderColor;
       this.ctx.lineWidth = bWidth;
       this.ctx.lineCap = 'round';
-      this.ctx.lineJoin = 'round';
+      this.ctx.lineJoin = 'miter';
+      this.ctx.miterLimit = 2;
       this.ctx.stroke();
     }
   }

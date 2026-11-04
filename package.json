@@ -1,7 +1,7 @@
 {
   "name": "novata",
-  "version": "0.4.0",
-  "description": "Novata nvt_0.4 beta - Minimalist Audio Visualizer & Music Player with Waveform, Glass Materials, Multi-Playlists & Discord RPC",
+  "version": "0.5.0",
+  "description": "Novata nvt_0.5 beta - Minimalist Audio Visualizer, Music Player & Floating Lyrics Widget",
   "main": "src/main/main.js",
   "scripts": {
     "start": "electron .",
@@ -65,10 +65,10 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Novata Visualizer",
+      "shortcutName": "Novata",
       "installerIcon": "assets/icon.ico",
       "uninstallerIcon": "assets/icon.ico",
-      "uninstallDisplayName": "Novata Visualizer",
+      "uninstallDisplayName": "Novata",
       "runAfterFinish": true
     }
   }

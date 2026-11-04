@@ -28,7 +28,31 @@ Novata is built from the ground up to integrate seamlessly into your daily deskt
 
 ---
 
-## 2. What's New in nvt_0.4 Beta
+## 2. What's New in nvt_0.5 Beta
+
+Version `nvt_0.5 beta` introduces real-time synchronized floating lyrics, custom font file loading, direct music link pasting across multiple platforms, and Discord RPC application customization:
+
+- **Desktop Floating Lyrics Widget**:
+  - A separate, floating frosted glass lyrics card that syncs with your music in real time.
+  - Supports 8-direction freeform window resizing and drag-to-position with automatic state saving.
+  - Powered by LRCLIB: parses millisecond-precision synchronized LRC timestamps (`[mm:ss.xx]`) with smooth vertical auto-scroll and line highlighting.
+  - Click any lyric line to jump directly to that point in the track (In-App playback).
+  - Automatically fetches and displays lyrics for external media (Spotify, YouTube on web, SoundCloud).
+- **Custom Typography & Font File Loading**:
+  - Load your own font files (`.ttf`, `.otf`, `.woff`, `.woff2`) directly via the native Windows file picker.
+  - Dynamic font rendering using CSS `FontFace` API without needing system font installation.
+  - Adjustable font size (12px to 36px) and alignment (Center or Left).
+- **Direct Link Pasting (Spotify, YouTube Music, SoundCloud, Apple Music)**:
+  - Paste any track link from Spotify, YouTube / YouTube Music, SoundCloud, or Apple Music / iTunes directly into the search bar or use the new one-click "Paste" button.
+  - Seamlessly extracts metadata (title, artist, high-res artwork) and resolves high-fidelity audio streams.
+- **Discord Rich Presence (RPC) Customization**:
+  - Configurable Discord Application ID (Client ID) in Settings to display "Novata" as your Discord activity instead of third-party player names.
+- **Branding Streamlining**:
+  - Standardized product name from "Novata Visualizer" to "Novata" across shortcuts, titles, installer, and UI.
+
+---
+
+## 3. What's New in nvt_0.4 Beta
 
 Version `nvt_0.4 beta` introduces major visual, material, and interaction enhancements:
 

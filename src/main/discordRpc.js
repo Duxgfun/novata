@@ -1,5 +1,5 @@
 /**
- * Module Discord Rich Presence (RPC) cho Novata nvt_0.3
+ * Module Discord Rich Presence (RPC) cho Novata nvt_0.5
  * Kết nối trực tiếp qua Windows Named Pipe của Discord (\??\pipe\discord-ipc-0..9)
  * Không phụ thuộc thư viện ngoài, xử lý lỗi an toàn không gây crash app khi không có Discord.
  * Bình luận bằng tiếng Việt theo quy định toàn cục.
@@ -8,8 +8,8 @@
 const net = require('net');
 const EventEmitter = require('events');
 
-// Discord Application ID mặc định cho Novata Visualizer (hỗ trợ hiển thị trạng thái nghe nhạc)
-const DEFAULT_CLIENT_ID = '807774172574253056';
+// Discord Application ID chính thức của ứng dụng Novata trên Discord Developer Portal
+const DEFAULT_CLIENT_ID = '1567377198237618186';
 
 // Các mã Opcode chuẩn của giao thức Discord RPC
 const OPCODES = {
@@ -44,11 +44,9 @@ class DiscordRpcManager extends EventEmitter {
   init(store) {
     if (store) {
       this.isEnabled = store.get('discordRpcEnabled') !== false;
-      const customId = store.get('discordClientId');
-      if (customId && customId.trim()) {
-        this.clientId = customId.trim();
-      }
     }
+    // Su dung Discord Application ID mac dinh co dinh cua Novata
+    this.clientId = DEFAULT_CLIENT_ID;
 
     if (this.isEnabled) {
       this.connect();
@@ -67,6 +65,24 @@ class DiscordRpcManager extends EventEmitter {
       }
     } else {
       this.disconnect();
+    }
+  }
+
+  /**
+   * Cập nhật Discord Application ID (Client ID) và tái kết nối
+   * @param {string} newId 
+   */
+  updateClientId(newId) {
+    if (!newId || !newId.trim()) return;
+    const cleanId = newId.trim();
+    if (cleanId === this.clientId) return;
+
+    this.clientId = cleanId;
+    if (this.isEnabled) {
+      this.disconnect();
+      setTimeout(() => {
+        if (this.isEnabled) this.connect();
+      }, 500);
     }
   }
 
@@ -240,7 +256,7 @@ class DiscordRpcManager extends EventEmitter {
     }
 
     const title = (trackInfo.Title || 'Listening to Music').trim().substring(0, 120);
-    const artist = (trackInfo.Artist || 'Novata Visualizer').trim().substring(0, 120);
+    const artist = (trackInfo.Artist || 'Novata').trim().substring(0, 120);
     const source = (trackInfo.Source || 'Novata').trim();
     const isPlaying = trackInfo.Status ? trackInfo.Status.toLowerCase().includes('play') : true;
 
@@ -258,6 +274,9 @@ class DiscordRpcManager extends EventEmitter {
     } else if (srcLower.includes('sound') || srcLower.includes('cloud')) {
       sourceLabel = 'SoundCloud';
       smallImage = 'https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/soundcloud.svg';
+    } else if (srcLower.includes('apple') || srcLower.includes('itunes')) {
+      sourceLabel = 'Apple Music';
+      smallImage = 'https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/apple-music.svg';
     } else if (srcLower.includes('chrome') || srcLower.includes('edge') || srcLower.includes('browser')) {
       sourceLabel = 'Web Browser';
       smallImage = 'https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/chrome.svg';
@@ -277,10 +296,12 @@ class DiscordRpcManager extends EventEmitter {
         large_image: trackInfo.Thumbnail && trackInfo.Thumbnail.startsWith('http') 
           ? trackInfo.Thumbnail 
           : 'https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/sound.svg',
-        large_text: `Novata nvt_0.3`,
+        large_text: `Novata nvt_0.5`,
         small_image: smallImage,
         small_text: `Playing via ${sourceLabel}`
-      }
+      },
+      // Loai hoat dong: 2 = Listening to (Dang nghe nhac tren Discord thay vi Dang choi game)
+      type: 2
     };
 
     this.currentActivity = activity;

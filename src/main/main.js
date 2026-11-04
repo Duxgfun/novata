@@ -1,20 +1,26 @@
 /**
- * Tiến trình chính (Main Process) của Novata - Phiên bản nvt_0.3
- * Tích hợp Discord Rich Presence (RPC), Hệ thống Multi-Playlists, Auto-play Startup
+ * Tiến trình chính (Main Process) của Novata - Phiên bản nvt_0.5 beta
+ * Tích hợp Lyrics Widget (đồng bộ LRCLIB & tùy biến font), Dán link trực tiếp (Spotify, YouTube, SoundCloud, Apple Music),
+ * Discord Rich Presence (RPC), Hệ thống Multi-Playlists, Auto-play Startup.
  * Sóng âm thanh tối giản không nền, tràn cạnh màn hình và xuyên chuột.
  * Bình luận bằng tiếng Việt theo quy định toàn cục.
  */
 
-const { app, BrowserWindow, Tray, Menu, ipcMain, screen, desktopCapturer, session, nativeImage } = require('electron');
+const { app, BrowserWindow, Tray, Menu, ipcMain, screen, desktopCapturer, session, nativeImage, dialog } = require('electron');
 const path = require('path');
+const fs = require('fs');
 
 // Dinh danh Windows App User Model ID cho Windows 10/11 SMTC
 if (process.platform === 'win32') {
   app.setAppUserModelId('com.antigravity.novata');
 }
 
-// Cờ Chromium & V8 tối ưu hóa hiệu năng mượt mà, không lag hệ thống
-app.commandLine.appendSwitch('renderer-process-limit', '1');
+// Cờ Chromium & V8 tối ưu hóa hiệu năng phần cứng, giảm tải CPU xuống mức tối thiểu
+app.commandLine.appendSwitch('enable-gpu-rasterization');
+app.commandLine.appendSwitch('enable-accelerated-2d-canvas');
+app.commandLine.appendSwitch('enable-zero-copy');
+app.commandLine.appendSwitch('ignore-gpu-blocklist');
+app.commandLine.appendSwitch('force-color-profile', 'srgb');
 app.commandLine.appendSwitch('disable-background-networking');
 app.commandLine.appendSwitch('disable-component-update');
 app.commandLine.appendSwitch('disable-client-side-phishing-detection');
@@ -35,7 +41,7 @@ const store = require('./store');
 const mediaManager = require('./mediaManager');
 const discordRpc = require('./discordRpc');
 const playlistManager = require('./playlistManager');
-const { searchMusic, getAudioStreamUrl } = require('./musicSearch');
+const { searchMusic, getAudioStreamUrl, resolveMediaUrl, getLyricsForTrack } = require('./musicSearch');
 
 // Trạng thái trình phát nhạc In-App
 let currentInAppTrack = null;
@@ -238,7 +244,7 @@ let trayClickTimer = null;
 function createTray() {
   const icon = nativeImage.createFromPath(iconPath);
   tray = new Tray(icon.resize({ width: 18, height: 18 }));
-  tray.setToolTip('Novata nvt_0.4 beta - Minimalist Audio Visualizer');
+  tray.setToolTip('Novata nvt_0.5 beta');
 
   updateTrayMenu();
 
@@ -281,7 +287,7 @@ function updateTrayMenu() {
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'Novata nvt_0.4 beta',
+      label: 'Novata nvt_0.5 beta',
       enabled: false,
       icon: nativeImage.createFromPath(iconPath).resize({ width: 14, height: 14 })
     },
@@ -336,7 +342,17 @@ function updateTrayMenu() {
       }
     },
     {
-      label: 'Adjust Widget Position & Size',
+      label: 'Toggle Lyrics Widget',
+      click: () => {
+        const cur = store.get('showLyricsWidget') !== false;
+        store.save({ showLyricsWidget: !cur });
+        if (overlayWindow && !overlayWindow.isDestroyed()) {
+          overlayWindow.webContents.send('toggle-lyrics-card', !cur);
+        }
+      }
+    },
+    {
+      label: 'Adjust Widgets Position & Size',
       click: () => {
         if (overlayWindow && !overlayWindow.isDestroyed()) {
           if (!overlayWindow.isVisible()) overlayWindow.show();
@@ -571,19 +587,22 @@ ipcMain.handle('sync-inapp-state', (event, state) => {
       trackChanged = true;
     }
     currentInAppTrack = state.track;
-    store.save({ lastPlayedTrack: state.track });
+    // Chỉ ghi vào đĩa khi bài hát thực sự thay đổi, không ghi lặp 4 lần mỗi giây
+    if (trackChanged) {
+      store.save({ lastPlayedTrack: state.track });
+    }
   }
 
   if (settingsWindow && !settingsWindow.isDestroyed()) {
     settingsWindow.webContents.send('inapp-state-sync', inAppPlaybackState);
   }
 
-  // Cap nhat Discord Rich Presence khi bai hat doi hoac trang thai play/pause thay doi
+  // Cập nhật Discord Rich Presence và Tray Menu khi bài hát đổi hoặc trạng thái play/pause thay đổi
   if (currentInAppTrack && (trackChanged || wasPlaying !== inAppPlaybackState.isPlaying)) {
     updateDiscordForCurrentTrack(currentInAppTrack, inAppPlaybackState.isPlaying, inAppPlaybackState.currentTime);
+    updateTrayMenu();
   }
 
-  updateTrayMenu();
   return { success: true };
 });
 
@@ -667,6 +686,107 @@ ipcMain.handle('set-discord-rpc-enabled', (event, enabled) => {
   store.save({ discordRpcEnabled: enabled });
   discordRpc.setEnabled(enabled);
   return discordRpc.getStatus();
+});
+
+ipcMain.handle('set-discord-client-id', (event, clientId) => {
+  const cleanId = (clientId || '').trim();
+  if (cleanId) {
+    store.save({ discordClientId: cleanId });
+    discordRpc.updateClientId(cleanId);
+  }
+  return discordRpc.getStatus();
+});
+
+// IPC Phân tích link dán trực tiếp (Spotify, YouTube, SoundCloud, Apple Music)
+ipcMain.handle('resolve-media-url', async (event, url) => {
+  return await resolveMediaUrl(url);
+});
+
+// IPC Lấy lời bài hát đồng bộ từ LRCLIB
+ipcMain.handle('get-lyrics', async (event, { title, artist, duration }) => {
+  return await getLyricsForTrack(title, artist, duration);
+});
+
+// IPC Chọn tệp font chữ tùy chỉnh (.ttf, .otf, .woff, .woff2) từ máy tính
+ipcMain.handle('select-font-file', async () => {
+  try {
+    const parentWin = settingsWindow && !settingsWindow.isDestroyed() ? settingsWindow : null;
+    const { canceled, filePaths } = await dialog.showOpenDialog(parentWin, {
+      title: 'Select Font File for Lyrics',
+      properties: ['openFile'],
+      filters: [
+        { name: 'Font Files (*.ttf, *.otf, *.woff, *.woff2)', extensions: ['ttf', 'otf', 'woff', 'woff2'] }
+      ]
+    });
+
+    if (canceled || !filePaths || filePaths.length === 0) {
+      return { canceled: true };
+    }
+
+    const selectedPath = filePaths[0];
+    const ext = path.extname(selectedPath).toLowerCase().replace('.', '');
+    const fileName = path.basename(selectedPath);
+    const fontName = path.basename(selectedPath, path.extname(selectedPath)).replace(/[^a-zA-Z0-9_-]/g, '_');
+
+    // Đọc tệp font và chuyển đổi thành base64 Data URL để nạp trực tiếp qua CSS FontFace API
+    const fontBuffer = fs.readFileSync(selectedPath);
+    const mimeType = ext === 'woff2' ? 'font/woff2' : (ext === 'woff' ? 'font/woff' : (ext === 'otf' ? 'font/otf' : 'font/ttf'));
+    const dataUrl = `data:${mimeType};base64,${fontBuffer.toString('base64')}`;
+
+    // Lưu một bản sao an toàn vào thư mục userData/fonts
+    const appDataFontsDir = path.join(app.getPath('userData'), 'fonts');
+    if (!fs.existsSync(appDataFontsDir)) {
+      try { fs.mkdirSync(appDataFontsDir, { recursive: true }); } catch (e) {}
+    }
+    const savedFontPath = path.join(appDataFontsDir, `custom_font_${Date.now()}.${ext}`);
+    try {
+      fs.writeFileSync(savedFontPath, fontBuffer);
+    } catch (e) {}
+
+    const fontConfig = {
+      name: fontName,
+      fileName: fileName,
+      ext: ext,
+      dataUrl: dataUrl,
+      path: savedFontPath,
+      loadedAt: Date.now()
+    };
+
+    store.save({
+      lyricsCustomFont: fontConfig,
+      lyricsFontFamily: fontName
+    });
+
+    applySettingsToOverlay(store.getAll());
+
+    return {
+      success: true,
+      font: fontConfig
+    };
+  } catch (err) {
+    console.error('Lỗi khi nạp tệp font chữ:', err);
+    return { success: false, error: err.message };
+  }
+});
+
+// IPC Đặt lại font chữ về mặc định hệ thống
+ipcMain.handle('reset-custom-font', () => {
+  store.save({
+    lyricsCustomFont: null,
+    lyricsFontFamily: 'system'
+  });
+  applySettingsToOverlay(store.getAll());
+  return { success: true };
+});
+
+// IPC Bật / Tắt thẻ Lyrics
+ipcMain.handle('toggle-lyrics-widget', (event, show) => {
+  const currentShow = typeof show === 'boolean' ? show : (store.get('showLyricsWidget') === false);
+  store.save({ showLyricsWidget: currentShow });
+  if (overlayWindow && !overlayWindow.isDestroyed()) {
+    overlayWindow.webContents.send('toggle-lyrics-card', currentShow);
+  }
+  return { success: true, showLyricsWidget: currentShow };
 });
 
 // IPC Mở nhanh các tab

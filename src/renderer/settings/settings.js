@@ -194,6 +194,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     setSlider('range-sensitivity', 'val-sensitivity', cfg.sensitivity || 1.3, 'x');
     setSlider('range-smoothing', 'val-smoothing', cfg.fftSmoothing || 0.82, '');
 
+    // Cài đặt tần số quét FPS
+    const selFps = document.getElementById('select-render-fps');
+    if (selFps) {
+      selFps.value = String(cfg.renderFps || 30);
+    }
+
     // 2.4. Công tắc bật tắt
     setCheckbox('check-show-media-card', cfg.showMediaCard !== false);
     setCheckbox('check-startup', !!cfg.launchOnStartup);
@@ -202,6 +208,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 2.5. Discord RPC & Default Music Auto-Play
     setCheckbox('check-discord-rpc', cfg.discordRpcEnabled !== false);
     setCheckbox('check-autoplay-startup', !!cfg.autoPlayOnStartup);
+
+    // 2.6. Lyrics Widget & Custom Typography
+    setCheckbox('check-show-lyrics', cfg.showLyricsWidget !== false);
+    setSlider('range-lyrics-font-size', 'val-lyrics-font-size', cfg.lyricsFontSize || 18, 'px');
+    updateLyricsFontUI(cfg);
+    updateLyricsAlignUI(cfg.lyricsTextAlign || 'center');
 
     const selectStartupSource = document.getElementById('select-startup-source');
     if (selectStartupSource) {
@@ -268,6 +280,42 @@ document.addEventListener('DOMContentLoaded', async () => {
   function setCheckbox(id, checked) {
     const el = document.getElementById(id);
     if (el) el.checked = checked;
+  }
+
+  function updateLyricsFontUI(cfg) {
+    const fontLabel = document.getElementById('font-file-name-label');
+    const btnResetFont = document.getElementById('btn-reset-font-file');
+    const selectFont = document.getElementById('select-lyrics-font');
+    const optCustom = document.getElementById('opt-custom-font');
+
+    if (cfg.lyricsCustomFont && cfg.lyricsCustomFont.name) {
+      if (fontLabel) fontLabel.textContent = cfg.lyricsCustomFont.fileName || cfg.lyricsCustomFont.name;
+      if (btnResetFont) btnResetFont.classList.remove('hidden');
+      if (optCustom) {
+        optCustom.disabled = false;
+        optCustom.textContent = `Custom: ${cfg.lyricsCustomFont.name}`;
+      }
+      if (selectFont) selectFont.value = 'custom';
+    } else {
+      if (fontLabel) fontLabel.textContent = 'Default System Font';
+      if (btnResetFont) btnResetFont.classList.add('hidden');
+      if (optCustom) {
+        optCustom.disabled = true;
+        optCustom.textContent = 'Custom Uploaded Font';
+      }
+      if (selectFont) {
+        selectFont.value = cfg.lyricsFontFamily && cfg.lyricsFontFamily !== 'custom' ? cfg.lyricsFontFamily : 'system';
+      }
+    }
+  }
+
+  function updateLyricsAlignUI(align) {
+    const btnCenter = document.getElementById('btn-align-center');
+    const btnLeft = document.getElementById('btn-align-left');
+    if (btnCenter && btnLeft) {
+      btnCenter.classList.toggle('active', align === 'center');
+      btnLeft.classList.toggle('active', align === 'left');
+    }
   }
 
   // 3. Hàm lưu cài đặt cập nhật thời gian thực
@@ -624,6 +672,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateSetting({ fftSmoothing: parseFloat(val) });
   });
 
+  const selFps = document.getElementById('select-render-fps');
+  if (selFps) {
+    selFps.addEventListener('change', (e) => {
+      updateSetting({ renderFps: parseInt(e.target.value, 10) || 30 });
+    });
+  }
+
   // 4.6. Công tắc Hiện thẻ điều khiển & Đặt lại vị trí
   const checkShowCard = document.getElementById('check-show-media-card');
   if (checkShowCard) {
@@ -711,6 +766,80 @@ document.addEventListener('DOMContentLoaded', async () => {
   window.novata.onDiscordStatusChange((status) => {
     updateDiscordBadge(status);
   });
+
+  // Cấu hình thẻ hiển thị lời bài hát (Lyrics Widget)
+  const checkShowLyrics = document.getElementById('check-show-lyrics');
+  if (checkShowLyrics) {
+    checkShowLyrics.addEventListener('change', async (e) => {
+      const show = e.target.checked;
+      await updateSetting({ showLyricsWidget: show });
+      await window.novata.toggleLyricsWidget(show);
+    });
+  }
+
+  // Chọn tệp font chữ tùy chỉnh từ máy tính (.ttf, .otf, .woff, .woff2)
+  const btnChooseFontFile = document.getElementById('btn-choose-font-file');
+  const btnResetFontFile = document.getElementById('btn-reset-font-file');
+  const selectLyricsFont = document.getElementById('select-lyrics-font');
+
+  if (btnChooseFontFile) {
+    btnChooseFontFile.addEventListener('click', async () => {
+      const res = await window.novata.selectFontFile();
+      if (res && res.success && res.font) {
+        settings.lyricsCustomFont = res.font;
+        settings.lyricsFontFamily = res.font.name;
+        updateLyricsFontUI(settings);
+      }
+    });
+  }
+
+  if (btnResetFontFile) {
+    btnResetFontFile.addEventListener('click', async () => {
+      await window.novata.resetCustomFont();
+      settings.lyricsCustomFont = null;
+      settings.lyricsFontFamily = 'system';
+      updateLyricsFontUI(settings);
+    });
+  }
+
+  if (selectLyricsFont) {
+    selectLyricsFont.addEventListener('change', async (e) => {
+      const val = e.target.value;
+      await updateSetting({ lyricsFontFamily: val });
+    });
+  }
+
+  const rangeLyricsFontSize = document.getElementById('range-lyrics-font-size');
+  const valLyricsFontSize = document.getElementById('val-lyrics-font-size');
+  if (rangeLyricsFontSize && valLyricsFontSize) {
+    rangeLyricsFontSize.addEventListener('input', (e) => {
+      const size = parseInt(e.target.value, 10);
+      valLyricsFontSize.textContent = `${size}px`;
+      updateSetting({ lyricsFontSize: size });
+    });
+  }
+
+  const btnAlignCenter = document.getElementById('btn-align-center');
+  const btnAlignLeft = document.getElementById('btn-align-left');
+  if (btnAlignCenter && btnAlignLeft) {
+    btnAlignCenter.addEventListener('click', async () => {
+      btnAlignCenter.classList.add('active');
+      btnAlignLeft.classList.remove('active');
+      await updateSetting({ lyricsTextAlign: 'center' });
+    });
+    btnAlignLeft.addEventListener('click', async () => {
+      btnAlignLeft.classList.add('active');
+      btnAlignCenter.classList.remove('active');
+      await updateSetting({ lyricsTextAlign: 'left' });
+    });
+  }
+
+  const btnTriggerLyricsEdit = document.getElementById('btn-trigger-lyrics-edit-mode');
+  if (btnTriggerLyricsEdit) {
+    btnTriggerLyricsEdit.addEventListener('click', async () => {
+      await window.novata.enterEditMode();
+    });
+  }
 
   // Cấu hình Auto-Play on Startup (Default Music)
   const checkAutoPlayStartup = document.getElementById('check-autoplay-startup');
@@ -1333,11 +1462,35 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const thumbUrl = track.thumbnail || '../assets/icon.png';
 
+      let badgeHtml = '';
+      if (track.source) {
+        const srcLower = track.source.toLowerCase();
+        let badgeClass = 'youtube';
+        let badgeText = track.source;
+        if (srcLower.includes('spotify')) {
+          badgeClass = 'spotify';
+          badgeText = 'Spotify';
+        } else if (srcLower.includes('sound') || srcLower.includes('cloud')) {
+          badgeClass = 'soundcloud';
+          badgeText = 'SoundCloud';
+        } else if (srcLower.includes('apple')) {
+          badgeClass = 'applemusic';
+          badgeText = 'Apple Music';
+        } else if (track.isDirectLink) {
+          badgeClass = 'youtube';
+          badgeText = 'Direct Link';
+        }
+        badgeHtml = `<span class="direct-link-badge ${badgeClass}">${badgeText}</span>`;
+      }
+
       card.innerHTML = `
         <div class="track-item-left">
           <img src="${thumbUrl}" class="track-thumb" alt="Thumb" onerror="this.src='../assets/icon.png'">
           <div class="track-info">
-            <div class="track-title" title="${escapeHtml(track.title)}">${escapeHtml(track.title)}</div>
+            <div class="track-title" title="${escapeHtml(track.title)}">
+              <span>${escapeHtml(track.title)}</span>
+              ${badgeHtml}
+            </div>
             <div class="track-artist">${escapeHtml(track.artist)}</div>
           </div>
         </div>
@@ -1428,6 +1581,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     btnSubmitSearch.addEventListener('click', () => executeSearch(searchInput.value));
     searchInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') executeSearch(searchInput.value);
+    });
+  }
+
+  // Nút dán nhanh liên kết từ Clipboard
+  const btnPasteLink = document.getElementById('btn-paste-link');
+  if (btnPasteLink && searchInput) {
+    btnPasteLink.addEventListener('click', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text && text.trim()) {
+          searchInput.value = text.trim();
+          if (btnClearSearch) btnClearSearch.classList.remove('hidden');
+          executeSearch(text.trim());
+        }
+      } catch (err) {
+        console.warn('Lỗi đọc dữ liệu từ clipboard:', err);
+      }
     });
   }
 

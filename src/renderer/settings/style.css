@@ -2223,3 +2223,152 @@ input:checked + .slider:before {
   background: #22c55e;
   color: #ffffff;
 }
+
+/* ========================================================
+   NVT_0.5 BETA: DIRECT LINK & LYRICS & DISCORD CLIENT ID
+   ======================================================== */
+.btn-paste-link {
+  background: #1e1e24 !important;
+  border-color: #3f3f46 !important;
+  color: #e4e4e7 !important;
+}
+
+.btn-paste-link:hover {
+  background: #27272a !important;
+  color: #ffffff !important;
+}
+
+.direct-link-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #e4e4e7;
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  margin-left: 6px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.direct-link-badge.spotify {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+.direct-link-badge.soundcloud {
+  background: rgba(249, 115, 22, 0.15);
+  color: #fb923c;
+  border-color: rgba(249, 115, 22, 0.35);
+}
+
+.direct-link-badge.applemusic {
+  background: rgba(244, 63, 94, 0.15);
+  color: #fb7185;
+  border-color: rgba(244, 63, 94, 0.35);
+}
+
+.direct-link-badge.youtube {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+/* Tùy biến Custom Font File */
+.custom-font-control-col {
+  min-width: 300px;
+}
+
+.custom-font-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #141417;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.font-current-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.font-current-info i {
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.font-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.choice-tabs-row {
+  display: flex;
+  background: #141416;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.choice-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 11.5px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.choice-tab-btn:hover {
+  color: var(--text-main);
+}
+
+.choice-tab-btn.active {
+  background: #27272a;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.discord-client-id-col {
+  min-width: 280px;
+}
+
+.input-action-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.mono-input {
+  flex: 1;
+  background: #141416;
+  border: 1px solid var(--border-strong);
+  color: var(--text-main);
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.mono-input:focus {
+  border-color: #ffffff;
+}
+

@@ -1,6 +1,6 @@
 /**
  * Quản lý lưu trữ cấu hình người dùng của Novata
- * Phiên bản nvt_0.4 beta - Hỗ trợ Dạng sóng (Waveform), Chất liệu Solid/Glass trong suốt, Multi-Playlists & Discord RPC
+ * Phiên bản nvt_0.5 beta - Hỗ trợ Lyrics Widget (chỉnh vị trí, kích thước, font chữ), Dán link trực tiếp Spotify/YouTube/SoundCloud/Apple Music, Dạng sóng (Waveform), Chất liệu Solid/Glass trong suốt, Multi-Playlists & Discord RPC
  */
 
 const fs = require('fs');
@@ -26,7 +26,7 @@ const getUserDataPath = () => {
 
 const CONFIG_PATH = path.join(getUserDataPath(), 'novata-settings.json');
 
-// Cấu hình mặc định phiên bản nvt_0.4 beta
+// Cấu hình mặc định phiên bản nvt_0.5 beta
 const DEFAULT_SETTINGS = {
   // Chế độ sóng âm: 'bars' (dạng cột) hoặc 'wave' (dạng sóng)
   visualizerMode: 'bars',
@@ -75,11 +75,27 @@ const DEFAULT_SETTINGS = {
   playerCardPos: null,  // { left: 28, top: null } hoặc tọa độ tùy chỉnh
   playerCardSize: null, // { width: 360, height: null } kích thước tùy chỉnh co giãn
 
+  // Tùy chọn thẻ hiển thị lời bài hát (Lyrics Widget)
+  showLyricsWidget: true,
+  lyricsCardPos: null,  // { left: 28, top: 120 } hoặc tọa độ tùy chỉnh
+  lyricsCardSize: null, // { width: 380, height: 260 } kích thước tùy chỉnh co giãn
+  lyricsFontSize: 18,    // Kích thước font chữ (px)
+  lyricsFontFamily: 'system', // 'system', 'monospace', 'serif', hoặc tên font tùy chỉnh
+  lyricsCustomFont: null,     // { name, dataUrl, path, fileName } khi người dùng tải tệp font (.ttf, .otf, .woff, .woff2)
+  lyricsTextAlign: 'center',  // 'center' hoặc 'left'
+  lyricsFontWeight: '600',    // '400', '600', '700'
+  lyricsActiveColor: '#ffffff', // Màu sắc dòng lời bài hát đang phát
+  lyricsInactiveOpacity: 0.35,  // Độ mờ các dòng trước và sau
+  lyricsMaterial: 'glass',     // 'glass' hoặc 'solid'
+  lyricsGlassOpacity: 0.18,
+  lyricsGlassBlur: 20,
+
   // Sóng âm mặc định xuyên chuột và nằm ở lớp hình nền
   alwaysOnTop: false,
   clickThrough: true,
 
-  // Cấu hình âm thanh
+  // Cấu hình âm thanh & Hiệu năng dựng hình
+  renderFps: 30, // Tần số quét dựng hình: 20 (Eco), 30 (Mặc định mượt & tối ưu CPU), 45, 60
   sensitivity: 1.3,
   fftSmoothing: 0.82,
   barWidth: 6,
@@ -91,7 +107,7 @@ const DEFAULT_SETTINGS = {
 
   // Tích hợp Discord Rich Presence (RPC)
   discordRpcEnabled: true,
-  discordClientId: '807774172574253056',
+  discordClientId: '1567377198237618186',
 
   // Tự động phát nhạc khi khởi động (Default Music / Startup Playlist)
   autoPlayOnStartup: false,
