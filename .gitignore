@@ -3,56 +3,27 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json.bak
 
-# Build Artifacts & Distribution Packages
+# Build Artifacts
 dist/
 build/
 out/
 *.exe
-*.blockmap
 *.zip
 *.tar.gz
 
-# Scratch & Temporary Testing Files
-scratch/
+# Logs & Temp
+*.log
 tmp/
 .tmp/
-*.log
 
-# Framework & Deployment caches
-.vercel/
-preview/.vercel/
-.cache/
-
-# IDE & Editor Configurations
-.idea/
-.vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# OS Generated Files
+# OS Files
 Thumbs.db
-ehthumbs.db
 [Dd]esktop.ini
-$RECYCLE.BIN/
 .DS_Store
 
-# Local App Data & Settings
+# Local Settings
 novata-settings.json
 novata-playlists.json
 .env
 .env.local
-.env.*.local
-
-# Local Agent Customizations & Skills (Do not upload to git)
-.agents/
-.agent/
-_agents/
-_agent/
-
-# Developer Local Working Directory
-dev/
