@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Novata nvt_0.4 beta - Settings & Music Center</title>
+  <link rel="stylesheet" href="../assets/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="settings-mono-window">
+    <!-- Window Titlebar -->
+    <div class="mono-titlebar">
+      <div class="title-branding">
+        <img src="../assets/icon.png" class="brand-logo-img" alt="Novata Logo">
+        <span class="brand-title">Novata</span>
+        <span class="brand-badge">nvt_0.4 beta</span>
+      </div>
+
+      <div class="window-actions">
+        <button class="win-btn win-close" id="btn-close-window" title="Close Settings">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="settings-container">
+      <!-- Left Sidebar Tabs -->
+      <div class="mono-sidebar">
+        <button class="tab-btn active" data-tab="tab-music-search" id="tab-btn-search">
+          <i class="bi bi-music-note-beamed tab-icon"></i>
+          <span>Music Player</span>
+        </button>
+
+        <button class="tab-btn" data-tab="tab-playlists" id="tab-btn-playlists">
+          <i class="bi bi-collection-play tab-icon"></i>
+          <span>Playlists</span>
+        </button>
+
+        <button class="tab-btn" data-tab="tab-appearance" id="tab-btn-appearance">
+          <i class="bi bi-palette tab-icon"></i>
+          <span>Appearance</span>
+        </button>
+
+        <button class="tab-btn" data-tab="tab-general" id="tab-btn-general">
+          <i class="bi bi-sliders tab-icon"></i>
+          <span>General</span>
+        </button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="mono-tab-content">
+        <!-- 1. TAB MUSIC PLAYER -->
+        <div class="tab-pane active" id="tab-music-search">
+          <div class="section-header">
+            <h3>Music Player</h3>
+            <p>Search and play music with real-time waveform visualization</p>
+          </div>
+
+          <!-- Search Bar -->
+          <div class="search-bar-wrap">
+            <div class="search-input-box">
+              <i class="bi bi-search search-box-icon"></i>
+              <input type="text" id="music-search-input" placeholder="Search songs, artists, or beats..." autocomplete="off">
+              <button id="btn-clear-search" class="search-clear-btn hidden" title="Clear search">
+                <i class="bi bi-x"></i>
+              </button>
+            </div>
+            <button id="btn-submit-search" class="mono-btn-search">
+              <i class="bi bi-arrow-right"></i>
+              <span>Search</span>
+            </button>
+          </div>
+
+          <!-- Quick Query Chips -->
+          <div class="search-tags-row">
+            <span class="tags-label">Popular:</span>
+            <button class="tag-chip" data-query="Lofi hip hop beats">Lofi Chill</button>
+            <button class="tag-chip" data-query="Top hits 2026">Top Hits</button>
+            <button class="tag-chip" data-query="Acoustic songs chill">Acoustic</button>
+            <button class="tag-chip" data-query="Electronic synthwave chill">Synthwave</button>
+            <button class="tag-chip" data-query="Piano relaxing instrumental">Piano</button>
+          </div>
+
+          <!-- Search Status Bar -->
+          <div class="search-status-bar" id="search-status-bar">
+            <span id="search-status-text">Trending recommendations</span>
+            <span class="status-badge" id="results-count-badge">Ready</span>
+          </div>
+
+          <!-- Music Search Results List -->
+          <div class="music-results-list" id="music-results-list">
+            <!-- Dynamically populated via JavaScript -->
+          </div>
+
+          <!-- Mini Player Bar at Window Bottom -->
+          <div class="inapp-mini-player" id="inapp-mini-player">
+            <div class="mini-player-track">
+              <img id="mini-player-thumb" src="../assets/icon.png" class="mini-thumb" alt="Track Art">
+              <div class="mini-meta">
+                <div class="mini-title" id="mini-title">No track selected</div>
+                <div class="mini-artist" id="mini-artist">Select a track above to start listening</div>
+              </div>
+            </div>
+
+            <div class="mini-player-controls">
+              <button class="mini-btn" id="mini-btn-prev" title="Previous Track">
+                <i class="bi bi-skip-start-fill"></i>
+              </button>
+              <button class="mini-btn mini-btn-play" id="mini-btn-play" title="Play / Pause">
+                <i class="bi bi-play-fill" id="mini-play-icon"></i>
+              </button>
+              <button class="mini-btn" id="mini-btn-next" title="Next Track">
+                <i class="bi bi-skip-end-fill"></i>
+              </button>
+            </div>
+
+            <div class="mini-time-info">
+              <span id="mini-time-display">0:00 / 0:00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. TAB PLAYLISTS -->
+        <div class="tab-pane" id="tab-playlists">
+          <div class="section-header playlist-header-flex">
+            <div>
+              <h3>Music Playlists</h3>
+              <p>Create multiple playlists for different moods and activities with auto-playback</p>
+            </div>
+            <button class="mono-apply-btn" id="btn-create-playlist-trigger">
+              <i class="bi bi-plus-lg"></i>
+              <span>New Playlist</span>
+            </button>
+          </div>
+
+          <div class="playlists-workspace">
+            <!-- Left Column: Playlist List -->
+            <div class="playlists-sidebar-col">
+              <div class="playlists-sidebar-title">Your Playlists</div>
+              <div class="playlists-pill-list" id="playlists-pills-container">
+                <!-- Dynamically populated playlist tabs with delete buttons -->
+              </div>
+            </div>
+
+            <!-- Right Column: Active Playlist Details & Songs -->
+            <div class="playlist-detail-col">
+              <!-- Zero State when no playlist exists -->
+              <div class="playlists-zero-state hidden" id="playlists-zero-state">
+                <div class="zero-state-icon"><i class="bi bi-collection-play"></i></div>
+                <h3>No Playlists Yet</h3>
+                <p>You haven't created any playlists. Click below to create your first playlist.</p>
+                <button class="mono-apply-btn" id="btn-zero-create-pl">
+                  <i class="bi bi-plus-lg"></i>
+                  <span>Create Playlist</span>
+                </button>
+              </div>
+
+              <!-- Content view when a playlist is selected -->
+              <div class="playlist-active-view" id="playlist-active-view">
+                <div class="playlist-detail-header" id="playlist-detail-header">
+                  <!-- Row 1: Title, Startup Badge, Rename & Delete buttons -->
+                  <div class="pl-header-top-row">
+                    <div class="pl-header-title-box">
+                      <h4 class="pl-active-title" id="pl-active-title">Playlist Name</h4>
+                      <span class="pl-startup-badge hidden" id="pl-active-startup-badge" title="Will play automatically when Novata launches">
+                        <i class="bi bi-star-fill"></i> Startup Default
+                      </span>
+                      <span class="pl-track-count-badge" id="pl-active-track-count">0 tracks</span>
+                    </div>
+
+                    <div class="pl-header-tools">
+                      <button class="pl-tool-btn" id="btn-edit-active-playlist" title="Rename Playlist">
+                        <i class="bi bi-pencil"></i>
+                        <span>Rename</span>
+                      </button>
+                      <button class="pl-tool-btn pl-tool-danger" id="btn-delete-active-playlist" title="Delete Playlist">
+                        <i class="bi bi-trash3"></i>
+                        <span>Delete</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Row 2: Playback Actions & Duration -->
+                  <div class="pl-header-bottom-row">
+                    <div class="pl-playback-actions">
+                      <button class="pl-btn-play" id="btn-play-all-playlist" title="Play Playlist">
+                        <i class="bi bi-play-fill"></i>
+                        <span>Play All</span>
+                      </button>
+                      <button class="pl-btn-secondary" id="btn-shuffle-playlist" title="Shuffle & Play">
+                        <i class="bi bi-shuffle"></i>
+                        <span>Shuffle</span>
+                      </button>
+                      <button class="pl-btn-secondary" id="btn-set-startup-playlist" title="Set this playlist as default on startup">
+                        <i class="bi bi-star" id="btn-startup-star-icon"></i>
+                        <span id="btn-startup-label">Set Startup</span>
+                      </button>
+                    </div>
+                    <span class="pl-duration-text" id="pl-active-duration">0m 00s</span>
+                  </div>
+                </div>
+
+                <!-- Tracks List Container -->
+                <div class="playlist-tracks-container" id="playlist-tracks-container">
+                  <!-- Dynamically populated tracks -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. TAB APPEARANCE -->
+        <div class="tab-pane" id="tab-appearance">
+          <!-- 3.1. DẠNG SÓNG ÂM (WAVE SHAPE) -->
+          <div class="section-header">
+            <h3>Waveform Shape</h3>
+            <p>Select visual spectrum representation mode</p>
+          </div>
+
+          <div class="card-grid cols-2">
+            <div class="mono-choice-card selected" data-visualizer-mode="bars" id="choice-mode-bars">
+              <i class="bi bi-bar-chart choice-icon"></i>
+              <div class="choice-title">Vertical Bars (Columns)</div>
+              <div class="choice-desc">Discrete vertical frequency bars radiating symmetrically</div>
+            </div>
+
+            <div class="mono-choice-card" data-visualizer-mode="wave" id="choice-mode-wave">
+              <i class="bi bi-activity choice-icon"></i>
+              <div class="choice-title">Continuous Wave</div>
+              <div class="choice-desc">Smooth fluid wave with inner body and top crest border</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- ================================================================= -->
+          <!-- 3.2. CẤU HÌNH DÀNH CHO DẠNG CỘT (VERTICAL BARS)                   -->
+          <!-- ================================================================= -->
+          <div id="section-bars-settings">
+            <div class="section-header">
+              <h3>Bars Material</h3>
+              <p>Choose material finish for vertical spectrum bars</p>
+            </div>
+
+            <div class="card-grid cols-2">
+              <div class="mono-choice-card selected" data-bars-mat="solid" id="choice-bars-mat-solid">
+                <i class="bi bi-paint-bucket choice-icon"></i>
+                <div class="choice-title">Solid Color</div>
+                <div class="choice-desc">Vibrant custom single solid color with opacity control</div>
+              </div>
+
+              <div class="mono-choice-card" data-bars-mat="glass" id="choice-bars-mat-glass">
+                <i class="bi bi-layers choice-icon"></i>
+                <div class="choice-title">Glass</div>
+                <div class="choice-desc">Pure transparent frosted glass (strictly monochrome/colorless)</div>
+              </div>
+            </div>
+
+            <!-- Nhóm tùy chỉnh Solid Color cho Bars -->
+            <div id="bars-solid-controls">
+              <div class="custom-color-control-box">
+                <div class="color-summary-card">
+                  <div class="color-summary-left">
+                    <div class="color-swatch-badge" id="curr-swatch-display" style="background: #ffffff;"></div>
+                    <div class="color-summary-meta">
+                      <span class="color-meta-label">Current Color</span>
+                      <span class="color-meta-hex" id="curr-hex-display">#FFFFFF</span>
+                    </div>
+                  </div>
+                  <button class="mono-apply-btn btn-trigger-color-modal" data-target="bars" title="Open Color Customizer">
+                    <i class="bi bi-palette-fill"></i>
+                    <span>Customize Color</span>
+                  </button>
+                </div>
+
+                <div class="quick-swatches-row">
+                  <span class="swatches-label">Quick Presets:</span>
+                  <button class="swatch-btn" data-target="bars" data-color="#ffffff" style="background:#ffffff" title="Pure White"></button>
+                  <button class="swatch-btn" data-target="bars" data-color="#d4d4d8" style="background:#d4d4d8" title="Silver"></button>
+                  <button class="swatch-btn" data-target="bars" data-color="#a1a1aa" style="background:#a1a1aa" title="Zinc"></button>
+                  <button class="swatch-btn" data-target="bars" data-color="#38bdf8" style="background:#38bdf8" title="Ice Blue"></button>
+                  <button class="swatch-btn" data-target="bars" data-color="#34d399" style="background:#34d399" title="Mint"></button>
+                  <button class="swatch-btn" data-target="bars" data-color="#fbbf24" style="background:#fbbf24" title="Amber"></button>
+                  <button class="swatch-btn" data-target="bars" data-color="#fb7185" style="background:#fb7185" title="Sunset Coral"></button>
+                  <button class="swatch-btn" data-target="bars" data-color="#c084fc" style="background:#c084fc" title="Lavender"></button>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-label-col">
+                  <span class="setting-title">Waveform Opacity</span>
+                  <span class="setting-sub">Solid color transparency level</span>
+                </div>
+                <div class="setting-control-col">
+                  <input type="range" id="range-waveform-opacity" min="0.10" max="1.00" step="0.05" value="1.00">
+                  <span class="range-val" id="val-waveform-opacity">100%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Nhóm tùy chỉnh Glass cho Bars -->
+            <div id="bars-glass-controls" class="hidden">
+              <div class="setting-item">
+                <div class="setting-label-col">
+                  <span class="setting-title">Bars Glass Transparency</span>
+                  <span class="setting-sub">See-through transparency of the glass bars (strictly colorless)</span>
+                </div>
+                <div class="setting-control-col">
+                  <input type="range" id="range-bars-glass-opacity" min="0.05" max="0.80" step="0.05" value="0.28">
+                  <span class="range-val" id="val-bars-glass-opacity">28%</span>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-label-col">
+                  <span class="setting-title">Bars Glass Blur</span>
+                  <span class="setting-sub">Frosted glass blur diffusion effect on bars</span>
+                </div>
+                <div class="setting-control-col">
+                  <input type="range" id="range-bars-glass-blur" min="0" max="30" step="1" value="10">
+                  <span class="range-val" id="val-bars-glass-blur">10px</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================================================================= -->
+          <!-- 3.3. CẤU HÌNH DÀNH RIÊNG CHO CONTINUOUS WAVE                      -->
+          <!-- Gồm 2 phần độc lập: Viền trên cùng (Border) & Thân bên trong (Inner)-->
+          <!-- Mỗi phần có tùy chọn chất liệu Solid hoặc Glass riêng biệt       -->
+          <!-- ================================================================= -->
+          <div id="section-wave-settings" class="hidden">
+            <!-- 3.3a. PHẦN 1: VIỀN TRÊN CÙNG (TOP CREST BORDER) -->
+            <div class="section-header">
+              <h3>Top Crest Border (Viền Trên Cùng)</h3>
+              <p>Top outline curve of the continuous wave (highlighted in red in reference drawing)</p>
+            </div>
+
+            <div class="card-grid cols-2">
+              <div class="mono-choice-card selected" data-wave-border-mat="solid" id="choice-wave-border-solid">
+                <i class="bi bi-paint-bucket choice-icon"></i>
+                <div class="choice-title">Border: Solid Color</div>
+                <div class="choice-desc">Vibrant sharp solid color line along the crest</div>
+              </div>
+
+              <div class="mono-choice-card" data-wave-border-mat="glass" id="choice-wave-border-glass">
+                <i class="bi bi-layers choice-icon"></i>
+                <div class="choice-title">Border: Glass</div>
+                <div class="choice-desc">Pure monochrome light reflection rim highlight</div>
+              </div>
+            </div>
+
+            <!-- Tùy chỉnh Solid cho Viền -->
+            <div id="wave-border-solid-controls">
+              <div class="custom-color-control-box">
+                <div class="color-summary-card">
+                  <div class="color-summary-left">
+                    <div class="color-swatch-badge" id="border-swatch-display" style="background: #ef4444;"></div>
+                    <div class="color-summary-meta">
+                      <span class="color-meta-label">Border Color</span>
+                      <span class="color-meta-hex" id="border-hex-display">#EF4444</span>
+                    </div>
+                  </div>
+                  <button class="mono-apply-btn btn-trigger-color-modal" data-target="waveBorder" title="Customize Border Color">
+                    <i class="bi bi-palette-fill"></i>
+                    <span>Customize Border Color</span>
+                  </button>
+                </div>
+
+                <div class="quick-swatches-row">
+                  <span class="swatches-label">Quick Presets:</span>
+                  <button class="swatch-btn" data-target="waveBorder" data-color="#ef4444" style="background:#ef4444" title="Crimson Red"></button>
+                  <button class="swatch-btn" data-target="waveBorder" data-color="#ffffff" style="background:#ffffff" title="Pure White"></button>
+                  <button class="swatch-btn" data-target="waveBorder" data-color="#38bdf8" style="background:#38bdf8" title="Ice Blue"></button>
+                  <button class="swatch-btn" data-target="waveBorder" data-color="#fbbf24" style="background:#fbbf24" title="Amber"></button>
+                  <button class="swatch-btn" data-target="waveBorder" data-color="#34d399" style="background:#34d399" title="Mint"></button>
+                  <button class="swatch-btn" data-target="waveBorder" data-color="#c084fc" style="background:#c084fc" title="Lavender"></button>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-label-col">
+                  <span class="setting-title">Border Opacity</span>
+                  <span class="setting-sub">Solid border line transparency level</span>
+                </div>
+                <div class="setting-control-col">
+                  <input type="range" id="range-wave-border-opacity" min="0.10" max="1.00" step="0.05" value="1.00">
+                  <span class="range-val" id="val-wave-border-opacity">100%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tùy chỉnh Glass cho Viền -->
+            <div id="wave-border-glass-controls" class="hidden">
+              <div class="setting-item">
+                <div class="setting-label-col">
+                  <span class="setting-title">Border Glass Reflection</span>
+                  <span class="setting-sub">Brightness of the monochrome glass crest rim</span>
+                </div>
+                <div class="setting-control-col">
+                  <input type="range" id="range-wave-border-glass-opacity" min="0.10" max="1.00" step="0.05" value="0.70">
+                  <span class="range-val" id="val-wave-border-glass-opacity">70%</span>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-label-col">
+                  <span class="setting-title">Border Glass Glow Blur</span>
+                  <span class="setting-sub">Soft glow diffusion around the glass crest line</span>
+                </div>
+                <div class="setting-control-col">
+                  <input type="range" id="range-wave-border-glass-blur" min="0" max="20" step="1" value="6">
+                  <span class="range-val" id="val-wave-border-glass-blur">6px</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Độ dày viền trên cùng (Border Thickness) -->
+            <div class="setting-item">
+              <div class="setting-label-col">
+                <span class="setting-title">Top Crest Border Thickness</span>
+                <span class="setting-sub">Thickness of the top-most crest line (only top crest is stroked)</span>
+              </div>
+              <div class="setting-control-col">
+                <input type="range" id="range-wave-border-width" min="1.0" max="8.0" step="0.5" value="3.0">
+                <span class="range-val" id="val-wave-border-width">3.0px</span>
+              </div>
+            </div>
+
+            <div class="sub-divider"></div>
+
+            <!-- 3.3b. PHẦN 2: THÂN BÊN TRONG (WAVE INNER BODY) -->
+            <div class="section-header">
+              <h3>Wave Inner Body (Thân Bên Trong)</h3>
+              <p>Filled area beneath the crest line down to the bottom (highlighted in orange in reference drawing)</p>
+            </div>
+
+            <div class="card-grid cols-2">
+              <div class="mono-choice-card selected" data-wave-inner-mat="solid" id="choice-wave-inner-solid">
+                <i class="bi bi-paint-bucket choice-icon"></i>
+                <div class="choice-title">Inner Body: Solid Color</div>
+                <div class="choice-desc">Opaque vibrant solid color fill beneath the wave</div>
+              </div>
+
+              <div class="mono-choice-card" data-wave-inner-mat="glass" id="choice-wave-inner-glass">
+                <i class="bi bi-layers choice-icon"></i>
+                <div class="choice-title">Inner Body: Glass</div>
+                <div class="choice-desc">Pure transparent frosted glass (strictly monochrome/colorless)</div>
+              </div>
+            </div>
+
+            <!-- Tùy chỉnh Solid cho Thân trong -->
+            <div id="wave-inner-solid-controls">
+              <div class="custom-color-control-box">
+                <div class="color-summary-card">
+                  <div class="color-summary-left">
+                    <div class="color-swatch-badge" id="inner-swatch-display" style="background: #f97316;"></div>
+                    <div class="color-summary-meta">
+                      <span class="color-meta-label">Inner Body Color</span>
+                      <span class="color-meta-hex" id="inner-hex-display">#F97316</span>
+                    </div>
+                  </div>
+                  <button class="mono-apply-btn btn-trigger-color-modal" data-target="waveInner" title="Customize Inner Body Color">
+                    <i class="bi bi-palette-fill"></i>
+                    <span>Customize Inner Color</span>
+                  </button>
+                </div>
+
+                <div class="quick-swatches-row">
+                  <span class="swatches-label">Quick Presets:</span>
+                  <button class="swatch-btn" data-target="waveInner" data-color="#f97316" style="background:#f97316" title="Vibrant Orange"></button>
+                  <button class="swatch-btn" data-target="waveInner" data-color="#ffffff" style="background:#ffffff" title="Pure White"></button>
+                  <button class="swatch-btn" data-target="waveInner" data-color="#fbbf24" style="background:#fbbf24" title="Amber"></button>
+                  <button class="swatch-btn" data-target="waveInner" data-color="#38bdf8" style="background:#38bdf8" title="Ice Blue"></button>
+                  <button class="swatch-btn" data-target="waveInner" data-color="#34d399" style="background:#34d399" title="Mint"></button>
+                  <button class="swatch-btn" data-target="waveInner" data-color="#c084fc" style="background:#c084fc" title="Lavender"></button>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-label-col">
+                  <span class="setting-title">Inner Body Opacity</span>
+                  <span class="setting-sub">Solid color opacity of the wave body (100% for full opaque coverage)</span>
+                </div>
+                <div class="setting-control-col">
+                  <input type="range" id="range-wave-inner-opacity" min="0.10" max="1.00" step="0.05" value="1.00">
+                  <span class="range-val" id="val-wave-inner-opacity">100%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tùy chỉnh Glass cho Thân trong -->
+            <div id="wave-inner-glass-controls" class="hidden">
+              <div class="setting-item">
+                <div class="setting-label-col">
+                  <span class="setting-title">Inner Glass Transparency</span>
+                  <span class="setting-sub">See-through transparency of the body (strictly colorless)</span>
+                </div>
+                <div class="setting-control-col">
+                  <input type="range" id="range-wave-inner-glass-opacity" min="0.05" max="0.90" step="0.05" value="0.25">
+                  <span class="range-val" id="val-wave-inner-glass-opacity">25%</span>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-label-col">
+                  <span class="setting-title">Inner Glass Blur</span>
+                  <span class="setting-sub">Frosted glass blur diffusion effect on the wave body</span>
+                </div>
+                <div class="setting-control-col">
+                  <input type="range" id="range-wave-inner-glass-blur" min="0" max="30" step="1" value="12">
+                  <span class="range-val" id="val-wave-inner-glass-blur">12px</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- 3.3. KÍCH THƯỚC SÓNG ÂM (WAVE DIMENSIONS) -->
+          <div class="section-header">
+            <h3>Waveform Dimensions</h3>
+            <p>Fine-tune spectrum height, sensitivity, and bar geometry</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Spectrum Height</span>
+              <span class="setting-sub">Maximum peak height of the waveform</span>
+            </div>
+            <div class="setting-control-col">
+              <input type="range" id="range-spectrum-height" min="60" max="260" step="10" value="160">
+              <span class="range-val" id="val-spectrum-height">160px</span>
+            </div>
+          </div>
+
+          <div class="setting-item" id="row-bar-width">
+            <div class="setting-label-col">
+              <span class="setting-title">Bar Thickness</span>
+              <span class="setting-sub">Width of individual spectrum bars (applies to bars mode)</span>
+            </div>
+            <div class="setting-control-col">
+              <input type="range" id="range-bar-width" min="2" max="14" step="1" value="6">
+              <span class="range-val" id="val-bar-width">6px</span>
+            </div>
+          </div>
+
+          <div class="setting-item" id="row-bar-gap">
+            <div class="setting-label-col">
+              <span class="setting-title">Bar Spacing</span>
+              <span class="setting-sub">Gap between adjacent spectrum bars (applies to bars mode)</span>
+            </div>
+            <div class="setting-control-col">
+              <input type="range" id="range-bar-gap" min="1" max="10" step="1" value="4">
+              <span class="range-val" id="val-bar-gap">4px</span>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Audio Sensitivity</span>
+              <span class="setting-sub">How vigorously the waveform responds to rhythm</span>
+            </div>
+            <div class="setting-control-col">
+              <input type="range" id="range-sensitivity" min="0.5" max="2.5" step="0.1" value="1.3">
+              <span class="range-val" id="val-sensitivity">1.3x</span>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Motion Smoothing</span>
+              <span class="setting-sub">Smooth transition speed between audio frames</span>
+            </div>
+            <div class="setting-control-col">
+              <input type="range" id="range-smoothing" min="0.50" max="0.95" step="0.02" value="0.82">
+              <span class="range-val" id="val-smoothing">0.82</span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- 3.4. VỊ TRÍ MỌC SÓNG (SCREEN EDGE POSITION) -->
+          <div class="section-header">
+            <h3>Screen Edge Position</h3>
+            <p>Where the waveform rises from on your desktop</p>
+          </div>
+
+          <div class="card-grid cols-2">
+            <div class="mono-choice-card selected" data-direction="bottom">
+              <i class="bi bi-border-bottom choice-icon"></i>
+              <div class="choice-title">Bottom Edge (Above Taskbar)</div>
+              <div class="choice-desc">Rises upwards from the bottom of your screen</div>
+            </div>
+
+            <div class="mono-choice-card" data-direction="top">
+              <i class="bi bi-border-top choice-icon"></i>
+              <div class="choice-title">Top Edge</div>
+              <div class="choice-desc">Hangs downwards from the top of your screen</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- 3.5. CHẤT LIỆU BẢNG WIDGET (WIDGET BOARD MATERIAL) -->
+          <div class="section-header">
+            <h3>Desktop Player Widget Material</h3>
+            <p>Select material for the floating desktop widget board</p>
+          </div>
+
+          <div class="card-grid cols-2">
+            <div class="mono-choice-card" data-widget-mat="solid" id="choice-widget-mat-solid">
+              <i class="bi bi-square-fill choice-icon"></i>
+              <div class="choice-title">Solid</div>
+              <div class="choice-desc">Solid dark matte surface without transparency or blur</div>
+            </div>
+
+            <div class="mono-choice-card selected" data-widget-mat="glass" id="choice-widget-mat-glass">
+              <i class="bi bi-window choice-icon"></i>
+              <div class="choice-title">Glass</div>
+              <div class="choice-desc">Pure transparent frosted glass (strictly monochrome/colorless)</div>
+            </div>
+          </div>
+
+          <!-- Nhóm tùy chỉnh Glass cho Widget Board -->
+          <div id="widget-glass-controls">
+            <div class="setting-item">
+              <div class="setting-label-col">
+                <span class="setting-title">Widget Glass Transparency</span>
+                <span class="setting-sub">Background see-through level of the player card (strictly colorless)</span>
+              </div>
+              <div class="setting-control-col">
+                <input type="range" id="range-widget-glass-opacity" min="0.05" max="0.80" step="0.05" value="0.18">
+                <span class="range-val" id="val-widget-glass-opacity">18%</span>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-label-col">
+                <span class="setting-title">Widget Glass Blur</span>
+                <span class="setting-sub">Frosted glass backdrop blur behind the player card</span>
+              </div>
+              <div class="setting-control-col">
+                <input type="range" id="range-widget-glass-blur" min="0" max="40" step="2" value="20">
+                <span class="range-val" id="val-widget-glass-blur">20px</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- 3.6. VỊ TRÍ VÀ KÍCH CỠ WIDGET (POSITION & RESIZE) -->
+          <div class="section-header">
+            <h3>Desktop Player Widget Placement & Sizing</h3>
+            <p>Control visibility, drag to reposition, and resize like a Windows window</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Show Desktop Player Widget</span>
+              <span class="setting-sub">Toggle the floating player card on your desktop</span>
+            </div>
+            <div class="setting-control-col">
+              <label class="mono-switch">
+                <input type="checkbox" id="check-show-media-card" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Adjust Position & Size</span>
+              <span class="setting-sub">Activate drag-to-move and 8-direction window resizing on desktop</span>
+            </div>
+            <div class="setting-control-col">
+              <button class="mono-apply-btn" id="btn-trigger-edit-mode">
+                <i class="bi bi-arrows-move"></i>
+                <span>Adjust on Desktop</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Reset Position & Size</span>
+              <span class="setting-sub">Return widget to default bottom-left position and standard size</span>
+            </div>
+            <div class="setting-control-col">
+              <button class="mono-reset-btn" id="btn-reset-player-pos">
+                <i class="bi bi-arrow-counterclockwise"></i>
+                <span>Reset to Default</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. TAB GENERAL -->
+        <div class="tab-pane" id="tab-general">
+          <!-- DISCORD RICH PRESENCE (RPC) -->
+          <div class="section-header">
+            <h3>Discord Rich Presence (RPC)</h3>
+            <p>Broadcast current song, artist, and music source (YouTube, Spotify, SoundCloud) to Discord</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Enable Discord RPC</span>
+              <span class="setting-sub">Displays live playback details on your Discord user profile</span>
+            </div>
+            <div class="setting-control-col rpc-control-col">
+              <span class="status-indicator-badge" id="discord-rpc-status-badge">Checking...</span>
+              <label class="mono-switch">
+                <input type="checkbox" id="check-discord-rpc" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- DEFAULT MUSIC / STARTUP AUTO-PLAY -->
+          <div class="section-header">
+            <h3>Default Music (Auto-Play on Startup)</h3>
+            <p>Instantly start music playback when Novata launches without needing any manual click</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Auto-Play on Launch</span>
+              <span class="setting-sub">Automatically begins playback when application starts</span>
+            </div>
+            <div class="setting-control-col">
+              <label class="mono-switch">
+                <input type="checkbox" id="check-autoplay-startup">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item" id="row-startup-source">
+            <div class="setting-label-col">
+              <span class="setting-title">Startup Music Source</span>
+              <span class="setting-sub">Choose whether to play a specific playlist or resume last song</span>
+            </div>
+            <div class="setting-control-col">
+              <select class="mono-select" id="select-startup-source">
+                <option value="playlist">Selected Playlist</option>
+                <option value="last_played">Resume Last Played Song</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-item" id="row-startup-playlist">
+            <div class="setting-label-col">
+              <span class="setting-title">Startup Playlist</span>
+              <span class="setting-sub">The default playlist to stream upon launching Novata</span>
+            </div>
+            <div class="setting-control-col">
+              <select class="mono-select" id="select-startup-playlist">
+                <!-- Dynamically filled with user playlists -->
+              </select>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- SYSTEM SETTINGS -->
+          <div class="section-header">
+            <h3>System Settings</h3>
+            <p>Startup and background system preferences</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Launch on Windows Startup</span>
+              <span class="setting-sub">Automatically start Novata when your PC turns on</span>
+            </div>
+            <div class="setting-control-col">
+              <label class="mono-switch">
+                <input type="checkbox" id="check-startup">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Minimize to System Tray</span>
+              <span class="setting-sub">Keep playing quietly in the background when closing window</span>
+            </div>
+            <div class="setting-control-col">
+              <label class="mono-switch">
+                <input type="checkbox" id="check-minimize-tray" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- ABOUT CARD -->
+          <div class="about-card">
+            <div class="about-header-row">
+              <div class="about-logo-box">
+                <img src="../assets/icon.png" class="about-logo-img" alt="Novata Logo">
+              </div>
+              <div class="about-meta">
+                <div class="about-app-name">Novata Visualizer</div>
+                <div class="about-app-ver">Version nvt_0.4 beta &bull; Minimalist Audio Visualizer & Music Player</div>
+              </div>
+            </div>
+            <p class="about-desc">
+              Pure minimalist audio visualizer for Windows. Features seamless wallpaper integration, symmetrical center-out waveform, Discord Rich Presence, Multi-Playlists with auto-next, and instant startup playback.
+            </p>
+            <div class="about-credits-row">
+              <span class="credit-badge">Discord Rich Presence</span>
+              <span class="credit-badge">Multi-Playlists</span>
+              <span class="credit-badge">Auto-Next & Shuffle</span>
+              <span class="credit-badge">Zero Lag Engine</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP CHỈNH MÀU HEX ĐỒNG BỘ STYLE SETTINGS (IN-STYLE COLOR MODAL) -->
+  <div class="color-modal-backdrop hidden" id="color-modal">
+    <div class="color-modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="bi bi-palette"></i>
+          <span id="modal-title-text">Customize Color</span>
+        </div>
+        <button class="win-btn win-close" id="btn-close-color-modal" title="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Live Color Preview Box with Hex Input -->
+        <div class="modal-preview-row">
+          <div class="modal-swatch-box" id="modal-swatch-box" style="background: #ffffff;">
+            <input type="color" id="modal-native-color-picker" value="#ffffff" class="hidden-native-picker" title="Pick native color">
+          </div>
+          <div class="modal-hex-field">
+            <span class="modal-hex-prefix">#</span>
+            <input type="text" id="modal-hex-input" value="FFFFFF" maxlength="6" spellcheck="false" placeholder="FFFFFF">
+            <button class="modal-pick-btn" id="modal-btn-pick" title="Open native eyedropper">
+              <i class="bi bi-eyedropper"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 16 Curated Palette Swatches -->
+        <div class="modal-palette-section">
+          <span class="modal-palette-label">Curated Aesthetics:</span>
+          <div class="modal-palette-grid">
+            <button class="palette-swatch" data-hex="#ffffff" style="background:#ffffff" title="Pure White"></button>
+            <button class="palette-swatch" data-hex="#e4e4e7" style="background:#e4e4e7" title="Platinum"></button>
+            <button class="palette-swatch" data-hex="#d4d4d8" style="background:#d4d4d8" title="Silver"></button>
+            <button class="palette-swatch" data-hex="#a1a1aa" style="background:#a1a1aa" title="Zinc"></button>
+            <button class="palette-swatch" data-hex="#71717a" style="background:#71717a" title="Graphite"></button>
+            <button class="palette-swatch" data-hex="#38bdf8" style="background:#38bdf8" title="Sky Ice"></button>
+            <button class="palette-swatch" data-hex="#22d3ee" style="background:#22d3ee" title="Cyan"></button>
+            <button class="palette-swatch" data-hex="#34d399" style="background:#34d399" title="Mint"></button>
+            <button class="palette-swatch" data-hex="#10b981" style="background:#10b981" title="Emerald"></button>
+            <button class="palette-swatch" data-hex="#fbbf24" style="background:#fbbf24" title="Amber"></button>
+            <button class="palette-swatch" data-hex="#fb923c" style="background:#fb923c" title="Orange"></button>
+            <button class="palette-swatch" data-hex="#fb7185" style="background:#fb7185" title="Rose"></button>
+            <button class="palette-swatch" data-hex="#f43f5e" style="background:#f43f5e" title="Crimson"></button>
+            <button class="palette-swatch" data-hex="#c084fc" style="background:#c084fc" title="Lavender"></button>
+            <button class="palette-swatch" data-hex="#a855f7" style="background:#a855f7" title="Violet"></button>
+            <button class="palette-swatch" data-hex="#818cf8" style="background:#818cf8" title="Indigo"></button>
+          </div>
+        </div>
+
+        <!-- Opacity Slider inside Modal -->
+        <div class="modal-slider-row">
+          <div class="modal-slider-label">
+            <span>Opacity</span>
+            <span class="modal-opacity-num" id="modal-opacity-val">90%</span>
+          </div>
+          <input type="range" id="modal-range-opacity" min="0.10" max="1.00" step="0.05" value="0.90">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" id="btn-modal-cancel">Cancel</button>
+        <button class="btn-modal-apply" id="btn-modal-apply">
+          <i class="bi bi-check2"></i>
+          <span>Apply Color</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL TẠO / SỬA PLAYLIST (CREATE / EDIT PLAYLIST MODAL) -->
+  <div class="color-modal-backdrop hidden" id="modal-playlist-edit">
+    <div class="color-modal-card playlist-modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="bi bi-collection-play"></i>
+          <span id="modal-playlist-title-text">Create New Playlist</span>
+        </div>
+        <button class="win-btn win-close" id="btn-close-playlist-modal" title="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-form-group">
+          <label class="modal-form-label">Playlist Name</label>
+          <input type="text" id="input-playlist-name" class="modal-form-input" placeholder="e.g. Chill, Coding, Workout..." maxlength="48">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" id="btn-cancel-playlist-modal">Cancel</button>
+        <button class="btn-modal-apply" id="btn-save-playlist-modal">
+          <i class="bi bi-check2"></i>
+          <span id="btn-save-playlist-label">Save Playlist</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL THÊM BÀI HÁT VÀO PLAYLIST (ADD TRACK TO PLAYLIST MODAL) -->
+  <div class="color-modal-backdrop hidden" id="modal-add-to-playlist">
+    <div class="color-modal-card playlist-modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="bi bi-folder-plus"></i>
+          <span>Add to Playlist</span>
+        </div>
+        <button class="win-btn win-close" id="btn-close-add-modal" title="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="add-track-target-preview">
+          <img id="add-track-target-thumb" src="../assets/icon.png" class="add-thumb" alt="Track Art">
+          <div class="add-track-meta">
+            <div class="add-track-title" id="add-track-target-title">Song Title</div>
+            <div class="add-track-artist" id="add-track-target-artist">Artist Name</div>
+          </div>
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-form-label">Choose Playlist Destination:</label>
+          <div class="add-playlist-options-list" id="add-playlist-options-container">
+            <!-- Dynamically populated playlists -->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" id="btn-cancel-add-modal">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="settings.js"></script>
+</body>
+</html>

@@ -53,3 +53,6 @@ novata-playlists.json
 .agent/
 _agents/
 _agent/
+
+# Developer Local Working Directory
+dev/

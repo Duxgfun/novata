@@ -1,0 +1,511 @@
+/*
+ * Giao diện Novata Overlay - Phiên bản nvt_0.4 beta
+ * - Sóng âm 100% trong suốt, không viền hộp nền
+ * - Thẻ điều khiển nhạc Widget hỗ trợ 2 dạng chất liệu: Solid và Glass trong suốt
+ * - Hỗ trợ chế độ chỉnh vị trí và co giãn kích thước (Resize) như cửa sổ Windows
+ * - Bình luận bằng tiếng Việt theo quy định toàn cục.
+ */
+
+:root {
+  --bg-button: rgba(255, 255, 255, 0.08);
+  --bg-button-hover: rgba(255, 255, 255, 0.20);
+  --border-subtle: rgba(255, 255, 255, 0.16);
+  --border-focus: rgba(255, 255, 255, 0.38);
+  --text-primary: #ffffff;
+  --text-secondary: #f4f4f5;
+  --text-muted: rgba(255, 255, 255, 0.85);
+  --pill-play-bg: #ffffff;
+  --pill-play-fg: #09090b;
+
+  /* Cấu hình Glass trong suốt cho Widget: Tuyệt đối không màu, trong suốt */
+  --widget-glass-opacity: 0.18;
+  --widget-glass-blur: 20px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: transparent !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 1. Canvas sóng âm: 100% trong suốt không nền, không bắt chuột */
+#visualizer-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  background: transparent !important;
+}
+
+/* 2. Thẻ điều khiển bài hát Widget nổi trên màn hình */
+.glass-player-card {
+  position: absolute;
+  bottom: 24px;
+  left: 28px;
+  z-index: 10;
+  width: 360px;
+  min-width: 260px;
+  max-width: 850px;
+  min-height: 68px;
+  max-height: 400px;
+  border-radius: 20px;
+  padding: 14px 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  pointer-events: auto;
+  box-sizing: border-box;
+}
+
+/* Chất liệu Solid cho thẻ Widget */
+.glass-player-card.mat-solid {
+  background: #111116 !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Chất liệu Glass trong suốt cho thẻ Widget: Tuyệt đối không màu, trong suốt thuần khiết */
+.glass-player-card.mat-glass {
+  background: rgba(20, 20, 26, var(--widget-glass-opacity, 0.18)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  backdrop-filter: blur(var(--widget-glass-blur, 20px)) !important;
+  -webkit-backdrop-filter: blur(var(--widget-glass-blur, 20px)) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+
+.glass-player-card:hover {
+  border-color: rgba(255, 255, 255, 0.32) !important;
+}
+
+/* Chế độ căn chỉnh vị trí & kích cỡ (Edit Mode) */
+.glass-player-card.in-edit-mode {
+  border: 1.5px dashed rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85), 0 0 20px rgba(255, 255, 255, 0.2) !important;
+  cursor: move !important;
+}
+
+.glass-player-card.dragging {
+  opacity: 0.92;
+  transition: none;
+}
+
+.glass-player-card.resizing {
+  transition: none;
+  user-select: none;
+}
+
+/* 8 điểm neo co giãn kích thước (Resize Handles) giống cửa sổ Windows */
+.resize-handle {
+  position: absolute;
+  z-index: 40;
+  display: none;
+  box-sizing: border-box;
+}
+
+.in-edit-mode .resize-handle {
+  display: block;
+}
+
+/* 4 cạnh của cửa sổ */
+.handle-n {
+  top: -6px;
+  left: 12px;
+  right: 12px;
+  height: 12px;
+  cursor: ns-resize;
+}
+
+.handle-s {
+  bottom: -6px;
+  left: 12px;
+  right: 12px;
+  height: 12px;
+  cursor: ns-resize;
+}
+
+.handle-w {
+  left: -6px;
+  top: 12px;
+  bottom: 12px;
+  width: 12px;
+  cursor: ew-resize;
+}
+
+.handle-e {
+  right: -6px;
+  top: 12px;
+  bottom: 12px;
+  width: 12px;
+  cursor: ew-resize;
+}
+
+/* 4 góc của cửa sổ */
+.handle-nw {
+  top: -6px;
+  left: -6px;
+  width: 16px;
+  height: 16px;
+  cursor: nwse-resize;
+}
+
+.handle-ne {
+  top: -6px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  cursor: nesw-resize;
+}
+
+.handle-sw {
+  bottom: -6px;
+  left: -6px;
+  width: 16px;
+  height: 16px;
+  cursor: nesw-resize;
+}
+
+.handle-se {
+  bottom: -6px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  cursor: nwse-resize;
+}
+
+/* Điểm nhấn trực quan ở 4 góc khi ở chế độ Edit Mode */
+.in-edit-mode .handle-nw::after,
+.in-edit-mode .handle-ne::after,
+.in-edit-mode .handle-sw::after,
+.in-edit-mode .handle-se::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: #ffffff;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+}
+
+.in-edit-mode .handle-nw::after { top: 4px; left: 4px; }
+.in-edit-mode .handle-ne::after { top: 4px; right: 4px; }
+.in-edit-mode .handle-sw::after { bottom: 4px; left: 4px; }
+.in-edit-mode .handle-se::after { bottom: 4px; right: 4px; }
+
+/* Bảng chỉ dẫn khi căn chỉnh */
+.drag-hint {
+  position: absolute;
+  top: -34px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #09090b;
+  border: 1px solid #3f3f46;
+  color: #f4f4f5;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  z-index: 50;
+}
+
+.player-inner-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  height: 100%;
+}
+
+/* Đĩa nhạc / Album Cover */
+.card-album-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+}
+
+.album-disc-scallop {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(28, 28, 34, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: var(--text-primary);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  position: relative;
+}
+
+.album-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.album-thumb-img.hidden {
+  display: none;
+}
+
+.disc-spinning {
+  animation: spin 12s linear infinite;
+  animation-play-state: paused;
+}
+
+.disc-spinning.active {
+  animation-play-state: running;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.source-tag {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #09090b;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* Thông tin bài hát */
+.card-info-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.track-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.track-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+.track-artist-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.track-artist {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+.track-time-badge {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+/* Thanh tiến trình */
+.track-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: height 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.track-progress-bar:hover {
+  height: 6px;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #ffffff;
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+  transition: width 0.15s linear;
+}
+
+/* Hàng nút điều khiển - Được cấu trúc cân đối và đẹp mắt */
+.control-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 3px;
+}
+
+.control-group-playback {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.control-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.20);
+  margin: 0 3px;
+  border-radius: 1px;
+}
+
+.control-group-tools {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mono-btn {
+  background: var(--bg-button);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  cursor: pointer;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+.mono-btn:hover {
+  background: var(--bg-button-hover);
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.38);
+}
+
+.mono-btn:active {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.btn-small {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+/* Nút Play/Pause viên thuốc */
+.btn-pill-play {
+  width: 48px;
+  height: 28px;
+  border-radius: 14px;
+  background: var(--pill-play-bg);
+  color: var(--pill-play-fg);
+  border: none;
+  font-size: 15px;
+  font-weight: bold;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+}
+
+.btn-pill-play:hover {
+  background: #ffffff;
+  transform: scale(1.06);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.mono-btn.active {
+  background: rgba(255, 255, 255, 0.32);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.60);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
+}
+
+.btn-utility {
+  background: var(--bg-button);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+
+.btn-utility:hover {
+  background: var(--bg-button-hover);
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+}
+
+/* Nút xác nhận Done vị trí & kích cỡ */
+.btn-confirm-pos {
+  background: #ffffff !important;
+  color: #09090b !important;
+  font-weight: 600;
+  font-size: 11.5px;
+  padding: 0 12px;
+  width: auto !important;
+  height: 28px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+  margin-left: auto;
+}
+
+.btn-confirm-pos:hover {
+  background: #e4e4e7 !important;
+  transform: scale(1.04);
+}
+
+.glass-player-card.hidden {
+  display: none !important;
+}
+
+.hidden {
+  display: none !important;
+}
