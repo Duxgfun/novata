@@ -104,9 +104,8 @@ Build artifacts are placed into the `dist/` directory:
 
 ```text
 novata/
-├── .gitignore           # Git ignore rules for build artifacts
+├── .gitignore           # Git ignore rules for build artifacts and locks
 ├── package.json         # Build configuration and application metadata
-├── package-lock.json    # Deterministic dependency lockfile
 ├── README.md            # Standalone release documentation
 ├── assets/              # High-resolution application icons (.ico, .png)
 └── src/
