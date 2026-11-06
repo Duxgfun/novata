@@ -3,20 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Novata nvt_0.5 beta</title>
-  <link rel="stylesheet" href="../assets/bootstrap-icons/bootstrap-icons.css">
+  <title>Novata nvt_0.6 beta</title>
+  <link rel="stylesheet" href="../assets/bootstrap-icons/bootstrap-icons.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Canvas sóng âm: 100% trong suốt, không hộp nền, mặc định xuyên chuột -->
+  
+  <div class="edit-guides-layer hidden" id="edit-guides-layer">
+    <div class="guide-crosshair" id="guide-crosshair" title="Screen Center">
+      <div class="crosshair-h"></div>
+      <div class="crosshair-v"></div>
+      <div class="crosshair-center-dot"></div>
+    </div>
+    <div class="guide-line guide-line-h" id="guide-line-h"></div>
+    <div class="guide-line guide-line-v" id="guide-line-v"></div>
+    <div class="guide-snap-line guide-snap-x hidden" id="guide-snap-line-x"></div>
+    <div class="guide-snap-line guide-snap-y hidden" id="guide-snap-line-y"></div>
+  </div>
+
   <canvas id="visualizer-canvas"></canvas>
 
-  <!-- Trình phát âm thanh Native Stream kết nối trực tiếp Web Audio API với CORS -->
   <audio id="inapp-audio-player" preload="auto" crossorigin="anonymous"></audio>
 
-  <!-- Thẻ điều khiển nhạc widget nổi trên màn hình (Có thể kéo thả vị trí & co giãn kích thước) -->
   <div class="glass-player-card mat-glass" id="player-card">
-    <!-- 8 Điểm neo co giãn kích cỡ giống cửa sổ Windows (Resize Handles) -->
+    
     <div class="resize-handle handle-n" data-dir="n"></div>
     <div class="resize-handle handle-s" data-dir="s"></div>
     <div class="resize-handle handle-w" data-dir="w"></div>
@@ -26,14 +36,13 @@
     <div class="resize-handle handle-sw" data-dir="sw"></div>
     <div class="resize-handle handle-se" data-dir="se"></div>
 
-    <!-- Bảng chỉ dẫn khi ở chế độ chỉnh vị trí và kích thước (Edit Mode) -->
     <div class="drag-hint hidden" id="drag-hint">
       <i class="bi bi-arrows-move"></i>
       <span>Drag card to move • Drag edges to resize • Click Done when finished</span>
     </div>
 
     <div class="player-inner-content">
-      <!-- Đĩa nhạc / Bìa bài hát -->
+      
       <div class="card-album-wrap">
         <div class="album-disc-scallop" id="album-disc">
           <i class="bi bi-disc disc-spinning" id="album-icon"></i>
@@ -44,7 +53,6 @@
         </div>
       </div>
 
-      <!-- Thông tin bài hát & Tiến trình -->
       <div class="card-info-wrap">
         <div class="track-meta">
           <div class="track-title" id="track-title">Ready to listen</div>
@@ -54,12 +62,10 @@
           </div>
         </div>
 
-        <!-- Thanh tiến trình bài hát -->
         <div class="track-progress-bar" id="progress-container" title="Click to seek">
           <div class="progress-fill" id="progress-fill"></div>
         </div>
 
-        <!-- Cụm nút điều khiển -->
         <div class="control-row">
           <div class="control-group-playback">
             <button class="mono-btn btn-small" id="btn-shuffle" title="Shuffle">
@@ -70,7 +76,6 @@
               <i class="bi bi-skip-start-fill"></i>
             </button>
 
-            <!-- Nút Play/Pause viên thuốc nổi bật -->
             <button class="mono-btn btn-pill-play" id="btn-play-pause" title="Play / Pause">
               <i class="bi bi-play-fill" id="play-pause-icon"></i>
             </button>
@@ -87,23 +92,20 @@
           <div class="control-divider"></div>
 
           <div class="control-group-tools">
-            <!-- Nút bật/tắt bảng hiển thị lời bài hát (Lyrics Widget) -->
+            
             <button class="mono-btn btn-small" id="btn-toggle-lyrics" title="Toggle Lyrics">
               <i class="bi bi-chat-square-quote"></i>
             </button>
 
-            <!-- Nút bật chế độ di chuyển & co giãn kích thước (Move & Resize) -->
             <button class="mono-btn btn-small" id="btn-edit-position" title="Move & Resize Widget">
               <i class="bi bi-arrows-move"></i>
             </button>
 
-            <!-- Nút Mở Cài đặt -->
             <button class="mono-btn btn-small" id="btn-open-settings" title="Settings">
               <i class="bi bi-gear-fill"></i>
             </button>
           </div>
 
-          <!-- Nút xác nhận vị trí & kích cỡ khi ở chế độ Edit Mode (Done) -->
           <button class="mono-btn btn-small btn-confirm-pos hidden" id="btn-confirm-position" title="Save position and size">
             <i class="bi bi-check-lg"></i>
             <span>Done</span>
@@ -113,9 +115,8 @@
     </div>
   </div>
 
-  <!-- Thẻ hiển thị lời bài hát Lyrics Widget (Có thể kéo thả vị trí & co giãn kích thước 8 hướng giống widget điều khiển) -->
   <div class="glass-player-card mat-glass glass-lyrics-card" id="lyrics-card">
-    <!-- 8 Điểm neo co giãn kích cỡ giống cửa sổ Windows (Resize Handles) -->
+    
     <div class="resize-handle handle-n" data-dir="n"></div>
     <div class="resize-handle handle-s" data-dir="s"></div>
     <div class="resize-handle handle-w" data-dir="w"></div>
@@ -125,39 +126,17 @@
     <div class="resize-handle handle-sw" data-dir="sw"></div>
     <div class="resize-handle handle-se" data-dir="se"></div>
 
-    <!-- Bảng chỉ dẫn khi ở chế độ Edit Mode -->
-    <div class="drag-hint hidden" id="lyrics-drag-hint">
-      <i class="bi bi-arrows-move"></i>
-      <span>Drag lyrics to move • Drag edges to resize • Right-click or Done when finished</span>
-    </div>
-
     <div class="lyrics-card-inner">
+      
       <div class="lyrics-card-header">
-        <div class="lyrics-header-meta">
-          <i class="bi bi-chat-square-quote"></i>
-          <span class="lyrics-header-title">Lyrics</span>
-          <span class="lyrics-badge" id="lyrics-type-badge">Ready</span>
-        </div>
-        <div class="lyrics-header-controls">
-          <button class="mono-btn btn-small" id="btn-edit-lyrics-pos" title="Move & Resize Lyrics">
-            <i class="bi bi-arrows-move"></i>
-          </button>
-          <button class="mono-btn btn-small" id="btn-close-lyrics" title="Hide Lyrics">
-            <i class="bi bi-x-lg"></i>
-          </button>
-          <button class="mono-btn btn-small btn-confirm-pos hidden" id="btn-confirm-lyrics-pos" title="Save position and size">
-            <i class="bi bi-check-lg"></i>
-            <span>Done</span>
-          </button>
-        </div>
+        <button class="mono-btn btn-small btn-close-lyrics-minimal" id="btn-close-lyrics" title="Hide Lyrics">
+          <i class="bi bi-x-lg"></i>
+        </button>
       </div>
 
       <div class="lyrics-scroll-container" id="lyrics-scroll-container">
         <div class="lyrics-lines-wrapper" id="lyrics-lines-wrapper">
-          <div class="lyrics-idle-prompt">
-            <i class="bi bi-music-note-beamed"></i>
-            <span>Play a song to view lyrics</span>
-          </div>
+          
         </div>
       </div>
     </div>

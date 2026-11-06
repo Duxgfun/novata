@@ -1,9 +1,3 @@
-/*
- * Giao diện Cài đặt Novata - Thuần Đen Trắng Tối Giản (Monochrome Minimalist)
- * Loại bỏ 100% Glassmorphism, Neon Cyberpunk, Gradient màu mè
- * Phong cách Matte Black sang trọng, sắc nét, phản hồi nhanh
- */
-
 :root {
   color-scheme: dark;
   --bg-main: #09090b;
@@ -19,76 +13,69 @@
   --text-dim: #71717a;
   --text-inverse: #09090b;
 }
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   user-select: none;
 }
-
-/* ========================================================
-   GLOBAL CUSTOM MATTE BLACK SCROLLBAR
-   Loại bỏ hoàn toàn thanh cuộn màu trắng mặc định của Windows
-   ======================================================== */
 ::-webkit-scrollbar,
 *::-webkit-scrollbar {
   width: 6px !important;
   height: 6px !important;
 }
-
 ::-webkit-scrollbar-track,
 *::-webkit-scrollbar-track {
   background: transparent !important;
 }
-
 ::-webkit-scrollbar-thumb,
 *::-webkit-scrollbar-thumb {
   background: #27272a !important;
   border-radius: 4px !important;
   border: 1px solid #141416 !important;
 }
-
 ::-webkit-scrollbar-thumb:hover,
 *::-webkit-scrollbar-thumb:hover {
   background: #3f3f46 !important;
 }
-
 ::-webkit-scrollbar-corner,
 *::-webkit-scrollbar-corner {
   background: transparent !important;
 }
-
 ::-webkit-scrollbar-button,
 *::-webkit-scrollbar-button {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
 }
-
-html, body, * {
+html,
+body,
+* {
   scrollbar-width: thin !important;
   scrollbar-color: #27272a transparent !important;
 }
-
 .hidden {
   display: none !important;
 }
-
 body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
   background: var(--bg-main);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
   color: var(--text-main);
   display: flex;
   align-items: center;
   justify-content: center;
   -webkit-font-smoothing: antialiased;
 }
-
-/* Khung cửa sổ chính phong cách Matte Black nguyên khối */
 .settings-mono-window {
   width: 100%;
   height: 100%;
@@ -98,8 +85,6 @@ body {
   flex-direction: column;
   overflow: hidden;
 }
-
-/* Thanh tiêu đề có thể kéo thả cửa sổ */
 .mono-titlebar {
   height: 48px;
   display: flex;
@@ -110,27 +95,23 @@ body {
   -webkit-app-region: drag;
   background: var(--bg-sidebar);
 }
-
 .title-branding {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
 .brand-logo-img {
   width: 24px;
   height: 24px;
   border-radius: 6px;
   object-fit: cover;
 }
-
 .brand-title {
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.3px;
   color: var(--text-main);
 }
-
 .brand-badge {
   font-size: 10px;
   font-weight: 500;
@@ -142,13 +123,11 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-
 .window-actions {
   display: flex;
   align-items: center;
   -webkit-app-region: no-drag;
 }
-
 .win-btn {
   width: 32px;
   height: 32px;
@@ -163,25 +142,19 @@ body {
   font-size: 14px;
   transition: all 0.15s ease;
 }
-
 .win-btn:hover {
   background: var(--surface-hover);
   color: var(--text-main);
 }
-
 .win-btn.win-close:hover {
   background: #e11d48;
   color: #ffffff;
 }
-
-/* Thân cửa sổ Cài đặt */
 .settings-container {
   flex: 1;
   display: flex;
   overflow: hidden;
 }
-
-/* Cột menu Sidebar bên trái */
 .mono-sidebar {
   width: 210px;
   background: var(--bg-sidebar);
@@ -191,7 +164,6 @@ body {
   flex-direction: column;
   gap: 4px;
 }
-
 .tab-btn {
   display: flex;
   align-items: center;
@@ -208,105 +180,89 @@ body {
   text-align: left;
   outline: none;
 }
-
 .tab-btn:hover {
   background: var(--surface-card);
   color: var(--text-main);
 }
-
 .tab-btn.active {
   background: #1c1c1f;
   border-color: var(--border-strong);
   color: #ffffff;
   font-weight: 600;
 }
-
 .tab-icon {
   font-size: 15px;
 }
-
-/* Vùng hiển thị nội dung Tab bên phải */
 .mono-tab-content {
   flex: 1;
   padding: 24px 32px;
   overflow-y: auto;
   background: var(--bg-main);
 }
-
 .mono-tab-content::-webkit-scrollbar {
   width: 6px;
 }
-
 .mono-tab-content::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .mono-tab-content::-webkit-scrollbar-thumb {
   background: var(--border-subtle);
   border-radius: 3px;
 }
-
 .mono-tab-content::-webkit-scrollbar-thumb:hover {
   background: var(--border-strong);
 }
-
 .tab-pane {
   display: none;
   animation: fadeIn 0.15s ease;
 }
-
 .tab-pane.active {
   display: block;
 }
-
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(3px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-
-/* Tiêu đề phân đoạn */
 .section-header {
   margin-bottom: 18px;
 }
-
 .section-header h3 {
   font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
   letter-spacing: 0.2px;
 }
-
 .section-header p {
   font-size: 12px;
   color: var(--text-dim);
   margin-top: 3px;
 }
-
 .divider {
   height: 1px;
   background: var(--border-subtle);
   margin: 22px 0;
 }
-
 .sub-divider {
   height: 1px;
   background: var(--border-subtle);
   margin: 18px 0;
   opacity: 0.6;
 }
-
-/* Lưới thẻ lựa chọn */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   margin-bottom: 8px;
 }
-
 .card-grid.cols-2 {
   grid-template-columns: repeat(2, 1fr);
 }
-
 .mono-choice-card {
   padding: 14px 16px;
   border-radius: 10px;
@@ -318,56 +274,45 @@ body {
   flex-direction: column;
   gap: 5px;
 }
-
 .mono-choice-card:hover {
   border-color: var(--border-strong);
   background: var(--surface-hover);
 }
-
 .mono-choice-card.selected {
   background: #ffffff;
   border-color: #ffffff;
   color: #09090b;
 }
-
 .mono-choice-card .choice-icon {
   font-size: 18px;
   color: var(--text-muted);
   margin-bottom: 2px;
 }
-
 .mono-choice-card.selected .choice-icon {
   color: #09090b;
 }
-
 .mono-choice-card .choice-title {
   font-size: 13px;
   font-weight: 600;
   color: var(--text-main);
 }
-
 .mono-choice-card.selected .choice-title {
   color: #09090b;
 }
-
 .mono-choice-card .choice-desc {
   font-size: 11px;
   color: var(--text-dim);
   line-height: 1.4;
 }
-
 .mono-choice-card.selected .choice-desc {
   color: #3f3f46;
 }
-
-/* Bảng màu đơn sắc Monochrome Chips */
 .mono-palette-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin-bottom: 8px;
 }
-
 .mono-theme-chip {
   padding: 12px 10px;
   border-radius: 8px;
@@ -381,52 +326,41 @@ body {
   transition: all 0.15s ease;
   text-align: center;
 }
-
 .mono-theme-chip:hover {
   border-color: var(--border-strong);
   background: var(--surface-hover);
 }
-
 .mono-theme-chip.selected {
   border-color: #ffffff;
   background: #1c1c1f;
 }
-
 .chip-preview {
   width: 24px;
   height: 24px;
   border-radius: 50%;
   border: 1px solid var(--border-strong);
 }
-
 .preview-pure-white {
   background: #ffffff;
 }
-
 .preview-silver {
   background: #d4d4d8;
 }
-
 .preview-zinc {
   background: #a1a1aa;
 }
-
 .preview-stealth {
   background: #71717a;
 }
-
 .mono-theme-chip span {
   font-size: 11px;
   font-weight: 500;
   color: var(--text-muted);
 }
-
 .mono-theme-chip.selected span {
   color: #ffffff;
   font-weight: 600;
 }
-
-/* Hàng cài đặt dạng Slider hoặc Switch */
 .setting-item {
   display: flex;
   align-items: center;
@@ -434,38 +368,31 @@ body {
   padding: 12px 0;
   border-bottom: 1px solid var(--border-subtle);
 }
-
 .setting-item:last-child {
   border-bottom: none;
 }
-
 .setting-label-col {
   display: flex;
   flex-direction: column;
   gap: 3px;
   max-width: 65%;
 }
-
 .setting-title {
   font-size: 13px;
   font-weight: 500;
   color: var(--text-main);
 }
-
 .setting-sub {
   font-size: 11px;
   color: var(--text-dim);
   line-height: 1.4;
 }
-
 .setting-control-col {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-
-/* Thanh trượt Range thuần đơn sắc */
-input[type="range"] {
+input[type=range] {
   -webkit-appearance: none;
   width: 140px;
   height: 4px;
@@ -473,8 +400,7 @@ input[type="range"] {
   background: var(--border-strong);
   outline: none;
 }
-
-input[type="range"]::-webkit-slider-thumb {
+input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 14px;
   height: 14px;
@@ -485,11 +411,9 @@ input[type="range"]::-webkit-slider-thumb {
   box-shadow: 0 0 2px rgba(255, 255, 255, 0.4);
   transition: transform 0.1s ease;
 }
-
-input[type="range"]::-webkit-slider-thumb:hover {
+input[type=range]::-webkit-slider-thumb:hover {
   transform: scale(1.15);
 }
-
 .range-val {
   font-size: 12px;
   font-weight: 600;
@@ -498,21 +422,17 @@ input[type="range"]::-webkit-slider-thumb:hover {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
-
-/* Công tắc gạt Toggle Switch thuần đen trắng */
 .mono-switch {
   position: relative;
   display: inline-block;
   width: 40px;
   height: 22px;
 }
-
 .mono-switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
-
 .slider {
   position: absolute;
   cursor: pointer;
@@ -525,7 +445,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
   transition: 0.2s ease;
   border-radius: 22px;
 }
-
 .slider:before {
   position: absolute;
   content: "";
@@ -537,18 +456,14 @@ input[type="range"]::-webkit-slider-thumb:hover {
   transition: 0.2s ease;
   border-radius: 50%;
 }
-
 input:checked + .slider {
   background-color: #ffffff;
   border-color: #ffffff;
 }
-
 input:checked + .slider:before {
   transform: translateX(18px);
   background-color: #09090b;
 }
-
-/* Hộp chọn Select */
 .mono-select {
   padding: 8px 12px;
   border-radius: 6px;
@@ -559,17 +474,13 @@ input:checked + .slider:before {
   outline: none;
   cursor: pointer;
 }
-
 .mono-select:hover {
   border-color: #52525b;
 }
-
 .mono-select option {
   background: #18181b;
   color: #f4f4f5;
 }
-
-/* Hộp thông tin Info Box */
 .info-mono-box {
   margin-top: 18px;
   padding: 14px 16px;
@@ -580,30 +491,24 @@ input:checked + .slider:before {
   gap: 12px;
   align-items: flex-start;
 }
-
 .info-box-icon {
   font-size: 16px;
   color: var(--text-muted);
   margin-top: 1px;
 }
-
 .info-box-text {
   font-size: 12px;
   color: var(--text-muted);
   line-height: 1.5;
 }
-
 .info-box-text strong {
   color: var(--text-main);
 }
-
 .info-box-text em {
   color: #ffffff;
   font-style: normal;
   text-decoration: underline;
 }
-
-/* Bảng nút test điều khiển nhạc */
 .test-controls-panel {
   display: flex;
   align-items: center;
@@ -615,7 +520,6 @@ input:checked + .slider:before {
   border: 1px solid var(--border-subtle);
   margin-top: 8px;
 }
-
 .mono-test-btn {
   display: flex;
   flex-direction: column;
@@ -630,46 +534,36 @@ input:checked + .slider:before {
   cursor: pointer;
   transition: all 0.15s ease;
 }
-
 .mono-test-btn:hover {
   background: #27272a;
   border-color: #52525b;
 }
-
 .mono-test-btn:active {
   transform: scale(0.96);
 }
-
 .mono-test-btn i {
   font-size: 18px;
 }
-
 .mono-test-btn span {
   font-size: 11px;
   font-weight: 500;
   color: var(--text-muted);
 }
-
 .mono-test-btn.mono-test-primary {
   background: #ffffff;
   border-color: #ffffff;
   color: #09090b;
 }
-
 .mono-test-btn.mono-test-primary i {
   color: #09090b;
 }
-
 .mono-test-btn.mono-test-primary span {
   color: #09090b;
   font-weight: 600;
 }
-
 .mono-test-btn.mono-test-primary:hover {
   background: #e4e4e7;
 }
-
-/* The Gioi thieu & Credit */
 .about-card {
   padding: 16px 18px;
   background: var(--surface-card);
@@ -680,13 +574,11 @@ input:checked + .slider:before {
   gap: 12px;
   margin-top: 8px;
 }
-
 .about-header-row {
   display: flex;
   align-items: center;
   gap: 14px;
 }
-
 .about-logo-box {
   width: 48px;
   height: 48px;
@@ -699,7 +591,6 @@ input:checked + .slider:before {
   overflow: hidden;
   flex-shrink: 0;
 }
-
 .about-logo-img {
   width: 48px;
   height: 48px;
@@ -709,32 +600,33 @@ input:checked + .slider:before {
   border-radius: 10px;
   display: block;
 }
-
 .about-meta {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-
 .about-app-name {
   font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
   letter-spacing: -0.01em;
 }
-
 .about-app-ver {
   font-size: 11.5px;
   color: var(--text-dim);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
 }
-
 .about-desc {
   font-size: 12px;
   color: var(--text-muted);
   line-height: 1.5;
 }
-
 .about-credits-row {
   display: flex;
   align-items: center;
@@ -742,7 +634,6 @@ input:checked + .slider:before {
   padding-top: 8px;
   border-top: 1px solid var(--border-subtle);
 }
-
 .credit-badge {
   font-size: 10.5px;
   font-weight: 500;
@@ -753,10 +644,6 @@ input:checked + .slider:before {
   color: var(--text-dim);
   letter-spacing: 0.2px;
 }
-
-/* ========================================================
-   TÙY CHỈNH MÀU SẮC HEX & ĐỘ MỜ WAVEFORM
-   ======================================================== */
 .custom-color-control-box {
   background: var(--surface-card);
   border: 1px solid var(--border-subtle);
@@ -767,13 +654,11 @@ input:checked + .slider:before {
   flex-direction: column;
   gap: 14px;
 }
-
 .hex-picker-row {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-
 .picker-input-wrap {
   position: relative;
   width: 36px;
@@ -783,8 +668,7 @@ input:checked + .slider:before {
   border: 1px solid var(--border-strong);
   cursor: pointer;
 }
-
-.picker-input-wrap input[type="color"] {
+.picker-input-wrap input[type=color] {
   position: absolute;
   top: -10px;
   left: -10px;
@@ -794,7 +678,6 @@ input:checked + .slider:before {
   border: none;
   background: transparent;
 }
-
 .hex-text-wrap {
   display: flex;
   align-items: center;
@@ -805,14 +688,12 @@ input:checked + .slider:before {
   width: 120px;
   height: 36px;
 }
-
 .hex-prefix {
   font-size: 13px;
   font-weight: 600;
   color: var(--text-dim);
   user-select: none;
 }
-
 .mono-hex-input {
   background: transparent;
   border: none;
@@ -824,7 +705,6 @@ input:checked + .slider:before {
   width: 100%;
   text-transform: uppercase;
 }
-
 .mono-apply-btn {
   height: 36px;
   padding: 0 14px;
@@ -840,24 +720,20 @@ input:checked + .slider:before {
   gap: 6px;
   transition: all 0.15s ease;
 }
-
 .mono-apply-btn:hover {
   background: #e4e4e7;
 }
-
 .quick-swatches-row {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
-
 .swatches-label {
   font-size: 11px;
   color: var(--text-dim);
   margin-right: 4px;
 }
-
 .swatch-btn {
   width: 22px;
   height: 22px;
@@ -866,21 +742,15 @@ input:checked + .slider:before {
   cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
-
 .swatch-btn:hover {
   transform: scale(1.2);
   border-color: #ffffff;
 }
-
-/* ========================================================
-   GIAO DIỆN TÌM KIẾM & PHÁT NHẠC IN-APP
-   ======================================================== */
 .search-bar-wrap {
   display: flex;
   gap: 10px;
   margin-bottom: 12px;
 }
-
 .search-input-box {
   flex: 1;
   display: flex;
@@ -893,16 +763,13 @@ input:checked + .slider:before {
   height: 42px;
   transition: border-color 0.15s ease;
 }
-
 .search-input-box:focus-within {
   border-color: #ffffff;
 }
-
 .search-box-icon {
   font-size: 14px;
   color: var(--text-dim);
 }
-
 .search-input-box input {
   flex: 1;
   background: transparent;
@@ -911,11 +778,9 @@ input:checked + .slider:before {
   color: var(--text-main);
   font-size: 13px;
 }
-
 .search-input-box input::placeholder {
   color: var(--text-dim);
 }
-
 .search-clear-btn {
   background: transparent;
   border: none;
@@ -925,11 +790,9 @@ input:checked + .slider:before {
   display: flex;
   align-items: center;
 }
-
 .search-clear-btn.hidden {
   display: none;
 }
-
 .mono-btn-search {
   padding: 0 18px;
   border-radius: 8px;
@@ -945,11 +808,9 @@ input:checked + .slider:before {
   transition: all 0.15s ease;
   white-space: nowrap;
 }
-
 .mono-btn-search:hover {
   background: #e4e4e7;
 }
-
 .search-tags-row {
   display: flex;
   align-items: center;
@@ -957,12 +818,10 @@ input:checked + .slider:before {
   flex-wrap: wrap;
   margin-bottom: 16px;
 }
-
 .tags-label {
   font-size: 11px;
   color: var(--text-dim);
 }
-
 .tag-chip {
   padding: 4px 10px;
   border-radius: 6px;
@@ -973,13 +832,11 @@ input:checked + .slider:before {
   cursor: pointer;
   transition: all 0.15s ease;
 }
-
 .tag-chip:hover {
   background: var(--surface-hover);
   border-color: var(--border-strong);
   color: #ffffff;
 }
-
 .search-status-bar {
   display: flex;
   align-items: center;
@@ -988,7 +845,6 @@ input:checked + .slider:before {
   font-size: 12px;
   color: var(--text-muted);
 }
-
 .status-badge {
   font-size: 10px;
   padding: 2px 8px;
@@ -997,8 +853,6 @@ input:checked + .slider:before {
   border: 1px solid var(--border-strong);
   color: var(--text-dim);
 }
-
-/* Danh sách kết quả bài hát */
 .music-results-list {
   display: flex;
   flex-direction: column;
@@ -1008,16 +862,13 @@ input:checked + .slider:before {
   margin-bottom: 16px;
   padding-right: 4px;
 }
-
 .music-results-list::-webkit-scrollbar {
   width: 5px;
 }
-
 .music-results-list::-webkit-scrollbar-thumb {
   background: var(--border-strong);
   border-radius: 3px;
 }
-
 .track-item-card {
   display: flex;
   align-items: center;
@@ -1029,12 +880,10 @@ input:checked + .slider:before {
   transition: all 0.15s ease;
   gap: 12px;
 }
-
 .track-item-card:hover {
   background: var(--surface-hover);
   border-color: var(--border-strong);
 }
-
 .track-item-left {
   display: flex;
   align-items: center;
@@ -1042,7 +891,6 @@ input:checked + .slider:before {
   flex: 1;
   min-width: 0;
 }
-
 .track-thumb {
   width: 44px;
   height: 44px;
@@ -1051,14 +899,12 @@ input:checked + .slider:before {
   background: #18181b;
   flex-shrink: 0;
 }
-
 .track-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
 }
-
 .track-title {
   font-size: 13px;
   font-weight: 600;
@@ -1067,7 +913,6 @@ input:checked + .slider:before {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .track-artist {
   font-size: 11px;
   color: var(--text-dim);
@@ -1075,20 +920,17 @@ input:checked + .slider:before {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .track-item-right {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-shrink: 0;
 }
-
 .track-duration-text {
   font-size: 11px;
   color: var(--text-dim);
   font-variant-numeric: tabular-nums;
 }
-
 .btn-play-track {
   width: 32px;
   height: 32px;
@@ -1103,23 +945,22 @@ input:checked + .slider:before {
   font-size: 14px;
   transition: transform 0.15s ease, background 0.15s ease;
 }
-
 .btn-play-track:hover {
   transform: scale(1.1);
   background: #e4e4e7;
 }
-
 .spin-icon {
   animation: mono-spin 0.8s linear infinite;
   display: inline-block;
 }
-
 @keyframes mono-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
-
-/* Thanh Mini Player góc dưới tab */
 .inapp-mini-player {
   display: flex;
   align-items: center;
@@ -1130,7 +971,6 @@ input:checked + .slider:before {
   border-radius: 10px;
   gap: 16px;
 }
-
 .mini-player-track {
   display: flex;
   align-items: center;
@@ -1138,7 +978,6 @@ input:checked + .slider:before {
   flex: 1;
   min-width: 0;
 }
-
 .mini-thumb {
   width: 36px;
   height: 36px;
@@ -1147,14 +986,12 @@ input:checked + .slider:before {
   background: #1c1c1f;
   flex-shrink: 0;
 }
-
 .mini-meta {
   display: flex;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
 }
-
 .mini-title {
   font-size: 12px;
   font-weight: 600;
@@ -1163,7 +1000,6 @@ input:checked + .slider:before {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .mini-artist {
   font-size: 10px;
   color: var(--text-dim);
@@ -1171,13 +1007,11 @@ input:checked + .slider:before {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .mini-player-controls {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-
 .mini-btn {
   width: 28px;
   height: 28px;
@@ -1192,25 +1026,20 @@ input:checked + .slider:before {
   font-size: 12px;
   transition: all 0.15s ease;
 }
-
 .mini-btn:hover {
   background: var(--surface-hover);
 }
-
 .mini-btn.mini-btn-play {
   background: #ffffff;
   color: #09090b;
   border-color: #ffffff;
 }
-
 .mini-time-info {
   font-size: 11px;
   color: var(--text-dim);
   font-variant-numeric: tabular-nums;
   flex-shrink: 0;
 }
-
-/* --- STYLING CHO MODAL CHINH MAU HEX DONG BO STYLE SETTINGS --- */
 .color-summary-card {
   display: flex;
   align-items: center;
@@ -1221,13 +1050,11 @@ input:checked + .slider:before {
   border-radius: 10px;
   margin-bottom: 12px;
 }
-
 .color-summary-left {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-
 .color-swatch-badge {
   width: 32px;
   height: 32px;
@@ -1235,27 +1062,29 @@ input:checked + .slider:before {
   border: 1px solid var(--border-strong);
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
 }
-
 .color-summary-meta {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-
 .color-meta-label {
   font-size: 11px;
   color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-
 .color-meta-hex {
   font-size: 14px;
   font-weight: 700;
   color: var(--text-main);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
 }
-
 .mono-reset-btn {
   background: var(--surface-card);
   border: 1px solid var(--border-subtle);
@@ -1270,14 +1099,11 @@ input:checked + .slider:before {
   gap: 6px;
   transition: all 0.15s ease;
 }
-
 .mono-reset-btn:hover {
   background: var(--surface-hover);
   color: var(--text-main);
   border-color: var(--border-strong);
 }
-
-/* Modal Popup Chinh mau Hex dong bo Style Settings */
 .color-modal-backdrop {
   position: fixed;
   top: 0;
@@ -1290,11 +1116,9 @@ input:checked + .slider:before {
   justify-content: center;
   z-index: 999;
 }
-
 .color-modal-backdrop.hidden {
   display: none !important;
 }
-
 .color-modal-card {
   width: 380px;
   background: #121214;
@@ -1306,12 +1130,16 @@ input:checked + .slider:before {
   overflow: hidden;
   animation: modalPopIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 @keyframes modalPopIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
-
 .modal-header {
   height: 48px;
   padding: 0 16px;
@@ -1321,7 +1149,6 @@ input:checked + .slider:before {
   justify-content: space-between;
   background: #161619;
 }
-
 .modal-title {
   display: flex;
   align-items: center;
@@ -1330,20 +1157,17 @@ input:checked + .slider:before {
   font-weight: 600;
   color: var(--text-main);
 }
-
 .modal-body {
   padding: 18px 18px 12px;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-
 .modal-preview-row {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-
 .modal-swatch-box {
   width: 50px;
   height: 42px;
@@ -1353,7 +1177,6 @@ input:checked + .slider:before {
   cursor: pointer;
   box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
 }
-
 .hidden-native-picker {
   opacity: 0;
   position: absolute;
@@ -1363,7 +1186,6 @@ input:checked + .slider:before {
   height: 100%;
   cursor: pointer;
 }
-
 .modal-hex-field {
   flex: 1;
   display: flex;
@@ -1374,7 +1196,6 @@ input:checked + .slider:before {
   padding: 0 10px;
   height: 42px;
 }
-
 .modal-hex-prefix {
   color: var(--text-dim);
   font-family: ui-monospace, monospace;
@@ -1382,7 +1203,6 @@ input:checked + .slider:before {
   font-size: 15px;
   margin-right: 4px;
 }
-
 #modal-hex-input {
   flex: 1;
   background: transparent;
@@ -1394,7 +1214,6 @@ input:checked + .slider:before {
   font-weight: 700;
   letter-spacing: 1px;
 }
-
 .modal-pick-btn {
   background: transparent;
   border: none;
@@ -1404,29 +1223,24 @@ input:checked + .slider:before {
   font-size: 15px;
   transition: color 0.15s ease;
 }
-
 .modal-pick-btn:hover {
   color: #ffffff;
 }
-
 .modal-palette-section {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-
 .modal-palette-label {
   font-size: 11.5px;
   color: var(--text-dim);
   font-weight: 500;
 }
-
 .modal-palette-grid {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   gap: 8px;
 }
-
 .palette-swatch {
   width: 100%;
   aspect-ratio: 1;
@@ -1435,13 +1249,11 @@ input:checked + .slider:before {
   cursor: pointer;
   transition: transform 0.12s ease, border-color 0.12s ease;
 }
-
 .palette-swatch:hover {
   transform: scale(1.15);
   border-color: #ffffff;
   z-index: 2;
 }
-
 .modal-slider-row {
   display: flex;
   flex-direction: column;
@@ -1449,7 +1261,6 @@ input:checked + .slider:before {
   padding-top: 4px;
   border-top: 1px solid var(--border-subtle);
 }
-
 .modal-slider-label {
   display: flex;
   align-items: center;
@@ -1457,13 +1268,11 @@ input:checked + .slider:before {
   font-size: 11.5px;
   color: var(--text-muted);
 }
-
 .modal-opacity-num {
   font-weight: 600;
   color: #ffffff;
   font-family: ui-monospace, monospace;
 }
-
 .modal-footer {
   padding: 12px 18px;
   border-top: 1px solid var(--border-subtle);
@@ -1473,7 +1282,6 @@ input:checked + .slider:before {
   justify-content: flex-end;
   gap: 10px;
 }
-
 .btn-modal-cancel {
   background: transparent;
   border: 1px solid var(--border-strong);
@@ -1484,12 +1292,10 @@ input:checked + .slider:before {
   cursor: pointer;
   transition: all 0.15s ease;
 }
-
 .btn-modal-cancel:hover {
   background: #1f1f23;
   color: var(--text-main);
 }
-
 .btn-modal-apply {
   background: #ffffff;
   border: 1px solid #ffffff;
@@ -1504,29 +1310,20 @@ input:checked + .slider:before {
   gap: 6px;
   transition: all 0.15s ease;
 }
-
 .btn-modal-apply:hover {
   background: #e4e4e7;
 }
-
-
-/* ========================================================
-   GIAO DIỆN QUẢN LÝ MULTI-PLAYLISTS & RPC (NVT_0.2)
-   ======================================================== */
 .playlist-header-flex {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 16px;
 }
-
 .playlists-workspace {
   display: flex;
   gap: 16px;
   height: calc(100vh - 170px);
 }
-
-/* Cột danh sách playlist bên trái */
 .playlists-sidebar-col {
   width: 200px;
   display: flex;
@@ -1536,7 +1333,6 @@ input:checked + .slider:before {
   padding-right: 12px;
   flex-shrink: 0;
 }
-
 .playlists-sidebar-title {
   font-size: 11px;
   font-weight: 600;
@@ -1545,7 +1341,6 @@ input:checked + .slider:before {
   color: var(--text-dim);
   margin-bottom: 4px;
 }
-
 .playlists-pill-list {
   display: flex;
   flex-direction: column;
@@ -1554,7 +1349,6 @@ input:checked + .slider:before {
   flex: 1;
   padding-right: 2px;
 }
-
 .playlist-pill-item {
   display: flex;
   align-items: center;
@@ -1566,35 +1360,29 @@ input:checked + .slider:before {
   cursor: pointer;
   transition: all 0.15s ease;
 }
-
 .playlist-pill-item:hover {
   background: var(--surface-hover);
   border-color: var(--border-strong);
 }
-
 .playlist-pill-item.active {
   background: #ffffff;
   border-color: #ffffff;
   color: #09090b;
 }
-
 .playlist-pill-item.active .pill-name {
   color: #09090b;
   font-weight: 600;
 }
-
 .playlist-pill-item.active .pill-count,
 .playlist-pill-item.active .pill-startup-icon {
   color: #52525b;
 }
-
 .pill-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
 }
-
 .pill-name {
   font-size: 12.5px;
   font-weight: 500;
@@ -1603,24 +1391,19 @@ input:checked + .slider:before {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .pill-count {
   font-size: 10.5px;
   color: var(--text-dim);
 }
-
 .pill-icons {
   display: flex;
   align-items: center;
   gap: 4px;
 }
-
 .pill-startup-icon {
   font-size: 12px;
   color: #fbbf24;
 }
-
-/* Cột chi tiết playlist bên phải */
 .playlist-detail-col {
   flex: 1;
   display: flex;
@@ -1628,7 +1411,6 @@ input:checked + .slider:before {
   min-width: 0;
   overflow: hidden;
 }
-
 .playlist-detail-header {
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border-subtle);
@@ -1637,14 +1419,12 @@ input:checked + .slider:before {
   flex-direction: column;
   gap: 10px;
 }
-
 .pl-header-top-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
-
 .pl-header-title-box {
   display: flex;
   align-items: center;
@@ -1652,7 +1432,6 @@ input:checked + .slider:before {
   min-width: 0;
   flex: 1;
 }
-
 .pl-active-title {
   font-size: 17px;
   font-weight: 700;
@@ -1661,7 +1440,6 @@ input:checked + .slider:before {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .pl-track-count-badge {
   font-size: 11px;
   padding: 2px 7px;
@@ -1671,7 +1449,6 @@ input:checked + .slider:before {
   color: var(--text-dim);
   white-space: nowrap;
 }
-
 .pl-startup-badge {
   font-size: 10px;
   font-weight: 600;
@@ -1685,14 +1462,12 @@ input:checked + .slider:before {
   gap: 4px;
   white-space: nowrap;
 }
-
 .pl-header-tools {
   display: flex;
   align-items: center;
   gap: 6px;
   flex-shrink: 0;
 }
-
 .pl-tool-btn {
   padding: 5px 10px;
   border-radius: 6px;
@@ -1706,24 +1481,20 @@ input:checked + .slider:before {
   gap: 5px;
   transition: all 0.15s ease;
 }
-
 .pl-tool-btn:hover {
   background: var(--surface-hover);
   color: #ffffff;
   border-color: #ffffff;
 }
-
 .pl-tool-danger {
   color: #ef4444;
   border-color: rgba(239, 68, 68, 0.3);
 }
-
 .pl-tool-danger:hover {
   background: rgba(239, 68, 68, 0.15);
   border-color: #ef4444;
   color: #ffffff;
 }
-
 .pl-header-bottom-row {
   display: flex;
   align-items: center;
@@ -1731,18 +1502,15 @@ input:checked + .slider:before {
   gap: 10px;
   flex-wrap: wrap;
 }
-
 .pl-playback-actions {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-
 .pl-duration-text {
   font-size: 11.5px;
   color: var(--text-dim);
 }
-
 .pill-del-btn {
   width: 22px;
   height: 22px;
@@ -1758,26 +1526,20 @@ input:checked + .slider:before {
   opacity: 0;
   transition: all 0.15s ease;
 }
-
 .playlist-pill-item:hover .pill-del-btn {
   opacity: 1;
 }
-
 .pill-del-btn:hover {
   background: rgba(239, 68, 68, 0.2);
   color: #ef4444;
 }
-
 .playlist-pill-item.active .pill-del-btn {
   color: #71717a;
 }
-
 .playlist-pill-item.active .pill-del-btn:hover {
   background: rgba(239, 68, 68, 0.2);
   color: #ef4444;
 }
-
-/* Khung hiển thị nội dung playlist đang chọn */
 .playlist-active-view {
   flex: 1;
   display: flex;
@@ -1785,8 +1547,6 @@ input:checked + .slider:before {
   min-height: 0;
   overflow: hidden;
 }
-
-/* Zero state khi chưa có playlist nào */
 .playlists-zero-state {
   flex: 1;
   display: flex;
@@ -1798,33 +1558,28 @@ input:checked + .slider:before {
   text-align: center;
   padding: 40px 20px;
 }
-
 .zero-state-icon {
   font-size: 42px;
   color: var(--text-dim);
   margin-bottom: 4px;
 }
-
 .playlists-zero-state h3 {
   font-size: 16px;
   font-weight: 600;
   color: var(--text-main);
 }
-
 .playlists-zero-state p {
   font-size: 12.5px;
   color: var(--text-muted);
   max-width: 320px;
   line-height: 1.5;
 }
-
 .pills-empty-note {
   font-size: 11.5px;
   color: var(--text-dim);
   padding: 16px 8px;
   text-align: center;
 }
-
 .pl-btn-play {
   padding: 6px 14px;
   border-radius: 6px;
@@ -1839,11 +1594,9 @@ input:checked + .slider:before {
   gap: 6px;
   transition: all 0.15s ease;
 }
-
 .pl-btn-play:hover {
   background: #e4e4e7;
 }
-
 .pl-btn-secondary {
   padding: 6px 12px;
   border-radius: 6px;
@@ -1857,18 +1610,15 @@ input:checked + .slider:before {
   gap: 6px;
   transition: all 0.15s ease;
 }
-
 .pl-btn-secondary:hover {
   background: var(--surface-hover);
   border-color: #ffffff;
 }
-
 .pl-btn-secondary.active {
   background: #27272a;
   border-color: #fbbf24;
   color: #fbbf24;
 }
-
 .pl-btn-icon {
   width: 32px;
   height: 32px;
@@ -1882,14 +1632,11 @@ input:checked + .slider:before {
   justify-content: center;
   transition: all 0.15s ease;
 }
-
 .pl-btn-icon:hover {
   background: var(--surface-hover);
   color: #ffffff;
   border-color: #ffffff;
 }
-
-/* Danh sách bài hát trong playlist */
 .playlist-tracks-container {
   flex: 1;
   overflow-y: auto;
@@ -1898,7 +1645,6 @@ input:checked + .slider:before {
   gap: 6px;
   padding-right: 4px;
 }
-
 .pl-track-card {
   display: flex;
   align-items: center;
@@ -1910,17 +1656,14 @@ input:checked + .slider:before {
   transition: all 0.15s ease;
   gap: 12px;
 }
-
 .pl-track-card:hover {
   background: var(--surface-hover);
   border-color: var(--border-strong);
 }
-
 .pl-track-card.playing {
   border-color: #ffffff;
   background: #18181b;
 }
-
 .pl-track-left {
   display: flex;
   align-items: center;
@@ -1928,14 +1671,12 @@ input:checked + .slider:before {
   flex: 1;
   min-width: 0;
 }
-
 .pl-track-num {
   font-size: 11px;
   color: var(--text-dim);
   width: 18px;
   text-align: center;
 }
-
 .pl-track-thumb {
   width: 38px;
   height: 38px;
@@ -1944,14 +1685,12 @@ input:checked + .slider:before {
   background: #18181b;
   flex-shrink: 0;
 }
-
 .pl-track-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
 }
-
 .pl-track-title {
   font-size: 12.5px;
   font-weight: 600;
@@ -1960,7 +1699,6 @@ input:checked + .slider:before {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .pl-track-artist {
   font-size: 11px;
   color: var(--text-dim);
@@ -1968,14 +1706,12 @@ input:checked + .slider:before {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .pl-track-right {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
 }
-
 .btn-remove-track {
   width: 28px;
   height: 28px;
@@ -1989,13 +1725,11 @@ input:checked + .slider:before {
   justify-content: center;
   transition: all 0.15s ease;
 }
-
 .btn-remove-track:hover {
   background: #27272a;
   color: #ef4444;
   border-color: #3f3f46;
 }
-
 .btn-add-track-playlist {
   width: 28px;
   height: 28px;
@@ -2009,14 +1743,11 @@ input:checked + .slider:before {
   justify-content: center;
   transition: all 0.15s ease;
 }
-
 .btn-add-track-playlist:hover {
   background: #27272a;
   color: #ffffff;
   border-color: #ffffff;
 }
-
-/* Trạng thái trống của playlist */
 .playlist-empty-state {
   display: flex;
   flex-direction: column;
@@ -2027,7 +1758,6 @@ input:checked + .slider:before {
   color: var(--text-dim);
   text-align: center;
 }
-
 .playlist-empty-state .empty-state-icon {
   font-size: 38px;
   color: var(--text-dim);
@@ -2035,19 +1765,15 @@ input:checked + .slider:before {
   align-items: center;
   justify-content: center;
 }
-
 .playlist-empty-state span {
   font-size: 13px;
   max-width: 320px;
 }
-
-/* Điều khiển Discord RPC & Default Music */
 .rpc-control-col {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-
 .status-indicator-badge {
   font-size: 11px;
   padding: 3px 9px;
@@ -2056,19 +1782,16 @@ input:checked + .slider:before {
   border: 1px solid var(--border-strong);
   color: var(--text-muted);
 }
-
 .status-indicator-badge.connected {
   background: rgba(34, 197, 94, 0.12);
   border-color: rgba(34, 197, 94, 0.35);
   color: #4ade80;
 }
-
 .status-indicator-badge.waiting {
   background: rgba(251, 191, 36, 0.12);
   border-color: rgba(251, 191, 36, 0.35);
   color: #fbbf24;
 }
-
 .mono-select {
   background: #141416;
   border: 1px solid var(--border-strong);
@@ -2080,27 +1803,21 @@ input:checked + .slider:before {
   cursor: pointer;
   min-width: 180px;
 }
-
 .mono-select:focus {
   border-color: #ffffff;
 }
-
-/* Modals cho Playlist */
 .playlist-modal-card {
   width: 440px;
 }
-
 .modal-form-group {
   margin-bottom: 14px;
 }
-
 .modal-form-label {
   display: block;
   font-size: 11.5px;
   color: var(--text-muted);
   margin-bottom: 6px;
 }
-
 .modal-form-input {
   width: 100%;
   box-sizing: border-box;
@@ -2113,12 +1830,9 @@ input:checked + .slider:before {
   outline: none;
   transition: border-color 0.15s ease;
 }
-
 .modal-form-input:focus {
   border-color: #ffffff;
 }
-
-/* Modal thêm bài hát vào playlist */
 .add-track-target-preview {
   display: flex;
   align-items: center;
@@ -2129,7 +1843,6 @@ input:checked + .slider:before {
   border: 1px solid var(--border-subtle);
   margin-bottom: 16px;
 }
-
 .add-thumb {
   width: 40px;
   height: 40px;
@@ -2137,14 +1850,12 @@ input:checked + .slider:before {
   object-fit: cover;
   background: #18181b;
 }
-
 .add-track-meta {
   display: flex;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
 }
-
 .add-track-title {
   font-size: 12.5px;
   font-weight: 600;
@@ -2153,12 +1864,10 @@ input:checked + .slider:before {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .add-track-artist {
   font-size: 11px;
   color: var(--text-dim);
 }
-
 .add-playlist-options-list {
   display: flex;
   flex-direction: column;
@@ -2166,7 +1875,6 @@ input:checked + .slider:before {
   max-height: 200px;
   overflow-y: auto;
 }
-
 .add-playlist-item {
   display: flex;
   align-items: center;
@@ -2177,29 +1885,24 @@ input:checked + .slider:before {
   border: 1px solid var(--border-subtle);
   transition: all 0.15s ease;
 }
-
 .add-playlist-item:hover {
   background: #27272a;
   border-color: var(--border-strong);
 }
-
 .add-pl-item-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-
 .add-pl-item-name {
   font-size: 12px;
   font-weight: 600;
   color: var(--text-main);
 }
-
 .add-pl-item-count {
   font-size: 10.5px;
   color: var(--text-dim);
 }
-
 .btn-add-to-target-pl {
   padding: 4px 10px;
   border-radius: 4px;
@@ -2214,30 +1917,22 @@ input:checked + .slider:before {
   gap: 4px;
   transition: all 0.15s ease;
 }
-
 .btn-add-to-target-pl:hover {
   background: #e4e4e7;
 }
-
 .btn-add-to-target-pl.added {
   background: #22c55e;
   color: #ffffff;
 }
-
-/* ========================================================
-   NVT_0.5 BETA: DIRECT LINK & LYRICS & DISCORD CLIENT ID
-   ======================================================== */
 .btn-paste-link {
   background: #1e1e24 !important;
   border-color: #3f3f46 !important;
   color: #e4e4e7 !important;
 }
-
 .btn-paste-link:hover {
   background: #27272a !important;
   color: #ffffff !important;
 }
-
 .direct-link-badge {
   display: inline-flex;
   align-items: center;
@@ -2252,36 +1947,29 @@ input:checked + .slider:before {
   font-weight: 500;
   text-transform: uppercase;
 }
-
 .direct-link-badge.spotify {
   background: rgba(34, 197, 94, 0.15);
   color: #4ade80;
   border-color: rgba(34, 197, 94, 0.35);
 }
-
 .direct-link-badge.soundcloud {
   background: rgba(249, 115, 22, 0.15);
   color: #fb923c;
   border-color: rgba(249, 115, 22, 0.35);
 }
-
 .direct-link-badge.applemusic {
   background: rgba(244, 63, 94, 0.15);
   color: #fb7185;
   border-color: rgba(244, 63, 94, 0.35);
 }
-
 .direct-link-badge.youtube {
   background: rgba(239, 68, 68, 0.15);
   color: #f87171;
   border-color: rgba(239, 68, 68, 0.35);
 }
-
-/* Tùy biến Custom Font File */
 .custom-font-control-col {
   min-width: 300px;
 }
-
 .custom-font-box {
   display: flex;
   flex-direction: column;
@@ -2291,7 +1979,6 @@ input:checked + .slider:before {
   border-radius: 8px;
   padding: 10px 12px;
 }
-
 .font-current-info {
   display: flex;
   align-items: center;
@@ -2300,18 +1987,15 @@ input:checked + .slider:before {
   color: var(--text-main);
   font-weight: 500;
 }
-
 .font-current-info i {
   font-size: 16px;
   color: var(--text-muted);
 }
-
 .font-buttons-group {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-
 .choice-tabs-row {
   display: flex;
   background: #141416;
@@ -2320,7 +2004,6 @@ input:checked + .slider:before {
   padding: 2px;
   gap: 2px;
 }
-
 .choice-tab-btn {
   background: transparent;
   border: none;
@@ -2334,28 +2017,23 @@ input:checked + .slider:before {
   gap: 6px;
   transition: all 0.15s ease;
 }
-
 .choice-tab-btn:hover {
   color: var(--text-main);
 }
-
 .choice-tab-btn.active {
   background: #27272a;
   color: #ffffff;
   font-weight: 600;
 }
-
 .discord-client-id-col {
   min-width: 280px;
 }
-
 .input-action-row {
   display: flex;
   align-items: center;
   gap: 8px;
   width: 100%;
 }
-
 .mono-input {
   flex: 1;
   background: #141416;
@@ -2367,8 +2045,248 @@ input:checked + .slider:before {
   outline: none;
   transition: border-color 0.15s ease;
 }
-
 .mono-input:focus {
   border-color: #ffffff;
 }
-
+.appearance-category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.appearance-cat-card {
+  background: #141417;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+.appearance-cat-card:hover {
+  background: #1a1a1f;
+  border-color: rgba(255, 255, 255, 0.32);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.appearance-cat-card:active {
+  transform: translateY(0);
+}
+.cat-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.cat-card-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #ffffff;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+.appearance-cat-card:hover .cat-card-icon-box {
+  background: rgba(255, 255, 255, 0.14);
+}
+.cat-card-info {
+  flex: 1;
+  min-width: 0;
+}
+.cat-card-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 2px;
+}
+.cat-card-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.cat-arrow {
+  font-size: 13px;
+  color: var(--text-dim);
+  transition: transform 0.2s ease, color 0.2s ease;
+  margin-top: 4px;
+}
+.appearance-cat-card:hover .cat-arrow {
+  color: #ffffff;
+  transform: translateX(3px);
+}
+.cat-card-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.summary-pill {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.color-preview-pill {
+  color: #ffffff;
+}
+.pill-color-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  display: inline-block;
+}
+.appearance-quick-actions {
+  margin-top: 10px;
+}
+.quick-action-card {
+  background: #111114;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.qa-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.qa-left i {
+  font-size: 18px;
+  color: var(--text-muted);
+}
+.qa-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+}
+.qa-desc {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.settings-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 995;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: modalFadeIn 0.16s ease;
+}
+.settings-modal-backdrop.hidden {
+  display: none !important;
+}
+.settings-modal-card {
+  width: 580px;
+  max-width: 90vw;
+  max-height: 85vh;
+  background: #121215;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalPopIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.settings-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+.settings-modal-body::-webkit-scrollbar {
+  width: 5px;
+}
+.settings-modal-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+.modal-sub-header {
+  margin-bottom: 6px;
+  padding-bottom: 0;
+}
+.modal-sub-header h3 {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #ffffff;
+}
+.modal-sub-header p {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.modal-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 6px 0;
+}
+.card-grid.cols-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.minimalist-about {
+  padding: 16px 20px !important;
+  background: #111114 !important;
+  border-radius: 12px !important;
+  border: 1px solid var(--border-subtle) !important;
+}
+.minimalist-about .about-header-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.minimalist-about .about-logo-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.minimalist-about .about-logo-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+.minimalist-about .about-app-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+.minimalist-about .about-app-ver {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}

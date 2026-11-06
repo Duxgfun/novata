@@ -1,12 +1,10 @@
 {
   "name": "novata",
-  "version": "0.5.0",
-  "description": "Novata nvt_0.5 beta - Minimalist Audio Visualizer, Music Player & Floating Lyrics Widget",
+  "version": "0.6.0",
+  "description": "Novata nvt_0.6 beta - Minimalist Audio Visualizer, Music Player & Floating Lyrics Widget",
   "main": "src/main/main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "electron .",
-    "preview": "npx serve preview -l 3000",
     "build": "electron-builder --win",
     "dist": "electron-builder --win nsis"
   },
@@ -16,17 +14,13 @@
     "waveform",
     "monochrome",
     "minimalist",
-    "spotify",
-    "youtube-music",
-    "soundcloud",
     "taskbar-widget"
   ],
   "author": "Antigravity Team",
   "license": "MIT",
   "type": "commonjs",
   "dependencies": {
-    "@distube/ytdl-core": "^5.2.0",
-    "bootstrap-icons": "^1.13.2"
+    "@distube/ytdl-core": "^5.2.0"
   },
   "devDependencies": {
     "electron": "^45.2.1",

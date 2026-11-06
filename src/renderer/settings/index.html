@@ -4,18 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark">
-  <title>Novata nvt_0.5 beta - Settings & Music Center</title>
-  <link rel="stylesheet" href="../assets/bootstrap-icons/bootstrap-icons.css">
+  <title>Novata nvt_0.6 beta - Settings & Music Center</title>
+  <link rel="stylesheet" href="../assets/bootstrap-icons/bootstrap-icons.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="settings-mono-window">
-    <!-- Window Titlebar -->
+    
     <div class="mono-titlebar">
       <div class="title-branding">
         <img src="../assets/icon.png" class="brand-logo-img" alt="Novata Logo">
         <span class="brand-title">Novata</span>
-        <span class="brand-badge">nvt_0.5 beta</span>
+        <span class="brand-badge">nvt_0.6 beta</span>
       </div>
 
       <div class="window-actions">
@@ -25,9 +25,8 @@
       </div>
     </div>
 
-    <!-- Main Container -->
     <div class="settings-container">
-      <!-- Left Sidebar Tabs -->
+      
       <div class="mono-sidebar">
         <button class="tab-btn active" data-tab="tab-music-search" id="tab-btn-search">
           <i class="bi bi-music-note-beamed tab-icon"></i>
@@ -50,16 +49,14 @@
         </button>
       </div>
 
-      <!-- Tab Content Area -->
       <div class="mono-tab-content">
-        <!-- 1. TAB MUSIC PLAYER -->
+        
         <div class="tab-pane active" id="tab-music-search">
           <div class="section-header">
             <h3>Music Player</h3>
             <p>Search and play music with real-time waveform visualization</p>
           </div>
 
-          <!-- Search Bar & Direct Link Paste -->
           <div class="search-bar-wrap">
             <div class="search-input-box">
               <i class="bi bi-search search-box-icon"></i>
@@ -78,7 +75,6 @@
             </button>
           </div>
 
-          <!-- Quick Query Chips -->
           <div class="search-tags-row">
             <span class="tags-label">Popular:</span>
             <button class="tag-chip" data-query="Lofi hip hop beats">Lofi Chill</button>
@@ -88,18 +84,15 @@
             <button class="tag-chip" data-query="Piano relaxing instrumental">Piano</button>
           </div>
 
-          <!-- Search Status Bar -->
           <div class="search-status-bar" id="search-status-bar">
             <span id="search-status-text">Trending recommendations</span>
             <span class="status-badge" id="results-count-badge">Ready</span>
           </div>
 
-          <!-- Music Search Results List -->
           <div class="music-results-list" id="music-results-list">
-            <!-- Dynamically populated via JavaScript -->
+            
           </div>
 
-          <!-- Mini Player Bar at Window Bottom -->
           <div class="inapp-mini-player" id="inapp-mini-player">
             <div class="mini-player-track">
               <img id="mini-player-thumb" src="../assets/icon.png" class="mini-thumb" alt="Track Art">
@@ -127,7 +120,6 @@
           </div>
         </div>
 
-        <!-- 2. TAB PLAYLISTS -->
         <div class="tab-pane" id="tab-playlists">
           <div class="section-header playlist-header-flex">
             <div>
@@ -141,17 +133,16 @@
           </div>
 
           <div class="playlists-workspace">
-            <!-- Left Column: Playlist List -->
+            
             <div class="playlists-sidebar-col">
               <div class="playlists-sidebar-title">Your Playlists</div>
               <div class="playlists-pill-list" id="playlists-pills-container">
-                <!-- Dynamically populated playlist tabs with delete buttons -->
+                
               </div>
             </div>
 
-            <!-- Right Column: Active Playlist Details & Songs -->
             <div class="playlist-detail-col">
-              <!-- Zero State when no playlist exists -->
+              
               <div class="playlists-zero-state hidden" id="playlists-zero-state">
                 <div class="zero-state-icon"><i class="bi bi-collection-play"></i></div>
                 <h3>No Playlists Yet</h3>
@@ -162,10 +153,9 @@
                 </button>
               </div>
 
-              <!-- Content view when a playlist is selected -->
               <div class="playlist-active-view" id="playlist-active-view">
                 <div class="playlist-detail-header" id="playlist-detail-header">
-                  <!-- Row 1: Title, Startup Badge, Rename & Delete buttons -->
+                  
                   <div class="pl-header-top-row">
                     <div class="pl-header-title-box">
                       <h4 class="pl-active-title" id="pl-active-title">Playlist Name</h4>
@@ -187,7 +177,6 @@
                     </div>
                   </div>
 
-                  <!-- Row 2: Playback Actions & Duration -->
                   <div class="pl-header-bottom-row">
                     <div class="pl-playback-actions">
                       <button class="pl-btn-play" id="btn-play-all-playlist" title="Play Playlist">
@@ -207,640 +196,125 @@
                   </div>
                 </div>
 
-                <!-- Tracks List Container -->
                 <div class="playlist-tracks-container" id="playlist-tracks-container">
-                  <!-- Dynamically populated tracks -->
+                  
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 3. TAB APPEARANCE -->
         <div class="tab-pane" id="tab-appearance">
-          <!-- 3.1. DẠNG SÓNG ÂM (WAVE SHAPE) -->
           <div class="section-header">
-            <h3>Waveform Shape</h3>
-            <p>Select visual spectrum representation mode</p>
+            <h3>Appearance & Styling</h3>
+            <p>Select a category to customize visualizer shape, colors, and desktop widgets</p>
           </div>
 
-          <div class="card-grid cols-2">
-            <div class="mono-choice-card selected" data-visualizer-mode="bars" id="choice-mode-bars">
-              <i class="bi bi-bar-chart choice-icon"></i>
-              <div class="choice-title">Vertical Bars (Columns)</div>
-              <div class="choice-desc">Discrete vertical frequency bars radiating symmetrically</div>
-            </div>
-
-            <div class="mono-choice-card" data-visualizer-mode="wave" id="choice-mode-wave">
-              <i class="bi bi-activity choice-icon"></i>
-              <div class="choice-title">Continuous Wave</div>
-              <div class="choice-desc">Smooth fluid wave with inner body and top crest border</div>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <!-- ================================================================= -->
-          <!-- 3.2. CẤU HÌNH DÀNH CHO DẠNG CỘT (VERTICAL BARS)                   -->
-          <!-- ================================================================= -->
-          <div id="section-bars-settings">
-            <div class="section-header">
-              <h3>Bars Material</h3>
-              <p>Choose material finish for vertical spectrum bars</p>
-            </div>
-
-            <div class="card-grid cols-2">
-              <div class="mono-choice-card selected" data-bars-mat="solid" id="choice-bars-mat-solid">
-                <i class="bi bi-paint-bucket choice-icon"></i>
-                <div class="choice-title">Solid Color</div>
-                <div class="choice-desc">Vibrant custom single solid color with opacity control</div>
+          <div class="appearance-category-grid">
+            
+            <div class="appearance-cat-card" id="card-open-wave-config">
+              <div class="cat-card-header">
+                <div class="cat-card-icon-box">
+                  <i class="bi bi-activity"></i>
+                </div>
+                <div class="cat-card-info">
+                  <div class="cat-card-title">Waveform & Motion</div>
+                  <div class="cat-card-desc">Visualizer shape, desktop edge, sensitivity, and framerate</div>
+                </div>
+                <i class="bi bi-chevron-right cat-arrow"></i>
               </div>
-
-              <div class="mono-choice-card" data-bars-mat="glass" id="choice-bars-mat-glass">
-                <i class="bi bi-layers choice-icon"></i>
-                <div class="choice-title">Glass</div>
-                <div class="choice-desc">Pure transparent frosted glass (strictly monochrome/colorless)</div>
+              <div class="cat-card-summary">
+                <span class="summary-pill" id="summary-shape">Vertical Bars</span>
+                <span class="summary-pill" id="summary-edge">Bottom Edge</span>
+                <span class="summary-pill" id="summary-fps">30 FPS</span>
               </div>
             </div>
 
-            <!-- Nhóm tùy chỉnh Solid Color cho Bars -->
-            <div id="bars-solid-controls">
-              <div class="custom-color-control-box">
-                <div class="color-summary-card">
-                  <div class="color-summary-left">
-                    <div class="color-swatch-badge" id="curr-swatch-display" style="background: #ffffff;"></div>
-                    <div class="color-summary-meta">
-                      <span class="color-meta-label">Current Color</span>
-                      <span class="color-meta-hex" id="curr-hex-display">#FFFFFF</span>
-                    </div>
-                  </div>
-                  <button class="mono-apply-btn btn-trigger-color-modal" data-target="bars" title="Open Color Customizer">
-                    <i class="bi bi-palette-fill"></i>
-                    <span>Customize Color</span>
-                  </button>
+            <div class="appearance-cat-card" id="card-open-material-config">
+              <div class="cat-card-header">
+                <div class="cat-card-icon-box">
+                  <i class="bi bi-palette"></i>
                 </div>
-
-                <div class="quick-swatches-row">
-                  <span class="swatches-label">Quick Presets:</span>
-                  <button class="swatch-btn" data-target="bars" data-color="#ffffff" style="background:#ffffff" title="Pure White"></button>
-                  <button class="swatch-btn" data-target="bars" data-color="#d4d4d8" style="background:#d4d4d8" title="Silver"></button>
-                  <button class="swatch-btn" data-target="bars" data-color="#a1a1aa" style="background:#a1a1aa" title="Zinc"></button>
-                  <button class="swatch-btn" data-target="bars" data-color="#38bdf8" style="background:#38bdf8" title="Ice Blue"></button>
-                  <button class="swatch-btn" data-target="bars" data-color="#34d399" style="background:#34d399" title="Mint"></button>
-                  <button class="swatch-btn" data-target="bars" data-color="#fbbf24" style="background:#fbbf24" title="Amber"></button>
-                  <button class="swatch-btn" data-target="bars" data-color="#fb7185" style="background:#fb7185" title="Sunset Coral"></button>
-                  <button class="swatch-btn" data-target="bars" data-color="#c084fc" style="background:#c084fc" title="Lavender"></button>
+                <div class="cat-card-info">
+                  <div class="cat-card-title">Colors & Materials</div>
+                  <div class="cat-card-desc">Solid vibrant colors, pure frosted glass, crest line, and wave fill</div>
                 </div>
+                <i class="bi bi-chevron-right cat-arrow"></i>
               </div>
-
-              <div class="setting-item">
-                <div class="setting-label-col">
-                  <span class="setting-title">Waveform Opacity</span>
-                  <span class="setting-sub">Solid color transparency level</span>
-                </div>
-                <div class="setting-control-col">
-                  <input type="range" id="range-waveform-opacity" min="0.10" max="1.00" step="0.05" value="1.00">
-                  <span class="range-val" id="val-waveform-opacity">100%</span>
-                </div>
+              <div class="cat-card-summary">
+                <span class="summary-pill" id="summary-wave-material">Solid Color</span>
+                <span class="summary-pill color-preview-pill" id="summary-wave-color">
+                  <span class="pill-color-dot" id="dot-wave-color" style="background:#ffffff;"></span>
+                  <span id="label-wave-color">#FFFFFF</span>
+                </span>
               </div>
             </div>
 
-            <!-- Nhóm tùy chỉnh Glass cho Bars -->
-            <div id="bars-glass-controls" class="hidden">
-              <div class="setting-item">
-                <div class="setting-label-col">
-                  <span class="setting-title">Bars Glass Transparency</span>
-                  <span class="setting-sub">See-through transparency of the glass bars (strictly colorless)</span>
+            <div class="appearance-cat-card" id="card-open-player-config">
+              <div class="cat-card-header">
+                <div class="cat-card-icon-box">
+                  <i class="bi bi-music-player"></i>
                 </div>
-                <div class="setting-control-col">
-                  <input type="range" id="range-bars-glass-opacity" min="0.05" max="0.80" step="0.05" value="0.28">
-                  <span class="range-val" id="val-bars-glass-opacity">28%</span>
+                <div class="cat-card-info">
+                  <div class="cat-card-title">Player Widget</div>
+                  <div class="cat-card-desc">Solid, glass or transparent style, colors, border, text scaling and sizing</div>
                 </div>
+                <i class="bi bi-chevron-right cat-arrow"></i>
               </div>
+              <div class="cat-card-summary">
+                <span class="summary-pill" id="summary-player-style">Frosted Glass</span>
+                <span class="summary-pill" id="summary-player-border">Border On</span>
+                <span class="summary-pill" id="summary-player-visible">Visible</span>
+              </div>
+            </div>
 
-              <div class="setting-item">
-                <div class="setting-label-col">
-                  <span class="setting-title">Bars Glass Blur</span>
-                  <span class="setting-sub">Frosted glass blur diffusion effect on bars</span>
+            <div class="appearance-cat-card" id="card-open-lyrics-config">
+              <div class="cat-card-header">
+                <div class="cat-card-icon-box">
+                  <i class="bi bi-chat-square-quote"></i>
                 </div>
-                <div class="setting-control-col">
-                  <input type="range" id="range-bars-glass-blur" min="0" max="30" step="1" value="10">
-                  <span class="range-val" id="val-bars-glass-blur">10px</span>
+                <div class="cat-card-info">
+                  <div class="cat-card-title">Lyrics Widget</div>
+                  <div class="cat-card-desc">Solid, glass or transparent style, border, text color, font size and typography</div>
                 </div>
+                <i class="bi bi-chevron-right cat-arrow"></i>
+              </div>
+              <div class="cat-card-summary">
+                <span class="summary-pill" id="summary-lyrics-style">Frosted Glass</span>
+                <span class="summary-pill" id="summary-lyrics-size">18px</span>
+                <span class="summary-pill" id="summary-lyrics-visible">Visible</span>
               </div>
             </div>
           </div>
 
-          <!-- ================================================================= -->
-          <!-- 3.3. CẤU HÌNH DÀNH RIÊNG CHO CONTINUOUS WAVE                      -->
-          <!-- Gồm 2 phần độc lập: Viền trên cùng (Border) & Thân bên trong (Inner)-->
-          <!-- Mỗi phần có tùy chọn chất liệu Solid hoặc Glass riêng biệt       -->
-          <!-- ================================================================= -->
-          <div id="section-wave-settings" class="hidden">
-            <!-- 3.3a. PHẦN 1: VIỀN TRÊN CÙNG (TOP CREST BORDER) -->
-            <div class="section-header">
-              <h3>Top Crest Border (Viền Trên Cùng)</h3>
-              <p>Top outline curve of the continuous wave (highlighted in red in reference drawing)</p>
-            </div>
-
-            <div class="card-grid cols-2">
-              <div class="mono-choice-card selected" data-wave-border-mat="solid" id="choice-wave-border-solid">
-                <i class="bi bi-paint-bucket choice-icon"></i>
-                <div class="choice-title">Border: Solid Color</div>
-                <div class="choice-desc">Vibrant sharp solid color line along the crest</div>
-              </div>
-
-              <div class="mono-choice-card" data-wave-border-mat="glass" id="choice-wave-border-glass">
-                <i class="bi bi-layers choice-icon"></i>
-                <div class="choice-title">Border: Glass</div>
-                <div class="choice-desc">Pure monochrome light reflection rim highlight</div>
-              </div>
-            </div>
-
-            <!-- Tùy chỉnh Solid cho Viền -->
-            <div id="wave-border-solid-controls">
-              <div class="custom-color-control-box">
-                <div class="color-summary-card">
-                  <div class="color-summary-left">
-                    <div class="color-swatch-badge" id="border-swatch-display" style="background: #ef4444;"></div>
-                    <div class="color-summary-meta">
-                      <span class="color-meta-label">Border Color</span>
-                      <span class="color-meta-hex" id="border-hex-display">#EF4444</span>
-                    </div>
-                  </div>
-                  <button class="mono-apply-btn btn-trigger-color-modal" data-target="waveBorder" title="Customize Border Color">
-                    <i class="bi bi-palette-fill"></i>
-                    <span>Customize Border Color</span>
-                  </button>
-                </div>
-
-                <div class="quick-swatches-row">
-                  <span class="swatches-label">Quick Presets:</span>
-                  <button class="swatch-btn" data-target="waveBorder" data-color="#ef4444" style="background:#ef4444" title="Crimson Red"></button>
-                  <button class="swatch-btn" data-target="waveBorder" data-color="#ffffff" style="background:#ffffff" title="Pure White"></button>
-                  <button class="swatch-btn" data-target="waveBorder" data-color="#38bdf8" style="background:#38bdf8" title="Ice Blue"></button>
-                  <button class="swatch-btn" data-target="waveBorder" data-color="#fbbf24" style="background:#fbbf24" title="Amber"></button>
-                  <button class="swatch-btn" data-target="waveBorder" data-color="#34d399" style="background:#34d399" title="Mint"></button>
-                  <button class="swatch-btn" data-target="waveBorder" data-color="#c084fc" style="background:#c084fc" title="Lavender"></button>
+          <div class="appearance-quick-actions">
+            <div class="quick-action-card">
+              <div class="qa-left">
+                <i class="bi bi-arrows-move"></i>
+                <div>
+                  <div class="qa-title">Desktop Freeform Positioning</div>
+                  <div class="qa-desc">Move and resize both widgets simultaneously with smart magnetic center and edge snapping</div>
                 </div>
               </div>
-
-              <div class="setting-item">
-                <div class="setting-label-col">
-                  <span class="setting-title">Border Opacity</span>
-                  <span class="setting-sub">Solid border line transparency level</span>
-                </div>
-                <div class="setting-control-col">
-                  <input type="range" id="range-wave-border-opacity" min="0.10" max="1.00" step="0.05" value="1.00">
-                  <span class="range-val" id="val-wave-border-opacity">100%</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Tùy chỉnh Glass cho Viền -->
-            <div id="wave-border-glass-controls" class="hidden">
-              <div class="setting-item">
-                <div class="setting-label-col">
-                  <span class="setting-title">Border Glass Reflection</span>
-                  <span class="setting-sub">Brightness of the monochrome glass crest rim</span>
-                </div>
-                <div class="setting-control-col">
-                  <input type="range" id="range-wave-border-glass-opacity" min="0.10" max="1.00" step="0.05" value="0.70">
-                  <span class="range-val" id="val-wave-border-glass-opacity">70%</span>
-                </div>
-              </div>
-
-              <div class="setting-item">
-                <div class="setting-label-col">
-                  <span class="setting-title">Border Glass Glow Blur</span>
-                  <span class="setting-sub">Soft glow diffusion around the glass crest line</span>
-                </div>
-                <div class="setting-control-col">
-                  <input type="range" id="range-wave-border-glass-blur" min="0" max="20" step="1" value="6">
-                  <span class="range-val" id="val-wave-border-glass-blur">6px</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Độ dày viền trên cùng (Border Thickness) -->
-            <div class="setting-item">
-              <div class="setting-label-col">
-                <span class="setting-title">Top Crest Border Thickness</span>
-                <span class="setting-sub">Thickness of the top-most crest line (only top crest is stroked)</span>
-              </div>
-              <div class="setting-control-col">
-                <input type="range" id="range-wave-border-width" min="1.0" max="8.0" step="0.5" value="3.0">
-                <span class="range-val" id="val-wave-border-width">3.0px</span>
-              </div>
-            </div>
-
-            <div class="sub-divider"></div>
-
-            <!-- 3.3b. PHẦN 2: THÂN BÊN TRONG (WAVE INNER BODY) -->
-            <div class="section-header">
-              <h3>Wave Inner Body (Thân Bên Trong)</h3>
-              <p>Filled area beneath the crest line down to the bottom (highlighted in orange in reference drawing)</p>
-            </div>
-
-            <div class="card-grid cols-2">
-              <div class="mono-choice-card selected" data-wave-inner-mat="solid" id="choice-wave-inner-solid">
-                <i class="bi bi-paint-bucket choice-icon"></i>
-                <div class="choice-title">Inner Body: Solid Color</div>
-                <div class="choice-desc">Opaque vibrant solid color fill beneath the wave</div>
-              </div>
-
-              <div class="mono-choice-card" data-wave-inner-mat="glass" id="choice-wave-inner-glass">
-                <i class="bi bi-layers choice-icon"></i>
-                <div class="choice-title">Inner Body: Glass</div>
-                <div class="choice-desc">Pure transparent frosted glass (strictly monochrome/colorless)</div>
-              </div>
-            </div>
-
-            <!-- Tùy chỉnh Solid cho Thân trong -->
-            <div id="wave-inner-solid-controls">
-              <div class="custom-color-control-box">
-                <div class="color-summary-card">
-                  <div class="color-summary-left">
-                    <div class="color-swatch-badge" id="inner-swatch-display" style="background: #f97316;"></div>
-                    <div class="color-summary-meta">
-                      <span class="color-meta-label">Inner Body Color</span>
-                      <span class="color-meta-hex" id="inner-hex-display">#F97316</span>
-                    </div>
-                  </div>
-                  <button class="mono-apply-btn btn-trigger-color-modal" data-target="waveInner" title="Customize Inner Body Color">
-                    <i class="bi bi-palette-fill"></i>
-                    <span>Customize Inner Color</span>
-                  </button>
-                </div>
-
-                <div class="quick-swatches-row">
-                  <span class="swatches-label">Quick Presets:</span>
-                  <button class="swatch-btn" data-target="waveInner" data-color="#f97316" style="background:#f97316" title="Vibrant Orange"></button>
-                  <button class="swatch-btn" data-target="waveInner" data-color="#ffffff" style="background:#ffffff" title="Pure White"></button>
-                  <button class="swatch-btn" data-target="waveInner" data-color="#fbbf24" style="background:#fbbf24" title="Amber"></button>
-                  <button class="swatch-btn" data-target="waveInner" data-color="#38bdf8" style="background:#38bdf8" title="Ice Blue"></button>
-                  <button class="swatch-btn" data-target="waveInner" data-color="#34d399" style="background:#34d399" title="Mint"></button>
-                  <button class="swatch-btn" data-target="waveInner" data-color="#c084fc" style="background:#c084fc" title="Lavender"></button>
-                </div>
-              </div>
-
-              <div class="setting-item">
-                <div class="setting-label-col">
-                  <span class="setting-title">Inner Body Opacity</span>
-                  <span class="setting-sub">Solid color opacity of the wave body (100% for full opaque coverage)</span>
-                </div>
-                <div class="setting-control-col">
-                  <input type="range" id="range-wave-inner-opacity" min="0.10" max="1.00" step="0.05" value="1.00">
-                  <span class="range-val" id="val-wave-inner-opacity">100%</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Tùy chỉnh Glass cho Thân trong -->
-            <div id="wave-inner-glass-controls" class="hidden">
-              <div class="setting-item">
-                <div class="setting-label-col">
-                  <span class="setting-title">Inner Glass Transparency</span>
-                  <span class="setting-sub">See-through transparency of the body (strictly colorless)</span>
-                </div>
-                <div class="setting-control-col">
-                  <input type="range" id="range-wave-inner-glass-opacity" min="0.05" max="0.90" step="0.05" value="0.25">
-                  <span class="range-val" id="val-wave-inner-glass-opacity">25%</span>
-                </div>
-              </div>
-
-              <div class="setting-item">
-                <div class="setting-label-col">
-                  <span class="setting-title">Inner Glass Blur</span>
-                  <span class="setting-sub">Frosted glass blur diffusion effect on the wave body</span>
-                </div>
-                <div class="setting-control-col">
-                  <input type="range" id="range-wave-inner-glass-blur" min="0" max="30" step="1" value="12">
-                  <span class="range-val" id="val-wave-inner-glass-blur">12px</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <!-- 3.3. KÍCH THƯỚC SÓNG ÂM (WAVE DIMENSIONS) -->
-          <div class="section-header">
-            <h3>Waveform Dimensions</h3>
-            <p>Fine-tune spectrum height, sensitivity, and bar geometry</p>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-label-col">
-              <span class="setting-title">Spectrum Height</span>
-              <span class="setting-sub">Maximum peak height of the waveform</span>
-            </div>
-            <div class="setting-control-col">
-              <input type="range" id="range-spectrum-height" min="60" max="260" step="10" value="160">
-              <span class="range-val" id="val-spectrum-height">160px</span>
-            </div>
-          </div>
-
-          <div class="setting-item" id="row-bar-width">
-            <div class="setting-label-col">
-              <span class="setting-title">Bar Thickness</span>
-              <span class="setting-sub">Width of individual spectrum bars (applies to bars mode)</span>
-            </div>
-            <div class="setting-control-col">
-              <input type="range" id="range-bar-width" min="2" max="14" step="1" value="6">
-              <span class="range-val" id="val-bar-width">6px</span>
-            </div>
-          </div>
-
-          <div class="setting-item" id="row-bar-gap">
-            <div class="setting-label-col">
-              <span class="setting-title">Bar Spacing</span>
-              <span class="setting-sub">Gap between adjacent spectrum bars (applies to bars mode)</span>
-            </div>
-            <div class="setting-control-col">
-              <input type="range" id="range-bar-gap" min="1" max="10" step="1" value="4">
-              <span class="range-val" id="val-bar-gap">4px</span>
-            </div>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-label-col">
-              <span class="setting-title">Audio Sensitivity</span>
-              <span class="setting-sub">How vigorously the waveform responds to rhythm</span>
-            </div>
-            <div class="setting-control-col">
-              <input type="range" id="range-sensitivity" min="0.5" max="2.5" step="0.1" value="1.3">
-              <span class="range-val" id="val-sensitivity">1.3x</span>
-            </div>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-label-col">
-              <span class="setting-title">Motion Smoothing</span>
-              <span class="setting-sub">Smooth transition speed between audio frames</span>
-            </div>
-            <div class="setting-control-col">
-              <input type="range" id="range-smoothing" min="0.50" max="0.95" step="0.02" value="0.82">
-              <span class="range-val" id="val-smoothing">0.82</span>
-            </div>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-label-col">
-              <span class="setting-title">Render Framerate (FPS)</span>
-              <span class="setting-sub">Cap visualizer animation speed to save CPU and battery</span>
-            </div>
-            <div class="setting-control-col">
-              <select class="mono-select" id="select-render-fps">
-                <option value="20">20 FPS (Eco Saver • Lowest CPU)</option>
-                <option value="30" selected>30 FPS (Balanced • Recommended)</option>
-                <option value="45">45 FPS (Smooth)</option>
-                <option value="60">60 FPS (Ultra Smooth • Higher CPU)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <!-- 3.4. VỊ TRÍ MỌC SÓNG (SCREEN EDGE POSITION) -->
-          <div class="section-header">
-            <h3>Screen Edge Position</h3>
-            <p>Where the waveform rises from on your desktop</p>
-          </div>
-
-          <div class="card-grid cols-2">
-            <div class="mono-choice-card selected" data-direction="bottom">
-              <i class="bi bi-border-bottom choice-icon"></i>
-              <div class="choice-title">Bottom Edge (Above Taskbar)</div>
-              <div class="choice-desc">Rises upwards from the bottom of your screen</div>
-            </div>
-
-            <div class="mono-choice-card" data-direction="top">
-              <i class="bi bi-border-top choice-icon"></i>
-              <div class="choice-title">Top Edge</div>
-              <div class="choice-desc">Hangs downwards from the top of your screen</div>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <!-- 3.5. CHẤT LIỆU BẢNG WIDGET (WIDGET BOARD MATERIAL) -->
-          <div class="section-header">
-            <h3>Desktop Player Widget Material</h3>
-            <p>Select material for the floating desktop widget board</p>
-          </div>
-
-          <div class="card-grid cols-2">
-            <div class="mono-choice-card" data-widget-mat="solid" id="choice-widget-mat-solid">
-              <i class="bi bi-square-fill choice-icon"></i>
-              <div class="choice-title">Solid</div>
-              <div class="choice-desc">Solid dark matte surface without transparency or blur</div>
-            </div>
-
-            <div class="mono-choice-card selected" data-widget-mat="glass" id="choice-widget-mat-glass">
-              <i class="bi bi-window choice-icon"></i>
-              <div class="choice-title">Glass</div>
-              <div class="choice-desc">Pure transparent frosted glass (strictly monochrome/colorless)</div>
-            </div>
-          </div>
-
-          <!-- Nhóm tùy chỉnh Glass cho Widget Board -->
-          <div id="widget-glass-controls">
-            <div class="setting-item">
-              <div class="setting-label-col">
-                <span class="setting-title">Widget Glass Transparency</span>
-                <span class="setting-sub">Background see-through level of the player card (strictly colorless)</span>
-              </div>
-              <div class="setting-control-col">
-                <input type="range" id="range-widget-glass-opacity" min="0.05" max="0.80" step="0.05" value="0.18">
-                <span class="range-val" id="val-widget-glass-opacity">18%</span>
-              </div>
-            </div>
-
-            <div class="setting-item">
-              <div class="setting-label-col">
-                <span class="setting-title">Widget Glass Blur</span>
-                <span class="setting-sub">Frosted glass backdrop blur behind the player card</span>
-              </div>
-              <div class="setting-control-col">
-                <input type="range" id="range-widget-glass-blur" min="0" max="40" step="2" value="20">
-                <span class="range-val" id="val-widget-glass-blur">20px</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <!-- 3.6. VỊ TRÍ VÀ KÍCH CỠ WIDGET (POSITION & RESIZE) -->
-          <div class="section-header">
-            <h3>Desktop Player Widget Placement & Sizing</h3>
-            <p>Control visibility, drag to reposition, and resize like a Windows window</p>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-label-col">
-              <span class="setting-title">Show Desktop Player Widget</span>
-              <span class="setting-sub">Toggle the floating player card on your desktop</span>
-            </div>
-            <div class="setting-control-col">
-              <label class="mono-switch">
-                <input type="checkbox" id="check-show-media-card" checked>
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-label-col">
-              <span class="setting-title">Adjust Position & Size</span>
-              <span class="setting-sub">Activate drag-to-move and 8-direction window resizing on desktop</span>
-            </div>
-            <div class="setting-control-col">
               <button class="mono-apply-btn" id="btn-trigger-edit-mode">
                 <i class="bi bi-arrows-move"></i>
                 <span>Adjust on Desktop</span>
               </button>
             </div>
           </div>
-
-          <div class="setting-item">
-            <div class="setting-label-col">
-              <span class="setting-title">Reset Position & Size</span>
-              <span class="setting-sub">Return widget to default bottom-left position and standard size</span>
-            </div>
-            <div class="setting-control-col">
-              <button class="mono-reset-btn" id="btn-reset-player-pos">
-                <i class="bi bi-arrow-counterclockwise"></i>
-                <span>Reset to Default</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <!-- LYRICS WIDGET & CUSTOM TYPOGRAPHY -->
-          <div class="section-header">
-            <h3>Desktop Floating Lyrics & Typography</h3>
-            <p>Display real-time synchronized song lyrics with custom font support and freeform 8-direction resizing</p>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-label-col">
-              <span class="setting-title">Show Lyrics Widget</span>
-              <span class="setting-sub">Display floating karaoke-style lyrics card on desktop</span>
-            </div>
-            <div class="setting-control-col">
-              <label class="mono-switch">
-                <input type="checkbox" id="check-show-lyrics" checked>
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Chọn tệp font chữ tùy chỉnh (.ttf, .otf, .woff, .woff2) -->
-          <div class="setting-item">
-            <div class="setting-label-col">
-              <span class="setting-title">Custom Font File</span>
-              <span class="setting-sub">Choose any font file (.ttf, .otf, .woff, .woff2) from your computer to render lyrics</span>
-            </div>
-            <div class="setting-control-col custom-font-control-col">
-              <div class="custom-font-box">
-                <div class="font-current-info">
-                  <i class="bi bi-file-earmark-font"></i>
-                  <span id="font-file-name-label">Default System Font</span>
-                </div>
-                <div class="font-buttons-group">
-                  <button class="mono-apply-btn btn-small" id="btn-choose-font-file">
-                    <i class="bi bi-folder2-open"></i>
-                    <span>Choose Font File...</span>
-                  </button>
-                  <button class="mono-reset-btn btn-small hidden" id="btn-reset-font-file" title="Reset font to default">
-                    <i class="bi bi-arrow-counterclockwise"></i>
-                    <span>Reset</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Chọn bộ font có sẵn -->
-          <div class="setting-item">
-            <div class="setting-label-col">
-              <span class="setting-title">Font Family Style</span>
-              <span class="setting-sub">Select typography style or use your uploaded custom font</span>
-            </div>
-            <div class="setting-control-col">
-              <select id="select-lyrics-font" class="mono-select">
-                <option value="system">Default System (Segoe UI / Inter)</option>
-                <option value="custom" id="opt-custom-font" disabled>Custom Uploaded Font</option>
-                <option value="'Outfit', sans-serif">Modern Sans (Outfit)</option>
-                <option value="'Playfair Display', serif">Editorial Serif (Playfair)</option>
-                <option value="'Consolas', 'Courier New', monospace">Monospace (Code Style)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Kích thước chữ Lyrics -->
-          <div class="setting-item">
-            <div class="setting-label-col">
-              <span class="setting-title">Lyrics Font Size</span>
-              <span class="setting-sub">Adjust text size of the lyrics lines</span>
-            </div>
-            <div class="setting-control-col">
-              <div class="range-wrap">
-                <input type="range" id="range-lyrics-font-size" min="12" max="36" step="1" value="18">
-                <span class="range-val" id="val-lyrics-font-size">18px</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Căn lề chữ Lyrics (Left / Center) -->
-          <div class="setting-item">
-            <div class="setting-label-col">
-              <span class="setting-title">Text Alignment</span>
-              <span class="setting-sub">Align lyrics text to center or left side</span>
-            </div>
-            <div class="setting-control-col">
-              <div class="choice-tabs-row">
-                <button class="choice-tab-btn active" id="btn-align-center" data-align="center">
-                  <i class="bi bi-text-center"></i>
-                  <span>Center</span>
-                </button>
-                <button class="choice-tab-btn" id="btn-align-left" data-align="left">
-                  <i class="bi bi-text-left"></i>
-                  <span>Left</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Chỉnh vị trí và kích thước Lyrics trên Desktop -->
-          <div class="setting-item">
-            <div class="setting-label-col">
-              <span class="setting-title">Adjust Lyrics on Desktop</span>
-              <span class="setting-sub">Activate drag-to-move and 8-direction window resizing for the lyrics widget</span>
-            </div>
-            <div class="setting-control-col">
-              <button class="mono-apply-btn" id="btn-trigger-lyrics-edit-mode">
-                <i class="bi bi-arrows-move"></i>
-                <span>Adjust on Desktop</span>
-              </button>
-            </div>
-          </div>
         </div>
 
-        <!-- 4. TAB GENERAL -->
         <div class="tab-pane" id="tab-general">
-          <!-- DISCORD RICH PRESENCE (RPC) -->
+          
           <div class="section-header">
-            <h3>Discord Rich Presence (RPC)</h3>
-            <p>Broadcast current song, artist, and music source (YouTube, Spotify, SoundCloud) to Discord</p>
+            <h3>Discord Rich Presence</h3>
+            <p>Show what you are currently listening to on your Discord profile</p>
           </div>
 
           <div class="setting-item">
             <div class="setting-label-col">
               <span class="setting-title">Enable Discord RPC</span>
-              <span class="setting-sub">Displays live playback details on your Discord user profile as Novata</span>
+              <span class="setting-sub">Displays live song title, artist, and music source as Novata</span>
             </div>
             <div class="setting-control-col rpc-control-col">
               <span class="status-indicator-badge" id="discord-rpc-status-badge">Checking...</span>
@@ -853,16 +327,15 @@
 
           <div class="divider"></div>
 
-          <!-- DEFAULT MUSIC / STARTUP AUTO-PLAY -->
           <div class="section-header">
-            <h3>Default Music (Auto-Play on Startup)</h3>
-            <p>Instantly start music playback when Novata launches without needing any manual click</p>
+            <h3>Auto-Play Music</h3>
+            <p>Start music playback automatically when Novata launches</p>
           </div>
 
           <div class="setting-item">
             <div class="setting-label-col">
               <span class="setting-title">Auto-Play on Launch</span>
-              <span class="setting-sub">Automatically begins playback when application starts</span>
+              <span class="setting-sub">Begin streaming music immediately when application starts</span>
             </div>
             <div class="setting-control-col">
               <label class="mono-switch">
@@ -875,40 +348,27 @@
           <div class="setting-item" id="row-startup-source">
             <div class="setting-label-col">
               <span class="setting-title">Startup Music Source</span>
-              <span class="setting-sub">Choose whether to play a specific playlist or resume last song</span>
+              <span class="setting-sub">Choose whether to play your default playlist or resume your last played song</span>
             </div>
             <div class="setting-control-col">
               <select class="mono-select" id="select-startup-source">
-                <option value="playlist">Selected Playlist</option>
-                <option value="last_played">Resume Last Played Song</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="setting-item" id="row-startup-playlist">
-            <div class="setting-label-col">
-              <span class="setting-title">Startup Playlist</span>
-              <span class="setting-sub">The default playlist to stream upon launching Novata</span>
-            </div>
-            <div class="setting-control-col">
-              <select class="mono-select" id="select-startup-playlist">
-                <!-- Dynamically filled with user playlists -->
+                <option value="playlist">Default Playlist</option>
+                <option value="last_played">Resume Last Played Track</option>
               </select>
             </div>
           </div>
 
           <div class="divider"></div>
 
-          <!-- SYSTEM SETTINGS -->
           <div class="section-header">
             <h3>System Settings</h3>
-            <p>Startup and background system preferences</p>
+            <p>Configure startup behavior and background playback</p>
           </div>
 
           <div class="setting-item">
             <div class="setting-label-col">
               <span class="setting-title">Launch on Windows Startup</span>
-              <span class="setting-sub">Automatically start Novata when your PC turns on</span>
+              <span class="setting-sub">Automatically start Novata when logging into your PC</span>
             </div>
             <div class="setting-control-col">
               <label class="mono-switch">
@@ -921,7 +381,7 @@
           <div class="setting-item">
             <div class="setting-label-col">
               <span class="setting-title">Minimize to System Tray</span>
-              <span class="setting-sub">Keep playing quietly in the background when closing window</span>
+              <span class="setting-sub">Keep playing quietly in the background when closing settings</span>
             </div>
             <div class="setting-control-col">
               <label class="mono-switch">
@@ -933,27 +393,15 @@
 
           <div class="divider"></div>
 
-          <!-- ABOUT CARD -->
-          <div class="about-card">
+          <div class="about-card minimalist-about">
             <div class="about-header-row">
               <div class="about-logo-box">
                 <img src="../assets/icon.png" class="about-logo-img" alt="Novata Logo">
               </div>
               <div class="about-meta">
                 <div class="about-app-name">Novata</div>
-                <div class="about-app-ver">Version nvt_0.5 beta &bull; Minimalist Audio Visualizer, Music Player & Floating Lyrics</div>
+                <div class="about-app-ver">Version nvt_0.6 beta</div>
               </div>
-            </div>
-            <p class="about-desc">
-              Pure minimalist audio visualizer for Windows. Features seamless wallpaper integration, symmetrical center-out waveform, floating synchronized lyrics with custom font support, direct Spotify/YouTube/SoundCloud/Apple Music link player, Discord Rich Presence, and Multi-Playlists.
-            </p>
-            <div class="about-credits-row">
-              <span class="credit-badge">Floating Lyrics</span>
-              <span class="credit-badge">Direct Link Player</span>
-              <span class="credit-badge">Custom Typography</span>
-              <span class="credit-badge">Discord Rich Presence</span>
-              <span class="credit-badge">Multi-Playlists</span>
-              <span class="credit-badge">Zero Lag Engine</span>
             </div>
           </div>
         </div>
@@ -961,7 +409,1021 @@
     </div>
   </div>
 
-  <!-- POPUP CHỈNH MÀU HEX ĐỒNG BỘ STYLE SETTINGS (IN-STYLE COLOR MODAL) -->
+  <div class="settings-modal-backdrop hidden" id="modal-config-waveform">
+    <div class="settings-modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="bi bi-activity"></i>
+          <span>Waveform & Motion Settings</span>
+        </div>
+        <button class="win-btn win-close btn-close-config-modal" title="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="settings-modal-body">
+        <div class="section-header modal-sub-header">
+          <h3>Waveform Shape</h3>
+          <p>Choose visual spectrum representation</p>
+        </div>
+
+        <div class="card-grid cols-2">
+          <div class="mono-choice-card selected" data-visualizer-mode="bars" id="choice-mode-bars">
+            <i class="bi bi-bar-chart choice-icon"></i>
+            <div class="choice-title">Vertical Bars</div>
+            <div class="choice-desc">Discrete vertical frequency bars radiating symmetrically</div>
+          </div>
+
+          <div class="mono-choice-card" data-visualizer-mode="wave" id="choice-mode-wave">
+            <i class="bi bi-activity choice-icon"></i>
+            <div class="choice-title">Continuous Wave</div>
+            <div class="choice-desc">Smooth fluid wave with inner body and top crest line</div>
+          </div>
+        </div>
+
+        <div class="modal-divider"></div>
+
+        <div class="section-header modal-sub-header">
+          <h3>Screen Edge Position</h3>
+          <p>Desktop edge where the waveform emerges</p>
+        </div>
+
+        <div class="card-grid cols-2">
+          <div class="mono-choice-card selected" data-direction="bottom">
+            <i class="bi bi-border-bottom choice-icon"></i>
+            <div class="choice-title">Bottom Edge</div>
+            <div class="choice-desc">Rises upward from above your taskbar</div>
+          </div>
+
+          <div class="mono-choice-card" data-direction="top">
+            <i class="bi bi-border-top choice-icon"></i>
+            <div class="choice-title">Top Edge</div>
+            <div class="choice-desc">Hangs downward from the top of your screen</div>
+          </div>
+        </div>
+
+        <div class="modal-divider"></div>
+
+        <div class="section-header modal-sub-header">
+          <h3>Waveform Dimensions</h3>
+          <p>Fine-tune spectrum height, sensitivity, and bar geometry</p>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-col">
+            <span class="setting-title">Spectrum Height</span>
+            <span class="setting-sub">Maximum peak height of the waveform</span>
+          </div>
+          <div class="setting-control-col">
+            <input type="range" id="range-spectrum-height" min="60" max="260" step="10" value="160">
+            <span class="range-val" id="val-spectrum-height">160px</span>
+          </div>
+        </div>
+
+        <div class="setting-item" id="row-bar-width">
+          <div class="setting-label-col">
+            <span class="setting-title">Bar Thickness</span>
+            <span class="setting-sub">Width of individual spectrum bars</span>
+          </div>
+          <div class="setting-control-col">
+            <input type="range" id="range-bar-width" min="2" max="14" step="1" value="6">
+            <span class="range-val" id="val-bar-width">6px</span>
+          </div>
+        </div>
+
+        <div class="setting-item" id="row-bar-gap">
+          <div class="setting-label-col">
+            <span class="setting-title">Bar Spacing</span>
+            <span class="setting-sub">Gap between adjacent spectrum bars</span>
+          </div>
+          <div class="setting-control-col">
+            <input type="range" id="range-bar-gap" min="1" max="10" step="1" value="4">
+            <span class="range-val" id="val-bar-gap">4px</span>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-col">
+            <span class="setting-title">Audio Sensitivity</span>
+            <span class="setting-sub">Responsiveness of wave height to audio rhythm</span>
+          </div>
+          <div class="setting-control-col">
+            <input type="range" id="range-sensitivity" min="0.5" max="2.5" step="0.1" value="1.3">
+            <span class="range-val" id="val-sensitivity">1.3x</span>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-col">
+            <span class="setting-title">Motion Smoothing</span>
+            <span class="setting-sub">Transition smoothness between audio frames</span>
+          </div>
+          <div class="setting-control-col">
+            <input type="range" id="range-smoothing" min="0.50" max="0.95" step="0.02" value="0.82">
+            <span class="range-val" id="val-smoothing">0.82</span>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-col">
+            <span class="setting-title">Visualizer Smoothness</span>
+            <span class="setting-sub">Target framerate for visualizer animations</span>
+          </div>
+          <div class="setting-control-col">
+            <select class="mono-select" id="select-render-fps">
+              <option value="20">20 FPS (Eco Saver)</option>
+              <option value="30" selected>30 FPS (Balanced • Recommended)</option>
+              <option value="45">45 FPS (Smooth)</option>
+              <option value="60">60 FPS (Ultra Smooth)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal-apply btn-close-config-modal">
+          <i class="bi bi-check2"></i>
+          <span>Done</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-modal-backdrop hidden" id="modal-config-material">
+    <div class="settings-modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="bi bi-palette"></i>
+          <span>Colors & Materials</span>
+        </div>
+        <button class="win-btn win-close btn-close-config-modal" title="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="settings-modal-body">
+        
+        <div id="section-bars-settings">
+          <div class="section-header modal-sub-header">
+            <h3>Bars Material</h3>
+            <p>Choose material finish for vertical spectrum bars</p>
+          </div>
+
+          <div class="card-grid cols-2">
+            <div class="mono-choice-card selected" data-bars-mat="solid" id="choice-bars-mat-solid">
+              <i class="bi bi-paint-bucket choice-icon"></i>
+              <div class="choice-title">Solid Color</div>
+              <div class="choice-desc">Vibrant custom single solid color with opacity control</div>
+            </div>
+
+            <div class="mono-choice-card" data-bars-mat="glass" id="choice-bars-mat-glass">
+              <i class="bi bi-layers choice-icon"></i>
+              <div class="choice-title">Glass</div>
+              <div class="choice-desc">Pure transparent frosted glass (strictly monochrome)</div>
+            </div>
+          </div>
+
+          <div id="bars-solid-controls">
+            <div class="custom-color-control-box">
+              <div class="color-summary-card">
+                <div class="color-summary-left">
+                  <div class="color-swatch-badge" id="curr-swatch-display" style="background: #ffffff;"></div>
+                  <div class="color-summary-meta">
+                    <span class="color-meta-label">Current Color</span>
+                    <span class="color-meta-hex" id="curr-hex-display">#FFFFFF</span>
+                  </div>
+                </div>
+                <button class="mono-apply-btn btn-trigger-color-modal" data-target="bars" title="Open Color Customizer">
+                  <i class="bi bi-palette-fill"></i>
+                  <span>Customize Color</span>
+                </button>
+              </div>
+
+              <div class="quick-swatches-row">
+                <span class="swatches-label">Quick Presets:</span>
+                <button class="swatch-btn" data-target="bars" data-color="#ffffff" style="background:#ffffff" title="Pure White"></button>
+                <button class="swatch-btn" data-target="bars" data-color="#d4d4d8" style="background:#d4d4d8" title="Silver"></button>
+                <button class="swatch-btn" data-target="bars" data-color="#a1a1aa" style="background:#a1a1aa" title="Zinc"></button>
+                <button class="swatch-btn" data-target="bars" data-color="#38bdf8" style="background:#38bdf8" title="Ice Blue"></button>
+                <button class="swatch-btn" data-target="bars" data-color="#34d399" style="background:#34d399" title="Mint"></button>
+                <button class="swatch-btn" data-target="bars" data-color="#fbbf24" style="background:#fbbf24" title="Amber"></button>
+                <button class="swatch-btn" data-target="bars" data-color="#fb7185" style="background:#fb7185" title="Sunset Coral"></button>
+                <button class="swatch-btn" data-target="bars" data-color="#c084fc" style="background:#c084fc" title="Lavender"></button>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-label-col">
+                <span class="setting-title">Waveform Opacity</span>
+                <span class="setting-sub">Solid color transparency level</span>
+              </div>
+              <div class="setting-control-col">
+                <input type="range" id="range-waveform-opacity" min="0.10" max="1.00" step="0.05" value="1.00">
+                <span class="range-val" id="val-waveform-opacity">100%</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="bars-glass-controls" class="hidden">
+            <div class="setting-item">
+              <div class="setting-label-col">
+                <span class="setting-title">Bars Glass Transparency</span>
+                <span class="setting-sub">See-through transparency level of the glass bars</span>
+              </div>
+              <div class="setting-control-col">
+                <input type="range" id="range-bars-glass-opacity" min="0.05" max="0.80" step="0.05" value="0.28">
+                <span class="range-val" id="val-bars-glass-opacity">28%</span>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-label-col">
+                <span class="setting-title">Bars Glass Blur</span>
+                <span class="setting-sub">Frosted glass blur diffusion effect on bars</span>
+              </div>
+              <div class="setting-control-col">
+                <input type="range" id="range-bars-glass-blur" min="0" max="30" step="1" value="10">
+                <span class="range-val" id="val-bars-glass-blur">10px</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="section-wave-settings" class="hidden">
+          
+          <div class="section-header modal-sub-header">
+            <h3>Top Crest Line</h3>
+            <p>Top outline curve along the peaks of the wave</p>
+          </div>
+
+          <div class="card-grid cols-2">
+            <div class="mono-choice-card selected" data-wave-border-mat="solid" id="choice-wave-border-solid">
+              <i class="bi bi-paint-bucket choice-icon"></i>
+              <div class="choice-title">Border: Solid Color</div>
+              <div class="choice-desc">Vibrant sharp solid color line along crest</div>
+            </div>
+
+            <div class="mono-choice-card" data-wave-border-mat="glass" id="choice-wave-border-glass">
+              <i class="bi bi-layers choice-icon"></i>
+              <div class="choice-title">Border: Glass</div>
+              <div class="choice-desc">Pure monochrome light reflection rim highlight</div>
+            </div>
+          </div>
+
+          <div id="wave-border-solid-controls">
+            <div class="custom-color-control-box">
+              <div class="color-summary-card">
+                <div class="color-summary-left">
+                  <div class="color-swatch-badge" id="border-swatch-display" style="background: #ef4444;"></div>
+                  <div class="color-summary-meta">
+                    <span class="color-meta-label">Border Color</span>
+                    <span class="color-meta-hex" id="border-hex-display">#EF4444</span>
+                  </div>
+                </div>
+                <button class="mono-apply-btn btn-trigger-color-modal" data-target="waveBorder" title="Customize Border Color">
+                  <i class="bi bi-palette-fill"></i>
+                  <span>Customize Border Color</span>
+                </button>
+              </div>
+
+              <div class="quick-swatches-row">
+                <span class="swatches-label">Quick Presets:</span>
+                <button class="swatch-btn" data-target="waveBorder" data-color="#ef4444" style="background:#ef4444" title="Crimson Red"></button>
+                <button class="swatch-btn" data-target="waveBorder" data-color="#ffffff" style="background:#ffffff" title="Pure White"></button>
+                <button class="swatch-btn" data-target="waveBorder" data-color="#38bdf8" style="background:#38bdf8" title="Ice Blue"></button>
+                <button class="swatch-btn" data-target="waveBorder" data-color="#fbbf24" style="background:#fbbf24" title="Amber"></button>
+                <button class="swatch-btn" data-target="waveBorder" data-color="#34d399" style="background:#34d399" title="Mint"></button>
+                <button class="swatch-btn" data-target="waveBorder" data-color="#c084fc" style="background:#c084fc" title="Lavender"></button>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-label-col">
+                <span class="setting-title">Border Opacity</span>
+                <span class="setting-sub">Solid border line transparency level</span>
+              </div>
+              <div class="setting-control-col">
+                <input type="range" id="range-wave-border-opacity" min="0.10" max="1.00" step="0.05" value="1.00">
+                <span class="range-val" id="val-wave-border-opacity">100%</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="wave-border-glass-controls" class="hidden">
+            <div class="setting-item">
+              <div class="setting-label-col">
+                <span class="setting-title">Border Glass Reflection</span>
+                <span class="setting-sub">Brightness of the monochrome glass crest rim</span>
+              </div>
+              <div class="setting-control-col">
+                <input type="range" id="range-wave-border-glass-opacity" min="0.10" max="1.00" step="0.05" value="0.70">
+                <span class="range-val" id="val-wave-border-glass-opacity">70%</span>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-label-col">
+                <span class="setting-title">Border Glass Glow Blur</span>
+                <span class="setting-sub">Soft glow diffusion around the crest line</span>
+              </div>
+              <div class="setting-control-col">
+                <input type="range" id="range-wave-border-glass-blur" min="0" max="20" step="1" value="6">
+                <span class="range-val" id="val-wave-border-glass-blur">6px</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Top Crest Line Thickness</span>
+              <span class="setting-sub">Stroke thickness of the top crest line</span>
+            </div>
+            <div class="setting-control-col">
+              <input type="range" id="range-wave-border-width" min="1.0" max="8.0" step="0.5" value="3.0">
+              <span class="range-val" id="val-wave-border-width">3.0px</span>
+            </div>
+          </div>
+
+          <div class="modal-divider"></div>
+
+          <div class="section-header modal-sub-header">
+            <h3>Wave Inner Fill</h3>
+            <p>Filled area beneath the crest line down to the desktop baseline</p>
+          </div>
+
+          <div class="card-grid cols-2">
+            <div class="mono-choice-card selected" data-wave-inner-mat="solid" id="choice-wave-inner-solid">
+              <i class="bi bi-paint-bucket choice-icon"></i>
+              <div class="choice-title">Inner Body: Solid Color</div>
+              <div class="choice-desc">Opaque vibrant solid color fill beneath the wave</div>
+            </div>
+
+            <div class="mono-choice-card" data-wave-inner-mat="glass" id="choice-wave-inner-glass">
+              <i class="bi bi-layers choice-icon"></i>
+              <div class="choice-title">Inner Body: Glass</div>
+              <div class="choice-desc">Pure transparent frosted glass (strictly monochrome)</div>
+            </div>
+          </div>
+
+          <div id="wave-inner-solid-controls">
+            <div class="custom-color-control-box">
+              <div class="color-summary-card">
+                <div class="color-summary-left">
+                  <div class="color-swatch-badge" id="inner-swatch-display" style="background: #f97316;"></div>
+                  <div class="color-summary-meta">
+                    <span class="color-meta-label">Inner Body Color</span>
+                    <span class="color-meta-hex" id="inner-hex-display">#F97316</span>
+                  </div>
+                </div>
+                <button class="mono-apply-btn btn-trigger-color-modal" data-target="waveInner" title="Customize Inner Body Color">
+                  <i class="bi bi-palette-fill"></i>
+                  <span>Customize Inner Color</span>
+                </button>
+              </div>
+
+              <div class="quick-swatches-row">
+                <span class="swatches-label">Quick Presets:</span>
+                <button class="swatch-btn" data-target="waveInner" data-color="#f97316" style="background:#f97316" title="Vibrant Orange"></button>
+                <button class="swatch-btn" data-target="waveInner" data-color="#ffffff" style="background:#ffffff" title="Pure White"></button>
+                <button class="swatch-btn" data-target="waveInner" data-color="#fbbf24" style="background:#fbbf24" title="Amber"></button>
+                <button class="swatch-btn" data-target="waveInner" data-color="#38bdf8" style="background:#38bdf8" title="Ice Blue"></button>
+                <button class="swatch-btn" data-target="waveInner" data-color="#34d399" style="background:#34d399" title="Mint"></button>
+                <button class="swatch-btn" data-target="waveInner" data-color="#c084fc" style="background:#c084fc" title="Lavender"></button>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-label-col">
+                <span class="setting-title">Inner Body Opacity</span>
+                <span class="setting-sub">Solid color opacity of the wave body</span>
+              </div>
+              <div class="setting-control-col">
+                <input type="range" id="range-wave-inner-opacity" min="0.10" max="1.00" step="0.05" value="1.00">
+                <span class="range-val" id="val-wave-inner-opacity">100%</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="wave-inner-glass-controls" class="hidden">
+            <div class="setting-item">
+              <div class="setting-label-col">
+                <span class="setting-title">Inner Glass Transparency</span>
+                <span class="setting-sub">See-through transparency level of the body</span>
+              </div>
+              <div class="setting-control-col">
+                <input type="range" id="range-wave-inner-glass-opacity" min="0.05" max="0.90" step="0.05" value="0.25">
+                <span class="range-val" id="val-wave-inner-glass-opacity">25%</span>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-label-col">
+                <span class="setting-title">Inner Glass Blur</span>
+                <span class="setting-sub">Frosted glass blur diffusion effect on the wave body</span>
+              </div>
+              <div class="setting-control-col">
+                <input type="range" id="range-wave-inner-glass-blur" min="0" max="30" step="1" value="12">
+                <span class="range-val" id="val-wave-inner-glass-blur">12px</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal-apply btn-close-config-modal">
+          <i class="bi bi-check2"></i>
+          <span>Done</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-modal-backdrop hidden" id="modal-config-player">
+    <div class="settings-modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="bi bi-music-player"></i>
+          <span>Desktop Player Widget Settings</span>
+        </div>
+        <button class="win-btn win-close btn-close-config-modal" title="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="settings-modal-body">
+        <div class="setting-item">
+          <div class="setting-label-col">
+            <span class="setting-title">Show Desktop Player Widget</span>
+            <span class="setting-sub">Toggle floating playback card on your desktop</span>
+          </div>
+          <div class="setting-control-col">
+            <label class="mono-switch">
+              <input type="checkbox" id="check-show-media-card" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-divider"></div>
+
+        <div class="section-header modal-sub-header">
+          <h3>Widget Finish Material</h3>
+          <p>Choose between Solid, Frosted Glass, or Completely Transparent</p>
+        </div>
+
+        <div class="card-grid cols-3">
+          <div class="mono-choice-card" data-player-mat="solid" id="choice-player-mat-solid">
+            <i class="bi bi-square-fill choice-icon"></i>
+            <div class="choice-title">Solid</div>
+            <div class="choice-desc">Opaque surface with custom color & border</div>
+          </div>
+
+          <div class="mono-choice-card selected" data-player-mat="glass" id="choice-player-mat-glass">
+            <i class="bi bi-window choice-icon"></i>
+            <div class="choice-title">Glass</div>
+            <div class="choice-desc">Colorless frosted glass with blur effect</div>
+          </div>
+
+          <div class="mono-choice-card" data-player-mat="transparent" id="choice-player-mat-transparent">
+            <i class="bi bi-circle choice-icon"></i>
+            <div class="choice-title">Transparent</div>
+            <div class="choice-desc">100% see-through with optional border outline</div>
+          </div>
+        </div>
+
+        <div id="player-solid-controls" class="hidden">
+          <div class="custom-color-control-box">
+            <div class="color-summary-card">
+              <div class="color-summary-left">
+                <div class="color-swatch-badge" id="player-bg-swatch-display" style="background: #111116;"></div>
+                <div class="color-summary-meta">
+                  <span class="color-meta-label">Background Color</span>
+                  <span class="color-meta-hex" id="player-bg-hex-display">#111116</span>
+                </div>
+              </div>
+              <button class="mono-apply-btn btn-trigger-color-modal" data-target="playerBg" title="Pick Background Color">
+                <i class="bi bi-palette-fill"></i>
+                <span>Pick Background</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="custom-color-control-box">
+            <div class="color-summary-card">
+              <div class="color-summary-left">
+                <div class="color-swatch-badge" id="player-border-swatch-display" style="background: #ffffff;"></div>
+                <div class="color-summary-meta">
+                  <span class="color-meta-label">Border Color</span>
+                  <span class="color-meta-hex" id="player-border-hex-display">#FFFFFF</span>
+                </div>
+              </div>
+              <button class="mono-apply-btn btn-trigger-color-modal" data-target="playerBorder" title="Pick Border Color">
+                <i class="bi bi-palette-fill"></i>
+                <span>Pick Border</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Border Opacity</span>
+              <span class="setting-sub">Transparency of the card border outline</span>
+            </div>
+            <div class="setting-control-col">
+              <input type="range" id="range-player-border-opacity" min="0.00" max="1.00" step="0.05" value="0.18">
+              <span class="range-val" id="val-player-border-opacity">18%</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="player-glass-controls">
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Glass Background Opacity</span>
+              <span class="setting-sub">Background see-through transparency level</span>
+            </div>
+            <div class="setting-control-col">
+              <input type="range" id="range-widget-glass-opacity" min="0.05" max="0.80" step="0.05" value="0.18">
+              <span class="range-val" id="val-widget-glass-opacity">18%</span>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Glass Blur</span>
+              <span class="setting-sub">Frosted glass blur diffusion behind player</span>
+            </div>
+            <div class="setting-control-col">
+              <input type="range" id="range-widget-glass-blur" min="0" max="40" step="2" value="20">
+              <span class="range-val" id="val-widget-glass-blur">20px</span>
+            </div>
+          </div>
+
+          <div class="custom-color-control-box">
+            <div class="color-summary-card">
+              <div class="color-summary-left">
+                <div class="color-swatch-badge" id="player-glass-border-swatch" style="background: #ffffff;"></div>
+                <div class="color-summary-meta">
+                  <span class="color-meta-label">Border Color</span>
+                  <span class="color-meta-hex" id="player-glass-border-hex">#FFFFFF</span>
+                </div>
+              </div>
+              <button class="mono-apply-btn btn-trigger-color-modal" data-target="playerBorder" title="Pick Border Color">
+                <i class="bi bi-palette-fill"></i>
+                <span>Pick Border</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Border Opacity</span>
+              <span class="setting-sub">Transparency of the glass card rim</span>
+            </div>
+            <div class="setting-control-col">
+              <input type="range" id="range-player-glass-border-opacity" min="0.00" max="1.00" step="0.05" value="0.22">
+              <span class="range-val" id="val-player-glass-border-opacity">22%</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="player-trans-controls" class="hidden">
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Enable Border Outline</span>
+              <span class="setting-sub">Display thin border around transparent card</span>
+            </div>
+            <div class="setting-control-col">
+              <label class="mono-switch">
+                <input type="checkbox" id="check-player-border-enabled" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div id="player-trans-border-box">
+            <div class="custom-color-control-box">
+              <div class="color-summary-card">
+                <div class="color-summary-left">
+                  <div class="color-swatch-badge" id="player-trans-border-swatch" style="background: #ffffff;"></div>
+                  <div class="color-summary-meta">
+                    <span class="color-meta-label">Border Color</span>
+                    <span class="color-meta-hex" id="player-trans-border-hex">#FFFFFF</span>
+                  </div>
+                </div>
+                <button class="mono-apply-btn btn-trigger-color-modal" data-target="playerBorder" title="Pick Border Color">
+                  <i class="bi bi-palette-fill"></i>
+                  <span>Pick Border</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-label-col">
+                <span class="setting-title">Border Opacity</span>
+                <span class="setting-sub">Transparency of the border outline</span>
+              </div>
+              <div class="setting-control-col">
+                <input type="range" id="range-player-trans-border-opacity" min="0.05" max="1.00" step="0.05" value="0.35">
+                <span class="range-val" id="val-player-trans-border-opacity">35%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-divider"></div>
+
+        <div class="section-header modal-sub-header">
+          <h3>Typography & Geometry</h3>
+          <p>Text styling and widget roundness</p>
+        </div>
+
+        <div class="custom-color-control-box">
+          <div class="color-summary-card">
+            <div class="color-summary-left">
+              <div class="color-swatch-badge" id="player-text-swatch" style="background: #ffffff;"></div>
+              <div class="color-summary-meta">
+                <span class="color-meta-label">Text Color</span>
+                <span class="color-meta-hex" id="player-text-hex">#FFFFFF</span>
+              </div>
+            </div>
+            <button class="mono-apply-btn btn-trigger-color-modal" data-target="playerText" title="Pick Text Color">
+              <i class="bi bi-palette-fill"></i>
+              <span>Pick Text Color</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-col">
+            <span class="setting-title">Base Text Size</span>
+            <span class="setting-sub">Base font size for song titles and artists</span>
+          </div>
+          <div class="setting-control-col">
+            <input type="range" id="range-player-text-size" min="11" max="20" step="1" value="14">
+            <span class="range-val" id="val-player-text-size">14px</span>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-col">
+            <span class="setting-title">Corner Roundness</span>
+            <span class="setting-sub">Border radius of the player card</span>
+          </div>
+          <div class="setting-control-col">
+            <input type="range" id="range-player-border-radius" min="0" max="32" step="2" value="20">
+            <span class="range-val" id="val-player-border-radius">20px</span>
+          </div>
+        </div>
+
+        <div class="modal-divider"></div>
+
+        <div class="setting-item">
+          <div class="setting-label-col">
+            <span class="setting-title">Reset Position & Size</span>
+            <span class="setting-sub">Return widget to default bottom-left position and standard size</span>
+          </div>
+          <div class="setting-control-col">
+            <button class="mono-reset-btn" id="btn-reset-player-pos">
+              <i class="bi bi-arrow-counterclockwise"></i>
+              <span>Reset to Default</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal-apply btn-close-config-modal">
+          <i class="bi bi-check2"></i>
+          <span>Done</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-modal-backdrop hidden" id="modal-config-lyrics">
+    <div class="settings-modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="bi bi-chat-square-quote"></i>
+          <span>Floating Lyrics Widget Settings</span>
+        </div>
+        <button class="win-btn win-close btn-close-config-modal" title="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="settings-modal-body">
+        <div class="setting-item">
+          <div class="setting-label-col">
+            <span class="setting-title">Show Floating Lyrics</span>
+            <span class="setting-sub">Display real-time synchronized lyrics card on desktop</span>
+          </div>
+          <div class="setting-control-col">
+            <label class="mono-switch">
+              <input type="checkbox" id="check-show-lyrics" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-divider"></div>
+
+        <div class="section-header modal-sub-header">
+          <h3>Lyrics Finish Material</h3>
+          <p>Choose between Solid, Frosted Glass, or Completely Transparent</p>
+        </div>
+
+        <div class="card-grid cols-3">
+          <div class="mono-choice-card" data-lyrics-mat="solid" id="choice-lyrics-mat-solid">
+            <i class="bi bi-square-fill choice-icon"></i>
+            <div class="choice-title">Solid</div>
+            <div class="choice-desc">Opaque surface with custom color & border</div>
+          </div>
+
+          <div class="mono-choice-card selected" data-lyrics-mat="glass" id="choice-lyrics-mat-glass">
+            <i class="bi bi-window choice-icon"></i>
+            <div class="choice-title">Glass</div>
+            <div class="choice-desc">Colorless frosted glass with blur effect</div>
+          </div>
+
+          <div class="mono-choice-card" data-lyrics-mat="transparent" id="choice-lyrics-mat-transparent">
+            <i class="bi bi-circle choice-icon"></i>
+            <div class="choice-title">Transparent</div>
+            <div class="choice-desc">100% see-through with optional border outline</div>
+          </div>
+        </div>
+
+        <div id="lyrics-solid-controls" class="hidden">
+          <div class="custom-color-control-box">
+            <div class="color-summary-card">
+              <div class="color-summary-left">
+                <div class="color-swatch-badge" id="lyrics-bg-swatch-display" style="background: #111116;"></div>
+                <div class="color-summary-meta">
+                  <span class="color-meta-label">Background Color</span>
+                  <span class="color-meta-hex" id="lyrics-bg-hex-display">#111116</span>
+                </div>
+              </div>
+              <button class="mono-apply-btn btn-trigger-color-modal" data-target="lyricsBg" title="Pick Background Color">
+                <i class="bi bi-palette-fill"></i>
+                <span>Pick Background</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="custom-color-control-box">
+            <div class="color-summary-card">
+              <div class="color-summary-left">
+                <div class="color-swatch-badge" id="lyrics-border-swatch-display" style="background: #ffffff;"></div>
+                <div class="color-summary-meta">
+                  <span class="color-meta-label">Border Color</span>
+                  <span class="color-meta-hex" id="lyrics-border-hex-display">#FFFFFF</span>
+                </div>
+              </div>
+              <button class="mono-apply-btn btn-trigger-color-modal" data-target="lyricsBorder" title="Pick Border Color">
+                <i class="bi bi-palette-fill"></i>
+                <span>Pick Border</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Border Opacity</span>
+              <span class="setting-sub">Transparency of the lyrics card border outline</span>
+            </div>
+            <div class="setting-control-col">
+              <input type="range" id="range-lyrics-border-opacity" min="0.00" max="1.00" step="0.05" value="0.18">
+              <span class="range-val" id="val-lyrics-border-opacity">18%</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="lyrics-glass-controls">
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Glass Background Opacity</span>
+              <span class="setting-sub">Background see-through transparency level</span>
+            </div>
+            <div class="setting-control-col">
+              <input type="range" id="range-lyrics-glass-opacity" min="0.05" max="0.80" step="0.05" value="0.18">
+              <span class="range-val" id="val-lyrics-glass-opacity">18%</span>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Glass Blur</span>
+              <span class="setting-sub">Frosted glass blur diffusion behind lyrics</span>
+            </div>
+            <div class="setting-control-col">
+              <input type="range" id="range-lyrics-glass-blur" min="0" max="40" step="2" value="20">
+              <span class="range-val" id="val-lyrics-glass-blur">20px</span>
+            </div>
+          </div>
+
+          <div class="custom-color-control-box">
+            <div class="color-summary-card">
+              <div class="color-summary-left">
+                <div class="color-swatch-badge" id="lyrics-glass-border-swatch" style="background: #ffffff;"></div>
+                <div class="color-summary-meta">
+                  <span class="color-meta-label">Border Color</span>
+                  <span class="color-meta-hex" id="lyrics-glass-border-hex">#FFFFFF</span>
+                </div>
+              </div>
+              <button class="mono-apply-btn btn-trigger-color-modal" data-target="lyricsBorder" title="Pick Border Color">
+                <i class="bi bi-palette-fill"></i>
+                <span>Pick Border</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Border Opacity</span>
+              <span class="setting-sub">Transparency of the glass card rim</span>
+            </div>
+            <div class="setting-control-col">
+              <input type="range" id="range-lyrics-glass-border-opacity" min="0.00" max="1.00" step="0.05" value="0.22">
+              <span class="range-val" id="val-lyrics-glass-border-opacity">22%</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="lyrics-trans-controls" class="hidden">
+          <div class="setting-item">
+            <div class="setting-label-col">
+              <span class="setting-title">Enable Border Outline</span>
+              <span class="setting-sub">Display thin border around transparent lyrics card</span>
+            </div>
+            <div class="setting-control-col">
+              <label class="mono-switch">
+                <input type="checkbox" id="check-lyrics-border-enabled" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div id="lyrics-trans-border-box">
+            <div class="custom-color-control-box">
+              <div class="color-summary-card">
+                <div class="color-summary-left">
+                  <div class="color-swatch-badge" id="lyrics-trans-border-swatch" style="background: #ffffff;"></div>
+                  <div class="color-summary-meta">
+                    <span class="color-meta-label">Border Color</span>
+                    <span class="color-meta-hex" id="lyrics-trans-border-hex">#FFFFFF</span>
+                  </div>
+                </div>
+                <button class="mono-apply-btn btn-trigger-color-modal" data-target="lyricsBorder" title="Pick Border Color">
+                  <i class="bi bi-palette-fill"></i>
+                  <span>Pick Border</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-label-col">
+                <span class="setting-title">Border Opacity</span>
+                <span class="setting-sub">Transparency of the border outline</span>
+              </div>
+              <div class="setting-control-col">
+                <input type="range" id="range-lyrics-trans-border-opacity" min="0.05" max="1.00" step="0.05" value="0.35">
+                <span class="range-val" id="val-lyrics-trans-border-opacity">35%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-divider"></div>
+
+        <div class="section-header modal-sub-header">
+          <h3>Lyrics Typography & Font</h3>
+          <p>Text styling and custom font support</p>
+        </div>
+
+        <div class="custom-color-control-box">
+          <div class="color-summary-card">
+            <div class="color-summary-left">
+              <div class="color-swatch-badge" id="lyrics-text-swatch" style="background: #ffffff;"></div>
+              <div class="color-summary-meta">
+                <span class="color-meta-label">Active Lyric Color</span>
+                <span class="color-meta-hex" id="lyrics-text-hex">#FFFFFF</span>
+              </div>
+            </div>
+            <button class="mono-apply-btn btn-trigger-color-modal" data-target="lyricsText" title="Pick Text Color">
+              <i class="bi bi-palette-fill"></i>
+              <span>Pick Color</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-col">
+            <span class="setting-title">Lyrics Font Size</span>
+            <span class="setting-sub">Text size of the song lyrics</span>
+          </div>
+          <div class="setting-control-col">
+            <input type="range" id="range-lyrics-font-size" min="12" max="36" step="1" value="18">
+            <span class="range-val" id="val-lyrics-font-size">18px</span>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-col">
+            <span class="setting-title">Inactive Lyrics Opacity</span>
+            <span class="setting-sub">Faded opacity for surrounding non-active lyric lines</span>
+          </div>
+          <div class="setting-control-col">
+            <input type="range" id="range-lyrics-inactive-opacity" min="0.15" max="0.75" step="0.05" value="0.35">
+            <span class="range-val" id="val-lyrics-inactive-opacity">35%</span>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-col">
+            <span class="setting-title">Text Alignment</span>
+            <span class="setting-sub">Align lyrics text to center or left side</span>
+          </div>
+          <div class="setting-control-col">
+            <div class="choice-tabs-row">
+              <button class="choice-tab-btn active" id="btn-align-center" data-align="center">
+                <i class="bi bi-text-center"></i>
+                <span>Center</span>
+              </button>
+              <button class="choice-tab-btn" id="btn-align-left" data-align="left">
+                <i class="bi bi-text-left"></i>
+                <span>Left</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-col">
+            <span class="setting-title">Custom Font File</span>
+            <span class="setting-sub">Choose any font file (.ttf, .otf, .woff, .woff2) from your computer</span>
+          </div>
+          <div class="setting-control-col custom-font-control-col">
+            <div class="custom-font-box">
+              <div class="font-current-info">
+                <i class="bi bi-file-earmark-font"></i>
+                <span id="font-file-name-label">Default System Font</span>
+              </div>
+              <div class="font-buttons-group">
+                <button class="mono-apply-btn btn-small" id="btn-choose-font-file">
+                  <i class="bi bi-folder2-open"></i>
+                  <span>Choose Font File...</span>
+                </button>
+                <button class="mono-reset-btn btn-small hidden" id="btn-reset-font-file" title="Reset font to default">
+                  <i class="bi bi-arrow-counterclockwise"></i>
+                  <span>Reset</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-col">
+            <span class="setting-title">Font Family Style</span>
+            <span class="setting-sub">Select typography style or use your uploaded custom font</span>
+          </div>
+          <div class="setting-control-col">
+            <select id="select-lyrics-font" class="mono-select">
+              <option value="system">Default System (Segoe UI / Inter)</option>
+              <option value="custom" id="opt-custom-font" disabled>Custom Uploaded Font</option>
+              <option value="'Outfit', sans-serif">Modern Sans (Outfit)</option>
+              <option value="'Playfair Display', serif">Editorial Serif (Playfair)</option>
+              <option value="'Consolas', 'Courier New', monospace">Monospace (Code Style)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-col">
+            <span class="setting-title">Corner Roundness</span>
+            <span class="setting-sub">Border radius of the lyrics card</span>
+          </div>
+          <div class="setting-control-col">
+            <input type="range" id="range-lyrics-border-radius" min="0" max="32" step="2" value="20">
+            <span class="range-val" id="val-lyrics-border-radius">20px</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal-apply btn-close-config-modal">
+          <i class="bi bi-check2"></i>
+          <span>Done</span>
+        </button>
+      </div>
+    </div>
+  </div>
+      </div>
+    </div>
+  </div>
+
   <div class="color-modal-backdrop hidden" id="color-modal">
     <div class="color-modal-card">
       <div class="modal-header">
@@ -975,7 +1437,7 @@
       </div>
 
       <div class="modal-body">
-        <!-- Live Color Preview Box with Hex Input -->
+        
         <div class="modal-preview-row">
           <div class="modal-swatch-box" id="modal-swatch-box" style="background: #ffffff;">
             <input type="color" id="modal-native-color-picker" value="#ffffff" class="hidden-native-picker" title="Pick native color">
@@ -989,7 +1451,6 @@
           </div>
         </div>
 
-        <!-- 16 Curated Palette Swatches -->
         <div class="modal-palette-section">
           <span class="modal-palette-label">Curated Aesthetics:</span>
           <div class="modal-palette-grid">
@@ -1012,7 +1473,6 @@
           </div>
         </div>
 
-        <!-- Opacity Slider inside Modal -->
         <div class="modal-slider-row">
           <div class="modal-slider-label">
             <span>Opacity</span>
@@ -1032,7 +1492,6 @@
     </div>
   </div>
 
-  <!-- MODAL TẠO / SỬA PLAYLIST (CREATE / EDIT PLAYLIST MODAL) -->
   <div class="color-modal-backdrop hidden" id="modal-playlist-edit">
     <div class="color-modal-card playlist-modal-card">
       <div class="modal-header">
@@ -1062,7 +1521,6 @@
     </div>
   </div>
 
-  <!-- MODAL THÊM BÀI HÁT VÀO PLAYLIST (ADD TRACK TO PLAYLIST MODAL) -->
   <div class="color-modal-backdrop hidden" id="modal-add-to-playlist">
     <div class="color-modal-card playlist-modal-card">
       <div class="modal-header">
@@ -1087,7 +1545,7 @@
         <div class="modal-form-group">
           <label class="modal-form-label">Choose Playlist Destination:</label>
           <div class="add-playlist-options-list" id="add-playlist-options-container">
-            <!-- Dynamically populated playlists -->
+            
           </div>
         </div>
       </div>
