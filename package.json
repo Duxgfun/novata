@@ -1,7 +1,7 @@
 {
   "name": "novata",
-  "version": "0.6.0",
-  "description": "Novata nvt_0.6 beta - Minimalist Audio Visualizer, Music Player & Floating Lyrics Widget",
+  "version": "0.7.0",
+  "description": "Novata nvt_0.7 beta - Minimalist Audio Visualizer, Music Player & Floating Lyrics Widget",
   "main": "src/main/main.js",
   "scripts": {
     "start": "electron .",
@@ -63,7 +63,8 @@
       "installerIcon": "assets/icon.ico",
       "uninstallerIcon": "assets/icon.ico",
       "uninstallDisplayName": "Novata",
-      "runAfterFinish": true
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false
     }
   }
 }

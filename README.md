@@ -1,7 +1,7 @@
 # Novata
 
 > Minimalist Audio Visualizer, Music Player & Floating Lyrics Widget for Windows 10 & 11  
-> Version **nvt_0.6 beta** (v0.6.0) &bull; [Website & Web Simulator](https://novata.duxgg.fun) &bull; [GitHub Releases](https://github.com/Duxgfun/novata/releases)
+> Version **nvt_0.7 beta** (v0.7.0) &bull; [Website & Web Simulator](https://novata.duxgg.fun) &bull; [GitHub Releases](https://github.com/Duxgfun/novata/releases)
 
 ---
 
@@ -16,38 +16,44 @@ This repository represents the **official standalone production release** of Nov
 
 ---
 
-## Key Features (nvt_0.6 Beta)
+## Key Features (nvt_0.7 Beta)
 
-### 1. Symmetrical Continuous Wave & Spectrum Bars
-- **Dual Visualizer Engines**: Toggle between smooth continuous flowing waves and crisp vertical spectrum bars.
-- **Center-Out Symmetrical Energy**: Audio pulses emanate from the center of the display and ripple outward toward both edges.
-- **100% Transparent Desktop Integration**: Visualizers sit directly above the taskbar on your desktop wallpaper with native click-through support.
+### 1. Instant Startup Optimization (~1.1s Cold Start)
+- **Zero-Latency Audio Loopback**: Pre-warmed desktop screen source acquisition in the Main process eliminates the 3.1-second WebRTC DXGI desktop thumbnail capture delay and error retry loops.
+- **Asynchronous Audio Binding**: Decoupled Web Audio Analyser and canvas rendering loop, allowing visualizer and overlay widgets to render immediately in under 1.1s.
+- **Lazy C# Worker Compilation & Downloader**: Deferred runtime compilation in background scripts and lazy-loaded music search modules reduce startup memory footprint.
 
-### 2. Tri-Material Widget Styling Suite
-Customize both the Desktop Player Widget and Floating Lyrics Widget independently across three distinct material styles:
-- **Solid Mode**: Custom background color picker and solid border color picker.
-- **Glass Mode**: Authentic, purely colorless frosted glass with independent controls for transparency (opacity) and Gaussian blur radius (`backdrop-filter`).
-- **Transparent Mode**: Pure backgroundless mode with optional border toggle and custom border color selection.
-- **Custom Typography**: Independent text color and font size controls for both widgets.
+### 2. Player Widget Hamburger Menu & Tri-Material Inheritance
+- **Unified Toolbar Menu**: Consolidated Lyrics toggle, Move & Resize, and Settings controls into a single elegant hamburger button (`bi-list`) on the outer player widget toolbar.
+- **Adaptive Material & Border Inheritance**: The hamburger popup automatically mirrors the player widget's material mode (Solid, Glass, Transparent), inheriting background color, glass blur, opacity, text color, and border styling 100%.
+- **Smart Viewport Positioning**: Automatically detects screen boundary and opens downwards when the player card is docked near the top of the display.
 
-### 3. Smart Spatial Crosshairs & Magnetic Docking
-- **Center Crosshair Overlay**: Central crosshair (+) and alignment guides appear automatically during widget edit mode (`Move & Resize`).
-- **Center Magnetic Snap**: Snaps widgets directly to the horizontal and vertical center of the screen when within 18px.
-- **12px Inter-Widget Docking**: Magnetic snapping between Player and Lyrics cards locks them into an exact 12px gap, completely eliminating card overlap.
-- **Unified Move Control**: Move both widgets simultaneously from a single control point on the player widget.
+### 3. Simplified Edit Mode & Spatial Docking
+- **Streamlined Move & Resize**: Removed the redundant "Done" button from the player widget during Edit Mode.
+- **Intuitive Toggling**: Enter and exit Edit Mode directly via the Move button in the hamburger menu, right-clicking on either card, or pressing `Escape`.
+- **Center Crosshair & Magnetic Docking**: Snaps widgets to the center of the screen (<18px) and locks a clean 12px gap between Player and Lyrics cards to prevent overlap.
 
-### 4. Adaptive Responsive Button Scaling
-- **Continuous Dynamic Scaling**: Dynamic `--player-scale` calculation ensures all 9 player controls scale down smoothly to narrow widths (down to 240px).
-- **Zero Button Overflow**: Prevents control buttons from wrapping or clipping on compact widget sizes.
-
-### 5. Floating Real-Time Synchronized Lyrics
-- **LRCLIB Integration**: Queries open-source database for synchronized LRC lyrics (`[mm:ss.xx]`) with zero API keys required.
-- **Real-Time Karaoke Synchronization**: Timed line highlighting with smooth automatic vertical centering.
-- **Interactive Seek**: Click any lyric line to seek audio playback directly to that timestamp.
+### 4. Zen Floating Lyrics & Multi-Alignment Typography
+- **Full-Bleed Viewport**: Removed the redundant close (`X`) button from the floating lyrics card header; lyrics scrolling area expands to 100% of the card height.
+- **Multi-Alignment Typography**: Select between `Center`, `Left`, and `Right` text alignments in Settings under Appearance > Lyrics Widget.
+- **Directional Scaling**: Active lyric line scaling dynamically originates from the selected alignment (`transform-origin: var(--lyrics-text-align)`).
 - **Silent Lyrics Mode**: Non-intrusive empty states when lyrics are absent; leaves your desktop clean without error banners or message icons.
-- **Custom Font Loader**: Load any local `.ttf`, `.otf`, `.woff`, or `.woff2` font file via native Windows dialogs.
 
-### 6. Multi-Platform Streaming & Discord RPC
+### 5. Zero-Idle Performance Engine (0% CPU Deep Sleep)
+- **Visualizer Deep Sleep**: Automatically stops `requestAnimationFrame` when audio is silent for more than 12 frames (~200ms). The canvas is cleared once and rendering sleeps, using a low-overhead 350ms poll.
+- **Instant Wake Mechanism**: Awakens rendering immediately upon track playback or external media state transitions without visual stutter.
+- **Working Set RAM Trimming**: Background memory optimization drops idle memory footprint down to ~79MB and idle CPU across all processes to 0.00%.
+
+### 6. Lyrics Timing Calibration & Smart Audio Matching
+- **Interactive Offset Toolbar**: Unobtrusive `[-]` and `[+]` synchronization buttons and live delay indicator on the floating lyrics card on hover, enabling instant calibration on the fly.
+- **Comprehensive Timing Settings**: Dedicated timing offset slider (`-5.0s` to `+5.0s`) and 9 one-click preset buttons (`-1.5s` to `+1.0s`) in Appearance > Lyrics Widget modal.
+- **Smart Audio Search Ranking**: Heuristic scoring algorithm prioritizes Official Audio, Topic, and Lyric Videos (2:30–5:30) while demoting extended story/drama music videos, nightcore, and live covers.
+
+### 7. Settings Persistence & Anti-Reset Dual Backup System
+- **Dual-Storage Backup**: Dual-write logic writes settings simultaneously to standard application storage and external storage at `%USERPROFILE%\.novata\settings_backup.json`.
+- **Automatic Migration & Recovery**: On application launch or installer update, automatically detects and restores widget positions, dimensions, and user preferences if standard app storage was wiped or reset during an update.
+
+### 8. Multi-Platform Streaming & Discord RPC
 - **Direct Link Playback**: Paste track links directly from Spotify, YouTube Music, SoundCloud, or Apple Music for instant metadata extraction and streaming.
 - **System Media Bridge**: Detects external media playback from Spotify desktop, Chrome, and Edge via Windows SMTC.
 - **Discord Rich Presence**: Native Win32 named pipe IPC showcasing active listening status on Discord.
@@ -58,7 +64,7 @@ Customize both the Desktop Player Widget and Floating Lyrics Widget independentl
 
 ### Option 1: Standalone Windows Installer (Recommended)
 Download the latest Windows installer from [GitHub Releases](https://github.com/Duxgfun/novata/releases):
-- File: `Novata Setup 0.6.0.exe`
+- File: `Novata Setup 0.7.0.exe`
 - Architecture: Windows 10 / 11 (64-bit)
 - Features: NSIS installation wizard, desktop shortcut, start menu entry, automatic uninstaller.
 
@@ -95,7 +101,7 @@ npm start
 npm run build
 ```
 Build artifacts are placed into the `dist/` directory:
-- `dist/Novata Setup 0.6.0.exe` (NSIS installer)
+- `dist/Novata Setup 0.7.0.exe` (NSIS installer)
 - `dist/win-unpacked/Novata.exe` (Portable executable)
 
 ---

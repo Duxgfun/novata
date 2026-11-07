@@ -38,8 +38,12 @@ public class WinMemoryTrimmer {
 }
 "@
 
-if (-not ([System.Management.Automation.PSTypeName]'WinMediaFallback').Type) {
-    Add-Type -TypeDefinition $csharpSource
+function Ensure-WinTypes {
+    if (-not ([System.Management.Automation.PSTypeName]'WinMediaFallback').Type) {
+        try {
+            Add-Type -TypeDefinition $csharpSource
+        } catch {}
+    }
 }
 
 Add-Type -AssemblyName System.Runtime.WindowsRuntime
@@ -73,6 +77,7 @@ while ($cmd = [Console]::In.ReadLine()) {
     }
 
     if ($cmd -eq "trim") {
+        Ensure-WinTypes
         [WinMemoryTrimmer]::TrimProcesses($targetNames)
         Write-Output '{"success":true,"action":"trim"}'
         continue
@@ -87,7 +92,7 @@ while ($cmd = [Console]::In.ReadLine()) {
         try {
             $session = $mgr.GetCurrentSession()
             if ($session) {
-                $srcId = $session.SourceAppId
+                $srcId = $session.SourceAppId
                 if ($srcId -and ($srcId -match "Novata" -or $srcId -match "electron")) {
                     $session = $null
                 }
@@ -100,6 +105,7 @@ while ($cmd = [Console]::In.ReadLine()) {
     switch ($cmd) {
         "trim" {
             try {
+                Ensure-WinTypes
                 [WinMemoryTrimmer]::TrimProcesses(@("Novata", "electron", "powershell"))
             } catch {}
             Write-Output '{"success":true,"action":"trim"}'
@@ -115,6 +121,7 @@ while ($cmd = [Console]::In.ReadLine()) {
                 }
             }
             if (-not $handled) {
+                Ensure-WinTypes
                 [WinMediaFallback]::SendKey(179)
             }
             Write-Output '{"success":true,"action":"play_pause"}'
@@ -130,6 +137,7 @@ while ($cmd = [Console]::In.ReadLine()) {
                 }
             }
             if (-not $handled) {
+                Ensure-WinTypes
                 [WinMediaFallback]::SendKey(176)
             }
             Write-Output '{"success":true,"action":"next"}'
@@ -145,6 +153,7 @@ while ($cmd = [Console]::In.ReadLine()) {
                 }
             }
             if (-not $handled) {
+                Ensure-WinTypes
                 [WinMediaFallback]::SendKey(177)
             }
             Write-Output '{"success":true,"action":"prev"}'
